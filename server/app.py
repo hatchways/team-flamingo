@@ -3,11 +3,11 @@ from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
-plapp = Flask(__name__) # ProductLaunch app
-plapp.config.from_object(Config)
+app = Flask(__name__) # ProductLaunch app
+app.config.from_object(Config)
 
-db = SQLAlchemy(plapp) 
-migrate = Migrate(plapp, db)
+db = SQLAlchemy(app) 
+migrate = Migrate(app, db)
 
 # for flask-migrate to generate migration scripts
 from db_models import pluser
