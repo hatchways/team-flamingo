@@ -12,23 +12,23 @@ function Ping(props) {
   const submitAnswer = () => {
     console.log("run");
     let status;
-    fetch("/ping", {
+    fetch("/v1/ping", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ teamName: answer })
+      body: JSON.stringify({ teamName: answer }),
     })
-      .then(res => {
+      .then((res) => {
         status = res.status;
         if (status < 500) return res.json();
         else throw Error("Server error");
       })
-      .then(res => {
+      .then((res) => {
         setResult(res.response);
         if (status === 200) props.incrementStep();
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err.message);
       });
   };
@@ -44,7 +44,7 @@ function Ping(props) {
       <FormControl>
         <TextField
           label={"first name"}
-          onChange={e => setAnswer(e.target.value)}
+          onChange={(e) => setAnswer(e.target.value)}
         />
       </FormControl>
       <Button onClick={submitAnswer}>Submit</Button>
