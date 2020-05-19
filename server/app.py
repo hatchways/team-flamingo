@@ -15,5 +15,5 @@ from db_models import pluser
 # keep for now to check previous functionality still works with new config
 from api.home_handler import home_handler
 from api.ping_handler import ping_handler
-plapp.register_blueprint(home_handler)
-plapp.register_blueprint(ping_handler)
+app.register_blueprint(home_handler)
+app.register_blueprint(ping_handler)
