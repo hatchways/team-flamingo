@@ -12,7 +12,7 @@ function Ping(props) {
   const submitAnswer = () => {
     console.log("run");
     let status;
-    fetch("/v1/ping", {
+    fetch(process.env.REACT_APP_API_URL + "/v1/ping", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

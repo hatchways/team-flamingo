@@ -19,7 +19,7 @@ class LandingPage extends Component {
   };
 
   componentDidMount() {
-    fetch("/v1/welcome")
+    fetch(process.env.REACT_APP_API_URL + "/v1/welcome")
       .then((res) => {
         console.log(res);
         if (res.status === 200) return res.json();
