@@ -17,6 +17,7 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 # for flask-migrate to generate migration scripts
+from db_models.pluser import plUser
 
 # keep for now to check previous functionality still works with new config
 app.register_blueprint(home_handler)
