@@ -11,6 +11,7 @@ flask-sqlalchemy = "*"
 flask-migrate = "*"
 psycopg2 = "*"
 python-dotenv = "*"
+flask-cors = "*"
 
 [requires]
 python_version = "3.7"

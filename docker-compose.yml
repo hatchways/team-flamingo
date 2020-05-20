@@ -1,0 +1,39 @@
+version: "3"
+
+services:
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    volumes:
+      - "./client:/usr/src/app"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - "server"
+    stdin_open: true
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000
+
+  server:
+    restart: always
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    volumes:
+      - "./server:/usr/src/app"
+    ports:
+      - "5000:5000"
+    depends_on:
+      - "db"
+    environment:
+      - DB_CONNECTION_STRING=postgresql://postgres:dev@db:5432/hatchways
+
+  db:
+    image: postgres:12.3
+    ports:
+      - "5432:5432"
+    environment: # TODO: these should be changed to reflect the db connection string used on the server.
+      - POSTGRES_DB=hatchways
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=dev
