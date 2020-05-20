@@ -3,7 +3,6 @@ import { MuiThemeProvider } from "@material-ui/core";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import { theme } from "./themes/theme";
-import LandingPage from "./pages/Landing";
 import UserDashboard from "./pages/Dashboard";
 
 import "./App.css";
