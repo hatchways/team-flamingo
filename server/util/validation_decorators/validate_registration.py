@@ -4,9 +4,11 @@ from flask import jsonify, request
 from functools import wraps
 from app import db
 
+
 def validate_registration(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
+        print(request)
         data = request.get_json()
 
         # Validate username
@@ -25,7 +27,7 @@ def validate_registration(f):
             login_email = data['login_email']
         except KeyError:
             return jsonify({'error': 'Login email is required'}), 400
-        
+
         if not re.fullmatch(r'\w+[.|\w]\w+@\w+[.]\w+[.|\w+]\w+', login_email):
             return jsonify({'error': 'Email is not a valid format'}), 400
         if db.session.query(plUser.id).filter_by(login_email=login_email).scalar() is not None:
@@ -37,13 +39,13 @@ def validate_registration(f):
             confirm = data['confirm']
         except KeyError:
             return jsonify({'error': 'Password is required'}), 400
-    
+
         if len(password) < 6 or len(password) > 64:
             return jsonify({'error': 'Password must be between 6 and 64 characters'}), 400
-        
+
         if not password == confirm:
             return jsonify({'error': 'Passwords must match'}), 400
-        
+
         return f(*args, **kwargs)
 
     return wrapper

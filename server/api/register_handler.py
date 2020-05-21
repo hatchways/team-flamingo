@@ -8,10 +8,13 @@ from util.validation_decorators.validate_registration import validate_registrati
 
 register_handler = Blueprint('register_handler', __name__)
 
+
 @register_handler.route('/v1/register', methods=['POST'])
 @validate_registration
 def register():
+    print(request)
     data = request.get_json()
+    print(data)
 
     user = plUser(
         username=data['username'],
