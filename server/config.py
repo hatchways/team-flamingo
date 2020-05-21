@@ -6,3 +6,4 @@ class Config(object):
 	SQLALCHEMY_DATABASE_URI = os.environ.get('DB_CONNECTION_STRING') or \
 		'postgresql://postgres:password@localhost:5432/devdb'
 	SQLALCHEMY_TRACK_MODIFICATIONS = False
+	JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY')
