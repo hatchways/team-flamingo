@@ -1,6 +1,4 @@
-import React, { Component } from "react";
-import projectpic1 from "../staticImages/projPicture1.png";
-import profpic1 from "../staticImages/profpic1.png";
+import React from "react";
 
 import {
   Typography,
@@ -19,6 +17,12 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 
+import projectpic1 from "../staticImages/projPicture1.png";
+import projectpic2 from "../staticImages/projPicture2.png";
+import projectpic3 from "../staticImages/projPicture3.png";
+import profpic1 from "../staticImages/profpic1.png";
+import logo from "../staticImages/ic-logo.png";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     color: "black",
@@ -31,12 +35,44 @@ const useStyles = makeStyles((theme) => ({
       elevation: 0,
     },
   },
+  logo: {
+    width: theme.spacing(4),
+    height: theme.spacing(4),
+    marginRight: theme.spacing(1),
+  },
   title: {
     flexGrow: 1,
+  },
+  userInfoShadow: {
+    paddingTop: theme.spacing(3),
+    boxShadow: "0px 0px 17px 6px rgba(200,200,200,.3)",
   },
   avatar: {
     width: theme.spacing(15),
     height: theme.spacing(15),
+  },
+  sendMessage: {
+    padding: ".8rem 2rem",
+  },
+  roundButton: {
+    borderRadius: "30px",
+    padding: "0.2rem 1rem",
+    fontSize: "0.7rem",
+    marginRight: "0.5rem",
+    fontWeight: "600",
+  },
+  highlightButton: {
+    borderRadius: "30px",
+    padding: "0.2rem 1rem",
+    fontSize: "0.7rem",
+    marginRight: "0.5rem",
+    fontWeight: "600",
+    backgroundColor: theme.primary,
+    color: "white",
+    border: "0px",
+    "&:hover": {
+      backgroundColor: "black",
+    },
   },
   media: {
     height: theme.spacing(35),
@@ -62,7 +98,12 @@ function NavBar(props) {
       <Container>
         <AppBar variant="outlined" className={classes.appBar} position="fixed">
           <Toolbar>
-            <Typography variant="h6" className={classes.title}>
+            <img
+              className={classes.logo}
+              src={logo}
+              alt="Product Launch Logo"
+            ></img>
+            <Typography variant="h6" className={classes.title} component="h1">
               Product Launch
             </Typography>
             <Button color="inherit">Explore</Button>
@@ -78,38 +119,59 @@ function NavBar(props) {
 function UserInfo(props) {
   const classes = useStyles();
   return (
-    <Box borderRight={1} height="100%" pt={3}>
+    <Box height="100%" className={classes.userInfoShadow}>
       <Container align="center">
         {/* Avatar */}
         <Avatar className={classes.avatar} src={profpic1}></Avatar>
         {/* User Info */}
         <Box>
-          <Typography>Alexander Faa</Typography>
-          <Typography>New York, NY</Typography>
+          <Typography variant="h6" component="p">
+            Alexander Faa
+          </Typography>
+          <Typography color="textSecondary">New York, NY</Typography>
         </Box>
 
         {/* Send a message */}
-        <Box marginTop={2}>
-          <Button variant="outlined" disableElevation>
+        <Box className={classes.ySpacing}>
+          <Button
+            className={classes.sendMessage}
+            size="large"
+            variant="outlined"
+            disableElevation
+          >
             Send a Message
           </Button>
         </Box>
 
         {/* Description */}
-        <Box marginTop={2}>
-          <Typography>Description</Typography>
+        <Box className={classes.ySpacing}>
+          <Typography>
+            I just have a great passion for all things coffee
+          </Typography>
         </Box>
 
         {/* Expertise */}
         <Box marginTop={2}>
           <Typography fontWeight="fontWeightMedium">Expertise</Typography>
-          <Button variant="outlined" size="small">
+          <Button
+            className={classes.roundButton}
+            variant="outlined"
+            size="small"
+          >
             Marketing
           </Button>
-          <Button variant="outlined" size="small">
-            Sales
+          <Button
+            className={classes.roundButton}
+            variant="outlined"
+            size="small"
+          >
+            Coffee
           </Button>
-          <Button variant="outlined" size="small">
+          <Button
+            className={classes.roundButton}
+            variant="outlined"
+            size="small"
+          >
             Technology
           </Button>
         </Box>
@@ -123,8 +185,13 @@ function UserInfo(props) {
           <Typography fontWeight="fontWeightMedium">
             Looking to invest in
           </Typography>
-          <Button variant="contained" color="primary" size="small">
-            Technology
+
+          <Button
+            className={classes.highlightButton}
+            variant="outlined"
+            size="small"
+          >
+            Coffee
           </Button>
         </Container>
       </Box>
@@ -134,26 +201,56 @@ function UserInfo(props) {
 
 function ProjectCard(props) {
   const classes = useStyles();
+  console.log(props.ver);
+  const projectStatic = [
+    {
+      photo: projectpic1,
+      name: "Urban Jungle: eco-friendly coffee shop",
+      currentInvested: 23874,
+      wantedInvestement: 40000,
+      equity: 0.1,
+      timeLeft: 44,
+    },
+    {
+      photo: projectpic2,
+      name: "Cafe Black: The Future of coffee",
+      currentInvested: 2647,
+      wantedInvestement: 60000,
+      equity: 0.1,
+      timeLeft: 60,
+    },
+    {
+      photo: projectpic3,
+      name: "Easy to use, Powerful AI Camera",
+      currentInvested: 34912,
+      wantedInvestement: 55000,
+      equity: 0.18,
+      timeLeft: 12,
+    },
+  ];
+  const projectInfo = projectStatic[props.ver];
+
   return (
     <Grid item xs={6}>
-      <Card>
+      <Card elevation={8}>
         <CardMedia
           className={classes.media}
           component="img"
-          src={projectpic1}
+          src={projectInfo.photo}
         ></CardMedia>
         <CardContent>
           <Typography className={classes.cardTitle} variant="h5" component="h4">
-            Urban Jungle: eco-friendly coffee shop
+            {projectInfo.name}
           </Typography>
           <Typography className={classes.cardInvested} display="inline">
-            $23874
+            ${projectInfo.currentInvested}
           </Typography>
           <Typography color="textSecondary" display="inline">
-            / 40000
+            {" / " + projectInfo.wantedInvestement}
           </Typography>
           <Typography variant="body2" color="textSecondary">
-            Equity exchange: 10% | 44 days to go
+            Equity exchange: {projectInfo.equity * 100}% |
+            {" " + projectInfo.timeLeft} days to go
           </Typography>
         </CardContent>
       </Card>
@@ -180,9 +277,9 @@ function UserDashboard(props) {
               <Box fontWeight="fontWeightMedium">Invested In: </Box>
             </Typography>
             <Grid container spacing={6}>
-              <ProjectCard />
-              <ProjectCard />
-              <ProjectCard />
+              <ProjectCard ver={0} />
+              <ProjectCard ver={1} />
+              <ProjectCard ver={2} />
             </Grid>
           </Container>
         </Grid>
