@@ -23,6 +23,40 @@ import projectpic3 from "../staticImages/projPicture3.png";
 import profpic1 from "../staticImages/profpic1.png";
 import logo from "../staticImages/ic-logo.png";
 
+const userStatic = {
+  name: "Alexander Faa",
+  location: "New York, NY",
+  description: "I just have a great passion for all things coffee",
+  expertise: ["marketing", "coffee", "technology"],
+  wantInvestIn: "Coffee",
+};
+const projectStatic = [
+  {
+    photo: projectpic1,
+    name: "Urban Jungle: eco-friendly coffee shop",
+    currentInvested: 23874,
+    wantedInvestement: 40000,
+    equity: 0.1,
+    timeLeft: 44,
+  },
+  {
+    photo: projectpic2,
+    name: "Cafe Black: The Future of coffee",
+    currentInvested: 2647,
+    wantedInvestement: 60000,
+    equity: 0.1,
+    timeLeft: 60,
+  },
+  {
+    photo: projectpic3,
+    name: "Easy to use, Powerful AI Camera",
+    currentInvested: 34912,
+    wantedInvestement: 55000,
+    equity: 0.18,
+    timeLeft: 12,
+  },
+];
+
 const useStyles = makeStyles((theme) => ({
   root: {
     color: "black",
@@ -31,9 +65,6 @@ const useStyles = makeStyles((theme) => ({
     background: "white",
     color: "black",
     elevation: 0,
-    "&MuiPaper": {
-      elevation: 0,
-    },
   },
   logo: {
     width: theme.spacing(4),
@@ -118,6 +149,7 @@ function NavBar(props) {
 
 function UserInfo(props) {
   const classes = useStyles();
+  const user = props.user;
   return (
     <Box height="100%" className={classes.userInfoShadow}>
       <Container align="center">
@@ -126,9 +158,9 @@ function UserInfo(props) {
         {/* User Info */}
         <Box>
           <Typography variant="h6" component="p">
-            Alexander Faa
+            {user.name}
           </Typography>
-          <Typography color="textSecondary">New York, NY</Typography>
+          <Typography color="textSecondary">{user.location}</Typography>
         </Box>
 
         {/* Send a message */}
@@ -145,35 +177,23 @@ function UserInfo(props) {
 
         {/* Description */}
         <Box className={classes.ySpacing}>
-          <Typography>
-            I just have a great passion for all things coffee
-          </Typography>
+          <Typography>{user.description}</Typography>
         </Box>
 
         {/* Expertise */}
         <Box marginTop={2}>
           <Typography fontWeight="fontWeightMedium">Expertise</Typography>
-          <Button
-            className={classes.roundButton}
-            variant="outlined"
-            size="small"
-          >
-            Marketing
-          </Button>
-          <Button
-            className={classes.roundButton}
-            variant="outlined"
-            size="small"
-          >
-            Coffee
-          </Button>
-          <Button
-            className={classes.roundButton}
-            variant="outlined"
-            size="small"
-          >
-            Technology
-          </Button>
+          {user.expertise.map((value, step) => {
+            return (
+              <Button
+                className={classes.roundButton}
+                variant="outlined"
+                size="small"
+              >
+                {value}
+              </Button>
+            );
+          })}
         </Box>
       </Container>
 
@@ -191,7 +211,7 @@ function UserInfo(props) {
             variant="outlined"
             size="small"
           >
-            Coffee
+            {user.wantInvestIn}
           </Button>
         </Container>
       </Box>
@@ -201,35 +221,7 @@ function UserInfo(props) {
 
 function ProjectCard(props) {
   const classes = useStyles();
-  console.log(props.ver);
-  const projectStatic = [
-    {
-      photo: projectpic1,
-      name: "Urban Jungle: eco-friendly coffee shop",
-      currentInvested: 23874,
-      wantedInvestement: 40000,
-      equity: 0.1,
-      timeLeft: 44,
-    },
-    {
-      photo: projectpic2,
-      name: "Cafe Black: The Future of coffee",
-      currentInvested: 2647,
-      wantedInvestement: 60000,
-      equity: 0.1,
-      timeLeft: 60,
-    },
-    {
-      photo: projectpic3,
-      name: "Easy to use, Powerful AI Camera",
-      currentInvested: 34912,
-      wantedInvestement: 55000,
-      equity: 0.18,
-      timeLeft: 12,
-    },
-  ];
-  const projectInfo = projectStatic[props.ver];
-
+  const projectInfo = props.project;
   return (
     <Grid item xs={6}>
       <Card elevation={8}>
@@ -268,7 +260,7 @@ function UserDashboard(props) {
       <Grid container>
         {/* User Information Sidebar */}
         <Grid item xs={3}>
-          <UserInfo />
+          <UserInfo user={userStatic} />
         </Grid>
         {/* Invested in and Personal Projects */}
         <Grid item xs={9}>
@@ -277,9 +269,9 @@ function UserDashboard(props) {
               <Box fontWeight="fontWeightMedium">Invested In: </Box>
             </Typography>
             <Grid container spacing={6}>
-              <ProjectCard ver={0} />
-              <ProjectCard ver={1} />
-              <ProjectCard ver={2} />
+              {projectStatic.map((value, step) => {
+                return <ProjectCard key={step} project={value} />;
+              })}
             </Grid>
           </Container>
         </Grid>
