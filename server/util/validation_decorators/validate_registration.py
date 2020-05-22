@@ -8,10 +8,12 @@ from app import db
 def validate_registration(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
-        print(request)
-        data = request.get_json()
+        try:
+            data = request.get_json()
+        except:
+            return jsonify({'error': 'Nothing was sent'}), 400
 
-        # Validate username
+            # Validate username
         try:
             username = data['username']
         except KeyError:
