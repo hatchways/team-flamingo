@@ -13,6 +13,8 @@ import { Link } from "react-router-dom";
 
 import NavBar from "../components/Navbar";
 
+import { validateEmail } from "../util/validateEmail";
+
 const useStyles = makeStyles((theme) => ({
   header: {
     padding: "2rem",
@@ -42,6 +44,74 @@ const useStyles = makeStyles((theme) => ({
 
 function Signup(props) {
   const classes = useStyles();
+
+  const [state, setState] = React.useState({
+    name: "",
+    invalidName: false,
+    email: "",
+    invalidEmail: false,
+    password: "",
+    invalidPassword: false,
+    confirm: "",
+    invalidConfirm: false,
+  });
+
+  // Name handlers
+  const handleUpdateName = (event) => {
+    setState({ ...state, name: event.target.value });
+  };
+
+  const handleBlurName = (event) => {
+    if (state.name.length < 3 || state.name.length > 64) {
+      setState({ ...state, invalidName: true });
+    } else {
+      setState({ ...state, invalidName: false });
+    }
+  };
+
+  // Email handlers
+  const handleUpdateEmail = (event) => {
+    setState({ ...state, email: event.target.value });
+  };
+
+  const handleBlurEmail = (event) => {
+    if (!validateEmail(state.email)) {
+      setState({ ...state, invalidEmail: true });
+    } else {
+      setState({ ...state, invalidEmail: false });
+    }
+  };
+
+  // Password handlers
+  const handleUpdatePassword = (event) => {
+    setState({ ...state, password: event.target.value });
+  };
+
+  const handleBlurPassword = (event) => {
+    if (state.password.length < 6 || state.password.length > 64) {
+      setState({ ...state, invalidPassword: true });
+    } else {
+      setState({ ...state, invalidPassword: false });
+    }
+  };
+
+  const handleUpdateConfirm = (event) => {
+    setState({ ...state, confirm: event.target.value });
+  };
+
+  const handleBlurConfirm = (event) => {
+    if (state.confirm !== state.password) {
+      setState({ ...state, invalidConfirm: true });
+    } else {
+      setState({ ...state, invalidConfirm: false });
+    }
+  };
+
+  // Signup submit handler
+  const handleSignup = (event) => {
+    /* TODO: call backend */
+  };
+
   return (
     <div>
       <NavBar />
@@ -76,7 +146,19 @@ function Signup(props) {
             alignItems="stretch"
           >
             <Grid item>
-              <TextField label="Name" variant="outlined" fullWidth></TextField>
+              <TextField
+                label="Name"
+                variant="outlined"
+                fullWidth
+                error={state.invalidName}
+                helperText={
+                  state.invalidName
+                    ? "Name must be between 3 and 64 characters"
+                    : ""
+                }
+                onChange={handleUpdateName}
+                onBlur={handleBlurName}
+              />
             </Grid>
 
             <Grid item>
@@ -84,7 +166,13 @@ function Signup(props) {
                 label="Email address"
                 variant="outlined"
                 fullWidth
-              ></TextField>
+                error={state.invalidEmail}
+                helperText={
+                  state.invalidEmail ? "Must be a valid email format" : ""
+                }
+                onChange={handleUpdateEmail}
+                onBlur={handleBlurEmail}
+              />
             </Grid>
 
             <Grid item>
@@ -92,6 +180,14 @@ function Signup(props) {
                 label="Password"
                 variant="outlined"
                 fullWidth
+                error={state.invalidPassword}
+                helperText={
+                  state.invalidPassword
+                    ? "Password must be between 6 and 64 characters"
+                    : ""
+                }
+                onChange={handleUpdatePassword}
+                onBlur={handleBlurPassword}
               ></TextField>
             </Grid>
 
@@ -100,6 +196,10 @@ function Signup(props) {
                 label="Confirm password"
                 variant="outlined"
                 fullWidth
+                error={state.invalidConfirm}
+                helperText={state.invalidConfirm ? "Must match password" : ""}
+                onChange={handleUpdateConfirm}
+                onBlur={handleBlurConfirm}
               ></TextField>
             </Grid>
 

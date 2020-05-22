@@ -57,8 +57,7 @@ function Login(props) {
   });
 
   const handleBlurEmail = (event) => {
-    const email = event.target.value;
-    if (!validateEmail(email)) {
+    if (!validateEmail(state.email)) {
       setState({ ...state, invalidEmail: true });
     } else {
       setState({ ...state, invalidEmail: false });
