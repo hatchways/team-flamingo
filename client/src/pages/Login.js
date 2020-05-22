@@ -118,7 +118,6 @@ function Login(props) {
                 label="Email address"
                 variant="outlined"
                 fullWidth
-                required={true}
                 error={state.invalidEmail}
                 helperText={
                   state.invalidEmail ? "Please enter a valid email" : ""
@@ -133,7 +132,6 @@ function Login(props) {
                 label="Password"
                 variant="outlined"
                 fullWidth
-                required
                 error={state.invalidPassword}
                 helperText={state.invalidPassword ? "Password is invalid" : ""}
                 onChange={handleUpdatePassword}
