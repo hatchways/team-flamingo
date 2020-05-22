@@ -4,6 +4,8 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import { theme } from "./themes/theme";
 import UserDashboard from "./pages/Dashboard";
+import Signup from "./pages/Signup";
+import Login from "./pages/Login";
 
 import "./App.css";
 
@@ -13,6 +15,8 @@ function App() {
       <BrowserRouter>
         <Switch>
           <Route path="/profile" component={UserDashboard} />
+          <Route path="/signup" component={Signup} />
+          <Route path="/login" component={Login} />
         </Switch>
       </BrowserRouter>
     </ThemeProvider>
