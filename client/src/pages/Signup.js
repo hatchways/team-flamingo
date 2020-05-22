@@ -39,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: "4rem",
     color: theme.bgcolor,
     height: "3rem",
+    width: "60%",
   },
 }));
 
