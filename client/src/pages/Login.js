@@ -15,6 +15,8 @@ import { Link } from "react-router-dom";
 
 import NavBar from "../components/Navbar";
 
+import { validateEmail } from "../util/validateEmail";
+
 const useStyles = makeStyles((theme) => ({
   header: {
     padding: "2rem",
@@ -45,6 +47,40 @@ const useStyles = makeStyles((theme) => ({
 
 function Login(props) {
   const classes = useStyles();
+
+  const [state, setState] = React.useState({
+    invalidEmail: false,
+    invalidPassword: false,
+    rememberMe: false,
+    email: "",
+    password: "",
+  });
+
+  const handleBlurEmail = (event) => {
+    const email = event.target.value;
+    if (!validateEmail(email)) {
+      setState({ ...state, invalidEmail: true });
+    } else {
+      setState({ ...state, invalidEmail: false });
+    }
+  };
+
+  const handleUpdateEmail = (event) => {
+    setState({ ...state, email: event.target.value });
+  };
+
+  const handleRememberMe = (event) => {
+    setState({ ...state, rememberMe: !state.rememberMe });
+  };
+
+  const handleUpdatePassword = (event) => {
+    setState({ ...state, password: event.target.value });
+  };
+
+  const handleLogin = (event) => {
+    /* TODO: Call backend */
+  };
+
   return (
     <div>
       <NavBar />
@@ -83,6 +119,13 @@ function Login(props) {
                 label="Email address"
                 variant="outlined"
                 fullWidth
+                required={true}
+                error={state.invalidEmail}
+                helperText={
+                  state.invalidEmail ? "Please enter a valid email" : ""
+                }
+                onBlur={handleBlurEmail}
+                onChange={handleUpdateEmail}
               ></TextField>
             </Grid>
 
@@ -91,6 +134,10 @@ function Login(props) {
                 label="Password"
                 variant="outlined"
                 fullWidth
+                required
+                error={state.invalidPassword}
+                helperText={state.invalidPassword ? "Password is invalid" : ""}
+                onChange={handleUpdatePassword}
               ></TextField>
             </Grid>
 
@@ -98,6 +145,7 @@ function Login(props) {
               <FormControlLabel
                 control={<Checkbox color="primary" />}
                 label="Remember me"
+                onClick={handleRememberMe}
               />
             </Grid>
 
@@ -106,6 +154,7 @@ function Login(props) {
                 className={classes.button}
                 size="large"
                 variant="contained"
+                onClick={handleLogin}
               >
                 LOGIN
               </Button>
