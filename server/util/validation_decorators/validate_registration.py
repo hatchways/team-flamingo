@@ -7,7 +7,10 @@ from app import db
 def validate_registration(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
-        data = request.get_json()
+        try:
+            data = request.get_json()
+        except:
+            return jsonify({'error': 'Request must be valid json'}), 400
 
         # Validate username
         try:

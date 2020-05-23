@@ -7,7 +7,10 @@ from app import bcrypt
 def validate_login(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
-        data = request.get_json()
+        try:
+            data = request.get_json()
+        except:
+            return jsonify({'error': 'Request must be valid json'}), 400
 
         try:
             login_email = data['login_email']
@@ -20,6 +23,10 @@ def validate_login(f):
             return jsonify({'error': 'Password is required'}), 400
         
         user = plUser.query.filter_by(login_email=login_email).first()
+
+        if not user:
+            return jsonify({'error': 'Username does not exist'}), 400
+
         if not bcrypt.check_password_hash(user.password_hash, password):
             return jsonify({'error': 'Password is incorrect'}), 401
         
