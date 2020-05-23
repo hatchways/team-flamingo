@@ -8,7 +8,7 @@ from util.validation_decorators.validate_registration import validate_registrati
 
 register_handler = Blueprint('register_handler', __name__)
 
-@register_handler.route('/v1/register', methods=['POST'])
+@register_handler.route('/api/v1/register', methods=['POST'])
 @validate_registration
 def register():
     data = request.get_json()
