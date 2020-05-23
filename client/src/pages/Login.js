@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 import {
   Container,
   Typography,
@@ -151,6 +152,7 @@ function Login(props) {
                 className={classes.button}
                 size="large"
                 variant="contained"
+                disabled={state.invalidEmail}
                 onClick={handleLogin}
               >
                 LOGIN
