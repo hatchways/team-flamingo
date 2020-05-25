@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Container,
   Typography,
@@ -48,32 +48,44 @@ const useStyles = makeStyles((theme) => ({
 function Login(props) {
   const classes = useStyles();
 
-  const [state, setState] = React.useState({
+  /* const [state, setState] = useState({
     invalidEmail: false,
     invalidPassword: false,
     rememberMe: false,
     email: "",
     password: "",
-  });
+  }); */
+
+  // State variables
+  const [invalidEmail, setInvalidEmail] = useState(false);
+  const [invalidPassword, setInvalidPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleBlurEmail = (event) => {
-    if (!validateEmail(state.email)) {
+    /* if (!validateEmail(state.email)) {
       setState({ ...state, invalidEmail: true });
     } else {
       setState({ ...state, invalidEmail: false });
-    }
+    } */
+
+    setInvalidEmail(!validateEmail(email));
   };
 
   const handleUpdateEmail = (event) => {
-    setState({ ...state, email: event.target.value });
+    /* setState({ ...state, email: event.target.value }); */
+    setEmail(event.target.value);
   };
 
   const handleRememberMe = (event) => {
-    setState({ ...state, rememberMe: !state.rememberMe });
+    /* setState({ ...state, rememberMe: !state.rememberMe }); */
+    setRememberMe(!rememberMe);
   };
 
   const handleUpdatePassword = (event) => {
-    setState({ ...state, password: event.target.value });
+    /* setState({ ...state, password: event.target.value }); */
+    setPassword(event.target.value);
   };
 
   const handleLogin = (event) => {
@@ -118,10 +130,8 @@ function Login(props) {
                 label="Email address"
                 variant="outlined"
                 fullWidth
-                error={state.invalidEmail}
-                helperText={
-                  state.invalidEmail ? "Please enter a valid email" : ""
-                }
+                error={invalidEmail}
+                helperText={invalidEmail ? "Please enter a valid email" : ""}
                 onBlur={handleBlurEmail}
                 onChange={handleUpdateEmail}
               ></TextField>
@@ -132,8 +142,8 @@ function Login(props) {
                 label="Password"
                 variant="outlined"
                 fullWidth
-                error={state.invalidPassword}
-                helperText={state.invalidPassword ? "Password is invalid" : ""}
+                error={invalidPassword}
+                helperText={invalidPassword ? "Password is invalid" : ""}
                 onChange={handleUpdatePassword}
               ></TextField>
             </Grid>

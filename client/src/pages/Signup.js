@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Container,
   Typography,
@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
 function Signup(props) {
   const classes = useStyles();
 
-  const [state, setState] = React.useState({
+  /* const [state, setState] = useState({
     name: "",
     invalidName: false,
     email: "",
@@ -55,57 +55,78 @@ function Signup(props) {
     invalidPassword: false,
     confirm: "",
     invalidConfirm: false,
-  });
+  }); */
+
+  // State variables
+  const [name, setName] = useState("");
+  const [invalidName, setInvalidName] = useState(false);
+  const [email, setEmail] = useState("");
+  const [invalidEmail, setInvalidEmail] = useState(false);
+  const [password, setPassword] = useState("");
+  const [invalidPassword, setInvalidPassword] = useState(false);
+  const [confirm, setConfirm] = useState("");
+  const [invalidConfirm, setInvalidConfirm] = useState(false);
 
   // Name handlers
   const handleUpdateName = (event) => {
-    setState({ ...state, name: event.target.value });
+    /* setState({ ...state, name: event.target.value }); */
+    setName(event.target.value);
   };
 
   const handleBlurName = (event) => {
-    if (state.name.length < 3 || state.name.length > 64) {
+    /* if (state.name.length < 3 || state.name.length > 64) {
       setState({ ...state, invalidName: true });
     } else {
       setState({ ...state, invalidName: false });
-    }
+    } */
+    const isInvalidName = name.length < 3 || name.length > 64;
+    setInvalidName(isInvalidName);
   };
 
   // Email handlers
   const handleUpdateEmail = (event) => {
-    setState({ ...state, email: event.target.value });
+    /* setState({ ...state, email: event.target.value }); */
+    setEmail(event.target.value);
   };
 
   const handleBlurEmail = (event) => {
-    if (!validateEmail(state.email)) {
+    /* if (!validateEmail(state.email)) {
       setState({ ...state, invalidEmail: true });
     } else {
       setState({ ...state, invalidEmail: false });
-    }
+    } */
+    setInvalidEmail(!validateEmail(email));
   };
 
   // Password handlers
   const handleUpdatePassword = (event) => {
-    setState({ ...state, password: event.target.value });
+    /* setState({ ...state, password: event.target.value }); */
+    setPassword(event.target.value);
   };
 
   const handleBlurPassword = (event) => {
-    if (state.password.length < 6 || state.password.length > 64) {
+    /* if (state.password.length < 6 || state.password.length > 64) {
       setState({ ...state, invalidPassword: true });
     } else {
       setState({ ...state, invalidPassword: false });
-    }
+    } */
+    const isInvalidPassword = password.length < 6 || password.length > 64;
+    setInvalidPassword(isInvalidPassword);
   };
 
   const handleUpdateConfirm = (event) => {
-    setState({ ...state, confirm: event.target.value });
+    /* setState({ ...state, confirm: event.target.value }); */
+    setConfirm(event.target.value);
   };
 
   const handleBlurConfirm = (event) => {
-    if (state.confirm !== state.password) {
+    /* if (state.confirm !== state.password) {
       setState({ ...state, invalidConfirm: true });
     } else {
       setState({ ...state, invalidConfirm: false });
-    }
+    } */
+    const isInvalidConfirm = confirm !== password;
+    setInvalidConfirm(isInvalidConfirm);
   };
 
   // Signup submit handler
@@ -151,11 +172,9 @@ function Signup(props) {
                 label="Name"
                 variant="outlined"
                 fullWidth
-                error={state.invalidName}
+                error={invalidName}
                 helperText={
-                  state.invalidName
-                    ? "Name must be between 3 and 64 characters"
-                    : ""
+                  invalidName ? "Name must be between 3 and 64 characters" : ""
                 }
                 onChange={handleUpdateName}
                 onBlur={handleBlurName}
@@ -167,10 +186,8 @@ function Signup(props) {
                 label="Email address"
                 variant="outlined"
                 fullWidth
-                error={state.invalidEmail}
-                helperText={
-                  state.invalidEmail ? "Must be a valid email format" : ""
-                }
+                error={invalidEmail}
+                helperText={invalidEmail ? "Must be a valid email format" : ""}
                 onChange={handleUpdateEmail}
                 onBlur={handleBlurEmail}
               />
@@ -181,9 +198,9 @@ function Signup(props) {
                 label="Password"
                 variant="outlined"
                 fullWidth
-                error={state.invalidPassword}
+                error={invalidPassword}
                 helperText={
-                  state.invalidPassword
+                  invalidPassword
                     ? "Password must be between 6 and 64 characters"
                     : ""
                 }
@@ -197,8 +214,8 @@ function Signup(props) {
                 label="Confirm password"
                 variant="outlined"
                 fullWidth
-                error={state.invalidConfirm}
-                helperText={state.invalidConfirm ? "Must match password" : ""}
+                error={invalidConfirm}
+                helperText={invalidConfirm ? "Must match password" : ""}
                 onChange={handleUpdateConfirm}
                 onBlur={handleBlurConfirm}
               ></TextField>
