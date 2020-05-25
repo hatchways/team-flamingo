@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 import {
@@ -52,33 +52,27 @@ function Login(props) {
   const classes = useStyles();
   const history = useHistory();
 
-  const [state, setState] = React.useState({
-    invalidEmail: false,
-    invalidPassword: false,
-    invalidLogin: false,
-    rememberMe: false,
-    email: "",
-    password: "",
-  });
+  // State variables
+  const [invalidEmail, setInvalidEmail] = useState(false);
+  const [invalidLogin, setInvalidLogin] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleBlurEmail = (event) => {
-    if (!validateEmail(state.email)) {
-      setState({ ...state, invalidEmail: true });
-    } else {
-      setState({ ...state, invalidEmail: false });
-    }
+    setInvalidEmail(!validateEmail(email));
   };
 
   const handleUpdateEmail = (event) => {
-    setState({ ...state, email: event.target.value });
+    setEmail(event.target.value);
   };
 
   const handleRememberMe = (event) => {
-    setState({ ...state, rememberMe: !state.rememberMe });
+    setRememberMe(!rememberMe);
   };
 
   const handleUpdatePassword = (event) => {
-    setState({ ...state, password: event.target.value });
+    setPassword(event.target.value);
   };
 
   const handleLogin = (event) => {
@@ -86,14 +80,14 @@ function Login(props) {
 
     axios
       .post("/api/v1/login", {
-        login_email: state.email,
-        password: state.password,
+        login_email: email,
+        password: password,
       })
       .then((res) => {
         history.push("/profile");
       })
       .catch((error) => {
-        setState({ ...state, invalidLogin: true, email: "", password: "" });
+        setInvalidLogin(true);
       });
   };
 
@@ -130,7 +124,7 @@ function Login(props) {
 
         <form autoComplete="off" onSubmit={handleLogin}>
           <Grid container spacing={2} direction="column" alignItems="stretch">
-            {state.invalidLogin ? invalidLoginMessage : ""}
+            {invalidLogin ? invalidLoginMessage : ""}
 
             <Grid item>
               <TextField
@@ -138,11 +132,9 @@ function Login(props) {
                 variant="outlined"
                 fullWidth
                 required
-                value={state.email}
-                error={state.invalidEmail}
-                helperText={
-                  state.invalidEmail ? "Please enter a valid email" : ""
-                }
+                value={email}
+                error={invalidEmail}
+                helperText={invalidEmail ? "Please enter a valid email" : ""}
                 onBlur={handleBlurEmail}
                 onChange={handleUpdateEmail}
               ></TextField>
@@ -154,9 +146,8 @@ function Login(props) {
                 variant="outlined"
                 fullWidth
                 required
-                value={state.password}
-                error={state.invalidPassword}
-                helperText={state.invalidPassword ? "Password is invalid" : ""}
+                value={password}
+                error={invalidPassword}
                 onChange={handleUpdatePassword}
               ></TextField>
             </Grid>
@@ -175,7 +166,7 @@ function Login(props) {
                 size="large"
                 variant="contained"
                 type="submit"
-                disabled={state.invalidEmail}
+                disabled={invalidEmail}
                 onSubmit={handleLogin}
               >
                 LOGIN
