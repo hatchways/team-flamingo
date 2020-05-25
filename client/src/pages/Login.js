@@ -48,14 +48,6 @@ const useStyles = makeStyles((theme) => ({
 function Login(props) {
   const classes = useStyles();
 
-  /* const [state, setState] = useState({
-    invalidEmail: false,
-    invalidPassword: false,
-    rememberMe: false,
-    email: "",
-    password: "",
-  }); */
-
   // State variables
   const [invalidEmail, setInvalidEmail] = useState(false);
   const [invalidPassword, setInvalidPassword] = useState(false);
@@ -64,27 +56,18 @@ function Login(props) {
   const [password, setPassword] = useState("");
 
   const handleBlurEmail = (event) => {
-    /* if (!validateEmail(state.email)) {
-      setState({ ...state, invalidEmail: true });
-    } else {
-      setState({ ...state, invalidEmail: false });
-    } */
-
     setInvalidEmail(!validateEmail(email));
   };
 
   const handleUpdateEmail = (event) => {
-    /* setState({ ...state, email: event.target.value }); */
     setEmail(event.target.value);
   };
 
   const handleRememberMe = (event) => {
-    /* setState({ ...state, rememberMe: !state.rememberMe }); */
     setRememberMe(!rememberMe);
   };
 
   const handleUpdatePassword = (event) => {
-    /* setState({ ...state, password: event.target.value }); */
     setPassword(event.target.value);
   };
 
