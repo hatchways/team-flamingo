@@ -15,7 +15,7 @@ project_industries_map = db.Table(
 class Project(db.Model):
     __tablename__ = "project"
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(64), index=True, unique=True, nullable=False)
+    title = db.Column(db.String(64), index=True, unique=True)
     plUser_id = db.Column(db.Integer, db.ForeignKey(
         "plUser.id"), nullable=False)
     subtitle = db.Column(db.Text)

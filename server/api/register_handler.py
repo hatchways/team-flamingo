@@ -23,6 +23,6 @@ def register():
     db.session.add(user)
     db.session.commit()
 
-    token = create_access_token(user.username)
+    token = create_access_token(user.login_email)
 
     return jsonify({'token': token}), 201

@@ -4,11 +4,13 @@ from db_models.pluser import plUser
 from db_models.project import Project, project_industries_map
 from db_models.industries import Industry
 from app import bcrypt
-from app import db
+from app import db, jwt
 from sqlalchemy import or_
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_required, get_current_user
 
 from util.db.row2dict import row2dict
+from util.validation_decorators.validate_project import validate_project
+from util.validation_decorators.authenticate_user import authenticate_user
 
 project_handler = Blueprint('project_handler', __name__)
 
@@ -23,6 +25,8 @@ def get_projects(user_id):
 
 
 @project_handler.route('/v1/user/<user_id>/projects', methods=['POST'])
+@jwt_required
+@validate_project
 def post_project(user_id):
     data = request.get_json()
 
@@ -46,6 +50,8 @@ def post_project(user_id):
 
 
 @project_handler.route('/v1/user/<user_id>/projects/<project_id>', methods=['PUT'])
+@jwt_required
+@validate_project
 def update_project(user_id, project_id):
     data = request.get_json()
 
@@ -63,7 +69,7 @@ def update_project(user_id, project_id):
 
     db.session.commit()
 
-    return jsonify({"success": "project updated"}), 200
+    return jsonify({"success": "project updated", "current_user": get_current_user().__dict__}), 200
 
 
 def industryList(industries):
@@ -76,3 +82,28 @@ def industryList(industries):
         return []
     filters = [Industry.name == i for i in industries]
     return db.session.query(Industry).filter(or_(*filters)).all()
+
+
+class UserObject:
+    def __init__(self, username):
+        self.username = username
+
+
+@jwt.user_loader_callback_loader
+def user_loader_callback(identity):
+    user = ["magilbert"]
+    if identity not in user:
+        return None
+
+    print(identity)
+    return UserObject(
+        username=identity,
+    )
+
+
+@jwt.user_loader_error_loader
+def custom_user_loader_error(identity):
+    ret = {
+        "msg": "User {} not found".format(identity)
+    }
+    return jsonify(ret), 404
