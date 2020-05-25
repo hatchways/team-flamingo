@@ -21,6 +21,7 @@ import projectpic3 from "../staticImages/projPicture3.png";
 import profpic1 from "../staticImages/profpic1.png";
 
 import NavBar from "../components/Navbar";
+import EditProfileDialog from "../components/EditProfileDialog";
 
 const userStatic = {
   name: "Alexander Faa",
@@ -135,6 +136,8 @@ function UserInfo(props) {
             Send a Message
           </Button>
         </Box>
+
+        <EditProfileDialog />
 
         {/* Description */}
         <Box className={classes.ySpacing}>
