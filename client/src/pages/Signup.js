@@ -111,6 +111,7 @@ function Signup(props) {
         confirm: confirm,
       })
       .then((res) => {
+        // TODO: Redirect to profile specific to user
         history.push("/profile");
       })
       .catch((error) => {
@@ -120,7 +121,7 @@ function Signup(props) {
 
   const signupErrorMessage = (
     <Grid item>
-      <FormHelperText error>{state.signupError}</FormHelperText>
+      <FormHelperText error>{signupError}</FormHelperText>
     </Grid>
   );
 
@@ -157,7 +158,7 @@ function Signup(props) {
             direction="column"
             alignItems="stretch"
           >
-            {signupError.length != 0 ? signupErrorMessage : ""}
+            {signupError.length !== 0 ? signupErrorMessage : ""}
             <Grid item>
               <TextField
                 label="Name"

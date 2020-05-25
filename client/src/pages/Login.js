@@ -55,9 +55,15 @@ function Login(props) {
   // State variables
   const [invalidEmail, setInvalidEmail] = useState(false);
   const [invalidLogin, setInvalidLogin] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(
+    localStorage.getItem("rememberMe") ? true : false
+  );
+  const [email, setEmail] = useState(
+    localStorage.getItem("email") ? localStorage.getItem("email") : ""
+  );
+  const [password, setPassword] = useState(
+    localStorage.getItem("password") ? localStorage.getItem("password") : ""
+  );
 
   const handleBlurEmail = (event) => {
     setInvalidEmail(!validateEmail(email));
@@ -84,6 +90,15 @@ function Login(props) {
         password: password,
       })
       .then((res) => {
+        if (rememberMe) {
+          localStorage.setItem("rememberMe", rememberMe);
+          localStorage.setItem("email", email);
+          localStorage.setItem("password", password);
+        } else {
+          localStorage.clear();
+        }
+
+        // TODO: redirect to profile specific to user
         history.push("/profile");
       })
       .catch((error) => {
@@ -147,14 +162,13 @@ function Login(props) {
                 fullWidth
                 required
                 value={password}
-                error={invalidPassword}
                 onChange={handleUpdatePassword}
               ></TextField>
             </Grid>
 
             <Grid item>
               <FormControlLabel
-                control={<Checkbox color="primary" />}
+                control={<Checkbox color="primary" checked={rememberMe} />}
                 label="Remember me"
                 onClick={handleRememberMe}
               />
