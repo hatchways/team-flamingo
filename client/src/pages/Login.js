@@ -1,4 +1,5 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 import axios from "axios";
 import {
   Container,
@@ -9,6 +10,7 @@ import {
   Button,
   Checkbox,
   FormControlLabel,
+  FormHelperText,
 } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
@@ -48,10 +50,12 @@ const useStyles = makeStyles((theme) => ({
 
 function Login(props) {
   const classes = useStyles();
+  const history = useHistory();
 
   const [state, setState] = React.useState({
     invalidEmail: false,
     invalidPassword: false,
+    invalidLogin: false,
     rememberMe: false,
     email: "",
     password: "",
@@ -78,8 +82,26 @@ function Login(props) {
   };
 
   const handleLogin = (event) => {
-    /* TODO: Call backend */
+    event.preventDefault();
+
+    axios
+      .post("/api/v1/login", {
+        login_email: state.email,
+        password: state.password,
+      })
+      .then((res) => {
+        history.push("/profile");
+      })
+      .catch((error) => {
+        setState({ ...state, invalidLogin: true, email: "", password: "" });
+      });
   };
+
+  const invalidLoginMessage = (
+    <Grid item>
+      <FormHelperText error>Invalid email or password</FormHelperText>
+    </Grid>
+  );
 
   return (
     <div>
@@ -91,7 +113,7 @@ function Login(props) {
           </Box>
         </Typography>
 
-        <Divider fullWidth classes={{ root: classes.divider }} />
+        <Divider classes={{ root: classes.divider }} />
 
         <Typography
           variant="subtitle1"
@@ -106,19 +128,17 @@ function Login(props) {
           </Box>
         </Typography>
 
-        <form autoComplete="off">
-          <Grid
-            container
-            spacing={2}
-            xs={12}
-            direction="column"
-            alignItems="stretch"
-          >
+        <form autoComplete="off" onSubmit={handleLogin}>
+          <Grid container spacing={2} direction="column" alignItems="stretch">
+            {state.invalidLogin ? invalidLoginMessage : ""}
+
             <Grid item>
               <TextField
                 label="Email address"
                 variant="outlined"
                 fullWidth
+                required
+                value={state.email}
                 error={state.invalidEmail}
                 helperText={
                   state.invalidEmail ? "Please enter a valid email" : ""
@@ -133,6 +153,8 @@ function Login(props) {
                 label="Password"
                 variant="outlined"
                 fullWidth
+                required
+                value={state.password}
                 error={state.invalidPassword}
                 helperText={state.invalidPassword ? "Password is invalid" : ""}
                 onChange={handleUpdatePassword}
@@ -152,8 +174,9 @@ function Login(props) {
                 className={classes.button}
                 size="large"
                 variant="contained"
+                type="submit"
                 disabled={state.invalidEmail}
-                onClick={handleLogin}
+                onSubmit={handleLogin}
               >
                 LOGIN
               </Button>

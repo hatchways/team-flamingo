@@ -1,4 +1,6 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
+import axios from "axios";
 import {
   Container,
   Typography,
@@ -6,6 +8,7 @@ import {
   TextField,
   Divider,
   Button,
+  FormHelperText,
 } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
@@ -45,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Signup(props) {
   const classes = useStyles();
+  const history = useHistory();
 
   const [state, setState] = React.useState({
     name: "",
@@ -55,6 +59,7 @@ function Signup(props) {
     invalidPassword: false,
     confirm: "",
     invalidConfirm: false,
+    signupError: "",
   });
 
   // Name handlers
@@ -110,8 +115,31 @@ function Signup(props) {
 
   // Signup submit handler
   const handleSignup = (event) => {
-    /* TODO: call backend */
+    event.preventDefault();
+
+    axios
+      .post("/api/v1/register", {
+        username: state.name,
+        login_email: state.email,
+        password: state.password,
+        confirm: state.confirm,
+      })
+      .then((res) => {
+        history.push("/profile");
+      })
+      .catch((error) => {
+        setState({
+          ...state,
+          signupError: error.response.data.error,
+        });
+      });
   };
+
+  const signupErrorMessage = (
+    <Grid item>
+      <FormHelperText error>{state.signupError}</FormHelperText>
+    </Grid>
+  );
 
   return (
     <div>
@@ -138,7 +166,7 @@ function Signup(props) {
           </Box>
         </Typography>
 
-        <form autoComplete="off">
+        <form autoComplete="off" onSubmit={handleSignup}>
           <Grid
             container
             spacing={2}
@@ -146,11 +174,14 @@ function Signup(props) {
             direction="column"
             alignItems="stretch"
           >
+            {state.signupError.length != 0 ? signupErrorMessage : ""}
             <Grid item>
               <TextField
                 label="Name"
                 variant="outlined"
                 fullWidth
+                required
+                value={state.name}
                 error={state.invalidName}
                 helperText={
                   state.invalidName
@@ -167,6 +198,8 @@ function Signup(props) {
                 label="Email address"
                 variant="outlined"
                 fullWidth
+                required
+                value={state.email}
                 error={state.invalidEmail}
                 helperText={
                   state.invalidEmail ? "Must be a valid email format" : ""
@@ -181,6 +214,8 @@ function Signup(props) {
                 label="Password"
                 variant="outlined"
                 fullWidth
+                required
+                value={state.password}
                 error={state.invalidPassword}
                 helperText={
                   state.invalidPassword
@@ -197,6 +232,8 @@ function Signup(props) {
                 label="Confirm password"
                 variant="outlined"
                 fullWidth
+                required
+                value={state.confirm}
                 error={state.invalidConfirm}
                 helperText={state.invalidConfirm ? "Must match password" : ""}
                 onChange={handleUpdateConfirm}
@@ -206,6 +243,8 @@ function Signup(props) {
 
             <Grid item align="center">
               <Button
+                type="submit"
+                onSubmit={handleSignup}
                 className={classes.button}
                 size="large"
                 variant="contained"

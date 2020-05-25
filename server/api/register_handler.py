@@ -3,7 +3,7 @@ from flask import jsonify, request, Blueprint
 from db_models.pluser import plUser
 from app import bcrypt
 from app import db
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, set_access_cookies
 from util.validation_decorators.validate_registration import validate_registration
 
 register_handler = Blueprint('register_handler', __name__)
@@ -22,6 +22,11 @@ def register():
     db.session.add(user)
     db.session.commit()
 
+    # Create token to be sent to user
     token = create_access_token(user.username)
 
-    return jsonify({'token': token}), 201
+    # Set JWT cookies in the response
+    response = jsonify({'register': True})
+    set_access_cookies(response, token)
+
+    return response, 200
