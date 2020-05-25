@@ -1,0 +1,16 @@
+I downloaded postgres with brew
+I entered psql
+I remade postgres user as a superuser (CREATE USER postgres SUPERUSER;)
+I created a db called devdb (CREATE DATABASE devdb WITH OWNER postgres)
+
+I ran pipenv run flask db upgrade [which needed devdb to exist and postgres superuer]
+And then /devdb was connected, and I could look at it easilys
+
+https://www.postgresql.org/docs/current/tutorial.html
+psql uses single quotes for strings
+
+Useful things
+Views
+
+
+# https://stackoverflow.com/questions/1958219/convert-sqlalchemy-row-object-to-python-dict?page=1&tab=votes#tab-top

@@ -12,8 +12,6 @@ services:
     depends_on:
       - "server"
     stdin_open: true
-    environment:
-      - REACT_APP_API_URL=http://localhost:5000
 
   server:
     restart: always

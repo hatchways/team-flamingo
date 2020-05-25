@@ -8,22 +8,17 @@ from app import bcrypt
 def validate_login(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
-        try:
-            data = request.get_json()
-        except:
-            return jsonify({'error': 'Nothing was sent'}), 400
+        login_email = request.json.get('login_email', None)
+        password = request.json.get('password', None)
 
-        try:
-            login_email = data['login_email']
-        except KeyError:
-            return jsonify({'error': 'Email is required'}), 400
-
-        try:
-            password = data['password']
-        except KeyError:
-            return jsonify({'error': 'Password is required'}), 400
+        if not login_email or not password:
+            return jsonify({'error': 'Email and password is required'}), 400
 
         user = plUser.query.filter_by(login_email=login_email).first()
+
+        if not user:
+            return jsonify({'error': 'Email does not exist'}), 400
+
         if not bcrypt.check_password_hash(user.password_hash, password):
             return jsonify({'error': 'Password is incorrect'}), 401
 

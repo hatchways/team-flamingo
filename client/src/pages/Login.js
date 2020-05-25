@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
+import axios from "axios";
 import {
   Container,
   Typography,
@@ -8,6 +10,7 @@ import {
   Button,
   Checkbox,
   FormControlLabel,
+  FormHelperText,
 } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
@@ -47,13 +50,20 @@ const useStyles = makeStyles((theme) => ({
 
 function Login(props) {
   const classes = useStyles();
+  const history = useHistory();
 
   // State variables
   const [invalidEmail, setInvalidEmail] = useState(false);
-  const [invalidPassword, setInvalidPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [invalidLogin, setInvalidLogin] = useState(false);
+  const [rememberMe, setRememberMe] = useState(
+    localStorage.getItem("rememberMe") ? true : false
+  );
+  const [email, setEmail] = useState(
+    localStorage.getItem("email") ? localStorage.getItem("email") : ""
+  );
+  const [password, setPassword] = useState(
+    localStorage.getItem("password") ? localStorage.getItem("password") : ""
+  );
 
   const handleBlurEmail = (event) => {
     setInvalidEmail(!validateEmail(email));
@@ -63,7 +73,17 @@ function Login(props) {
     setEmail(event.target.value);
   };
 
-  const handleRememberMe = (event) => {
+  const handleRememberMe = () => {
+    if (rememberMe) {
+      localStorage.setItem("rememberMe", rememberMe);
+      localStorage.setItem("email", email);
+      localStorage.setItem("password", password);
+    } else {
+      localStorage.clear();
+    }
+  };
+
+  const handleUpdateRememberMe = (event) => {
     setRememberMe(!rememberMe);
   };
 
@@ -72,8 +92,29 @@ function Login(props) {
   };
 
   const handleLogin = (event) => {
-    /* TODO: Call backend */
+    event.preventDefault();
+
+    axios
+      .post("/api/v1/login", {
+        login_email: email,
+        password: password,
+      })
+      .then((res) => {
+        handleRememberMe();
+
+        // TODO: redirect to profile specific to user
+        history.push("/profile");
+      })
+      .catch((error) => {
+        setInvalidLogin(true);
+      });
   };
+
+  const invalidLoginMessage = (
+    <Grid item>
+      <FormHelperText error>Invalid email or password</FormHelperText>
+    </Grid>
+  );
 
   return (
     <div>
@@ -85,7 +126,7 @@ function Login(props) {
           </Box>
         </Typography>
 
-        <Divider fullWidth classes={{ root: classes.divider }} />
+        <Divider classes={{ root: classes.divider }} />
 
         <Typography
           variant="subtitle1"
@@ -100,19 +141,17 @@ function Login(props) {
           </Box>
         </Typography>
 
-        <form autoComplete="off">
-          <Grid
-            container
-            spacing={2}
-            xs={12}
-            direction="column"
-            alignItems="stretch"
-          >
+        <form autoComplete="off" onSubmit={handleLogin}>
+          <Grid container spacing={2} direction="column" alignItems="stretch">
+            {invalidLogin ? invalidLoginMessage : ""}
+
             <Grid item>
               <TextField
                 label="Email address"
                 variant="outlined"
                 fullWidth
+                required
+                value={email}
                 error={invalidEmail}
                 helperText={invalidEmail ? "Please enter a valid email" : ""}
                 onBlur={handleBlurEmail}
@@ -125,17 +164,17 @@ function Login(props) {
                 label="Password"
                 variant="outlined"
                 fullWidth
-                error={invalidPassword}
-                helperText={invalidPassword ? "Password is invalid" : ""}
+                required
+                value={password}
                 onChange={handleUpdatePassword}
               ></TextField>
             </Grid>
 
             <Grid item>
               <FormControlLabel
-                control={<Checkbox color="primary" />}
+                control={<Checkbox color="primary" checked={rememberMe} />}
                 label="Remember me"
-                onClick={handleRememberMe}
+                onClick={handleUpdateRememberMe}
               />
             </Grid>
 
@@ -144,7 +183,9 @@ function Login(props) {
                 className={classes.button}
                 size="large"
                 variant="contained"
-                onClick={handleLogin}
+                type="submit"
+                disabled={invalidEmail}
+                onSubmit={handleLogin}
               >
                 LOGIN
               </Button>
