@@ -24,7 +24,7 @@ def validate_project(f):
             if len(title) > 64:
                 return jsonify({'error': 'Title must be between less than 64 characters'}), 400
         except:
-            data["title"] = None
+            return jsonify({"error": "Please enter a funding title for your project"})
 
         # Ensure Subtitle exists
         try:
@@ -61,7 +61,12 @@ def validate_project(f):
         try:
             goal = data["funding_goal"]
         except:
-            data["funding_goal"] = None
+            return jsonify({"error": "Please enter a funding goal"})
+
+        try:
+            deadline = data["deadline"]
+        except:
+            return jsonify({"error": "Please enter a deadline"})
 
         return f(*args, **kwargs)
     return wrapper

@@ -6,16 +6,17 @@ from db_models.industries import Industry
 from app import bcrypt
 from app import db, jwt
 from sqlalchemy import or_
-from flask_jwt_extended import create_access_token, jwt_required, get_current_user
+from flask_jwt_extended import jwt_required, current_user, get_jwt_identity
 
 from util.db.row2dict import row2dict
 from util.validation_decorators.validate_project import validate_project
-from util.validation_decorators.authenticate_user import authenticate_user
+from util.authenticate.authenticate_user import authenticate_user
 
 project_handler = Blueprint('project_handler', __name__)
 
 
 @project_handler.route('/v1/user/<user_id>/projects', methods=['GET'])
+@jwt_required
 def get_projects(user_id):
     user = plUser.query.filter_by(id=user_id).first()
 
@@ -28,6 +29,10 @@ def get_projects(user_id):
 @jwt_required
 @validate_project
 def post_project(user_id):
+    # Authenticate User
+    if not authenticate_user(user_id, get_jwt_identity()):
+        return jsonify({"error": "not authenticated"}), 401
+
     data = request.get_json()
 
     user = plUser.query.filter_by(id=user_id).first()
@@ -38,7 +43,8 @@ def post_project(user_id):
         subtitle=data["subtitle"],
         location=data["location"],
         photos=data["photos"],
-        funding_goal=data["funding_goal"]
+        funding_goal=data["funding_goal"],
+        deadline=data["deadline"]
     )
 
     project.industry[:] = industryList(data["industry"])
@@ -53,6 +59,10 @@ def post_project(user_id):
 @jwt_required
 @validate_project
 def update_project(user_id, project_id):
+    # Authenticate User
+    if not authenticate_user(user_id, get_jwt_identity()):
+        return jsonify({"error": "not authenticated"}), 401
+
     data = request.get_json()
 
     project = Project.query.filter_by(id=project_id).first()
@@ -64,12 +74,11 @@ def update_project(user_id, project_id):
     # Probably shouldn't be able to change funding goal
     project.funding_goal = data["funding_goal"]
     project.industry[:] = industryList(data["industry"])
-
-    # Can use query().filter().update({}), but then must make two queries to db, since industry can't be updated like that
+    project.deadline = data["deadline"]
 
     db.session.commit()
 
-    return jsonify({"success": "project updated", "current_user": get_current_user().__dict__}), 200
+    return jsonify({"success": "project updated"}), 200
 
 
 def industryList(industries):
@@ -82,28 +91,3 @@ def industryList(industries):
         return []
     filters = [Industry.name == i for i in industries]
     return db.session.query(Industry).filter(or_(*filters)).all()
-
-
-class UserObject:
-    def __init__(self, username):
-        self.username = username
-
-
-@jwt.user_loader_callback_loader
-def user_loader_callback(identity):
-    user = ["magilbert"]
-    if identity not in user:
-        return None
-
-    print(identity)
-    return UserObject(
-        username=identity,
-    )
-
-
-@jwt.user_loader_error_loader
-def custom_user_loader_error(identity):
-    ret = {
-        "msg": "User {} not found".format(identity)
-    }
-    return jsonify(ret), 404

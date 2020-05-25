@@ -10,7 +10,6 @@ login_handler = Blueprint('login_handler', __name__)
 def login():
     data = request.get_json()
 
-    # create access token from email probs
     token = create_access_token(data['login_email'])
 
     return jsonify({'token': token}), 200
