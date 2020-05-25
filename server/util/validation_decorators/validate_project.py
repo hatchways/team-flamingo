@@ -12,61 +12,42 @@ def validate_project(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
 
-        # Validate data exists
-        try:
-            data = request.get_json()
-        except:
-            return jsonify({'error': 'Nothing was sent'}), 400
+        title = request.json.get('title', None)
+        subtitle = request.json.get('subtitle', None)
+        location = request.json.get('location', None)
+        photos = request.json.get('photos', None)
+        industry = request.json.get('industry', None)
+        goal = request.json.get('funding_goal', None)
+        deadline = request.json.get('deadline', None)
 
-        # Ensure Title exists
-        try:
-            title = data["title"]
-            if len(title) > 64:
-                return jsonify({'error': 'Title must be between less than 64 characters'}), 400
-        except:
-            return jsonify({"error": "Please enter a funding title for your project"})
+        if not title or not subtitle or not location:
+            return jsonify({'error': 'Invalid JSON request'}), 400
+        if not goal or not deadline:
+            return jsonify({'error': 'Invalid JSON request'}), 400
 
-        # Ensure Subtitle exists
-        try:
-            subtitle = data["subtitle"]
-        except:
-            data["subtitle"] = None
+        # Title Length
+        if len(location) > 64:
+            return jsonify({'error': 'Location must be between less than 64 characters'}), 400
 
-        # Ensure Location exists
-        try:
-            loc = data["location"]
-            if len(loc) > 64:
-                return jsonify({'error': 'Location must be between less than 64 characters'}), 400
-        except:
-            data["location"] = None
+        # Verify Industry exists
+        filters = [Industry.name == i for i in industry]
+        if len(db.session.query(Industry).filter(or_(*filters)).all()) != len(industry):
+            return jsonify({"error": "That industry does not exist, please contact us to add an additional industry or choose one from the list"})
 
-        # Ensure photos is an array
-        try:
-            photos = data["photos"]
-            if type(photos) != list:
-                data["photos"] = []
-        except:
-            data["photos"] = []
+        # Photos and industry are correct data type
+        if type(photos) is not list:
+            return jsonify({'error': "Photos must be an array or list"}), 400
 
-        # Ensure industry exists and are valid industry tags
-        try:
-            indus = data["industry"]
-            filters = [Industry.name == i for i in indus]
-            if len(db.session.query(Industry).filter(or_(*filters)).all()) != len(indus):
-                return jsonify({"error": "That industry does not exist, please contact us to add an additional industry or choose one from the list"})
-        except:
-            data["industry"] = []
+        for photo in photos:
+            if photo is not str:
+                return jsonify({'error': 'One of the photos is not a string'}), 400
 
-        # Ensure funding goal exists
-        try:
-            goal = data["funding_goal"]
-        except:
-            return jsonify({"error": "Please enter a funding goal"})
+        if type(industry) is not list:
+            return jsonify({'error': "Industry must be an array or list"}), 400
 
-        try:
-            deadline = data["deadline"]
-        except:
-            return jsonify({"error": "Please enter a deadline"})
+        for indus in industry:
+            if indus is not str:
+                return jsonify({'error': 'One of the industries is not a string'}), 400
 
         return f(*args, **kwargs)
     return wrapper

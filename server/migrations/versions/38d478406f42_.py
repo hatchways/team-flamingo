@@ -1,4 +1,4 @@
-"""empty message
+"""Add deadline to Project model
 
 Revision ID: 38d478406f42
 Revises: b4f44e808938
