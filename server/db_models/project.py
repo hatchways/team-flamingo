@@ -1,7 +1,7 @@
 import re
 from app import db
 from sqlalchemy.orm import validates
-from sqlalchemy.dialects.postgresql import MONEY, ARRAY
+from sqlalchemy.dialects.postgresql import MONEY, ARRAY, TIMESTAMP
 
 project_industries_map = db.Table(
     "project_industries_map",
@@ -26,6 +26,7 @@ class Project(db.Model):
     location = db.Column(db.String(64))
     photos = db.Column(ARRAY(db.Text))
     funding_goal = db.Column(MONEY)
+    deadline = db.Column(TIMESTAMP)
 
     def __repr__(self):
         return "{0} created by {1}".format(self.title, self.plUser_id)
