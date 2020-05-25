@@ -73,7 +73,17 @@ function Login(props) {
     setEmail(event.target.value);
   };
 
-  const handleRememberMe = (event) => {
+  const handleRememberMe = () => {
+    if (rememberMe) {
+      localStorage.setItem("rememberMe", rememberMe);
+      localStorage.setItem("email", email);
+      localStorage.setItem("password", password);
+    } else {
+      localStorage.clear();
+    }
+  };
+
+  const handleUpdateRememberMe = (event) => {
     setRememberMe(!rememberMe);
   };
 
@@ -90,13 +100,7 @@ function Login(props) {
         password: password,
       })
       .then((res) => {
-        if (rememberMe) {
-          localStorage.setItem("rememberMe", rememberMe);
-          localStorage.setItem("email", email);
-          localStorage.setItem("password", password);
-        } else {
-          localStorage.clear();
-        }
+        handleRememberMe();
 
         // TODO: redirect to profile specific to user
         history.push("/profile");
@@ -170,7 +174,7 @@ function Login(props) {
               <FormControlLabel
                 control={<Checkbox color="primary" checked={rememberMe} />}
                 label="Remember me"
-                onClick={handleRememberMe}
+                onClick={handleUpdateRememberMe}
               />
             </Grid>
 
