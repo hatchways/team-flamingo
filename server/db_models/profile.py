@@ -8,3 +8,5 @@ class Profile(db.Model):
     expertise = db.Column(db.String(64), nullable=True)
     linkedin_profile = db.Column(db.String(64), nullable=True)
     angelco_profile = db.Column(db.String(64), nullable=True)
+
+    # TODO: Add validators in the future as necessary.
