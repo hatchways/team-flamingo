@@ -4,7 +4,7 @@ from config import Config
 ping_handler = Blueprint('ping_handler', __name__)
 
 
-@ping_handler.route('/v1/ping', methods=['POST'])
+@ping_handler.route('/api/v1/ping', methods=['POST'])
 def ping():
     if request.method == 'POST':
         body = json.loads(request.get_data())
