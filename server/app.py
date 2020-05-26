@@ -18,6 +18,7 @@ jwt = JWTManager(app)
 
 # for flask-migrate to generate migration scripts
 from db_models.pluser import plUser
+from db_models.profile import Profile
 
 # Route handlers
 from api.home_handler import home_handler

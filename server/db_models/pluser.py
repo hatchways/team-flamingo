@@ -10,7 +10,6 @@ class plUser(db.Model):
     username = db.Column(db.String(64), index=True, unique=True, nullable=False)
     login_email = db.Column(db.String(64), index=True, unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
-    location = db.Column(db.String(64), nullable=True)
 
     def __repr__(self):
         return '<plUser {}>'.format(self.username)
