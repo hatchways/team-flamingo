@@ -36,3 +36,6 @@ app.register_blueprint(login_handler)
 
 from api.project_handler import project_handler
 app.register_blueprint(project_handler)
+
+from api.s3_handler import s3_handler
+app.register_blueprint(s3_handler)
