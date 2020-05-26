@@ -9,8 +9,6 @@ from flask_jwt_extended import JWTManager
 app = Flask(__name__)  # ProductLaunch app
 app.config.from_object(Config)
 
-app.config['JWT_COOKIE_CSRF_PROTECT'] = False # TODO: change this for production
-
 # Extensions
 cors = CORS(app)
 db = SQLAlchemy(app)
