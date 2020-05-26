@@ -52,7 +52,7 @@ def validate_project(f):
         # Verify goal is a float
         try:
             float(goal)
-        finally:
+        except:
             return jsonify({"error": "Funding goal is not a float"})
 
         # This deadline is ISO 8016 or a "Special Value" in Postgres for datetime
