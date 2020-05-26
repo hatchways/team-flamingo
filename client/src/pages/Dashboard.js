@@ -10,8 +10,6 @@ import {
   CardMedia,
   CardContent,
   Divider,
-  AppBar,
-  Toolbar,
 } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -21,7 +19,8 @@ import projectpic1 from "../staticImages/projPicture1.png";
 import projectpic2 from "../staticImages/projPicture2.png";
 import projectpic3 from "../staticImages/projPicture3.png";
 import profpic1 from "../staticImages/profpic1.png";
-import logo from "../staticImages/ic-logo.png";
+
+import NavBar from "../components/Navbar";
 
 const userStatic = {
   name: "Alexander Faa",
@@ -60,19 +59,6 @@ const projectStatic = [
 const useStyles = makeStyles((theme) => ({
   root: {
     color: "black",
-  },
-  appBar: {
-    background: "white",
-    color: "black",
-    elevation: 0,
-  },
-  logo: {
-    width: theme.spacing(4),
-    height: theme.spacing(4),
-    marginRight: theme.spacing(1),
-  },
-  title: {
-    flexGrow: 1,
   },
   userInfoShadow: {
     paddingTop: theme.spacing(3),
@@ -121,31 +107,6 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "500",
   },
 }));
-
-function NavBar(props) {
-  const classes = useStyles();
-  return (
-    <Box mb={8}>
-      <Container>
-        <AppBar variant="outlined" className={classes.appBar} position="fixed">
-          <Toolbar>
-            <img
-              className={classes.logo}
-              src={logo}
-              alt="Product Launch Logo"
-            ></img>
-            <Typography variant="h6" className={classes.title} component="h1">
-              Product Launch
-            </Typography>
-            <Button color="inherit">Explore</Button>
-            <Button color="inherit">Launch</Button>
-            <Button color="inherit">Login</Button>
-          </Toolbar>
-        </AppBar>
-      </Container>
-    </Box>
-  );
-}
 
 function UserInfo(props) {
   const classes = useStyles();
