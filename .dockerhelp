@@ -1,5 +1,0 @@
-https://github.com/docker/compose/issues/6060
-Logs not displayed for restarted containers until container crashes again #6060
-
-Run psql in docker
-$ docker exec -it team-flamingo_db_1 psql -U postgres
