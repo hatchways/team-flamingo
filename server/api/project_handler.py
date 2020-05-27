@@ -3,9 +3,10 @@ from flask import jsonify, request, Blueprint
 from db_models.pluser import plUser
 from db_models.project import Project, project_industries_map
 from db_models.industries import Industry
-from app import db
+from app import bcrypt
+from app import db, jwt
 from sqlalchemy import or_
-from flask_jwt_extended import jwt_required, get_jwt_claims
+from flask_jwt_extended import jwt_required, current_user, get_jwt_claims
 
 from util.db.row2dict import row2dict
 from util.validation_decorators.validate_project import validate_project
