@@ -1,5 +1,8 @@
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import jsonify, Blueprint
+from app import jwt
+from db_models.pluser import plUser
+from util.jwt_callbacks.user_identity_callback import current_user
 
 me_handler = Blueprint('me_handler', __name__)
 
