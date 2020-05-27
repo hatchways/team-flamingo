@@ -32,3 +32,6 @@ app.register_blueprint(register_handler)
 
 from api.login_handler import login_handler
 app.register_blueprint(login_handler)
+
+from api.profile_handler import profile_handler
+app.register_blueprint(profile_handler)
