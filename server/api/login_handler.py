@@ -18,4 +18,3 @@ def login():
     set_access_cookies(response, token)
 
     return response, 200
-    

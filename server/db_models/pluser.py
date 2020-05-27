@@ -4,21 +4,28 @@ from app import bcrypt
 from sqlalchemy.orm import validates
 
 # Mock User class for testing.
+
+
 class plUser(db.Model):
-    __tablename__ = "plUser" # use CamelCase for table names
+    __tablename__ = "plUser"  # use CamelCase for table names
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), index=True, unique=True, nullable=False)
-    login_email = db.Column(db.String(64), index=True, unique=True, nullable=False)
+    username = db.Column(db.String(64), index=True,
+                         unique=True, nullable=False)
+    login_email = db.Column(db.String(64), index=True,
+                            unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
+    location = db.Column(db.String(64), nullable=True)
+    projects = db.relationship("Project", backref="plUser")
 
     def __repr__(self):
         return '<plUser {}>'.format(self.username)
-    
+
     def set_password(self, password):
         if not password:
             raise AssertionError('No password provided')
         if len(password) < 6 or len(password) > 64:
-            raise AssertionError('Password must be between 6 and 64 characters')
+            raise AssertionError(
+                'Password must be between 6 and 64 characters')
 
         hash = bcrypt.generate_password_hash(password.encode('utf-8'))
         self.password_hash = hash.decode('utf-8')
@@ -26,7 +33,8 @@ class plUser(db.Model):
     @validates('username')
     def validate_username(self, key, username):
         if len(username) < 3 or len(username) > 64:
-            raise AssertionError('Username must be between 5 and 20 characters')
+            raise AssertionError(
+                'Username must be between 5 and 20 characters')
 
         return username
 
@@ -38,4 +46,3 @@ class plUser(db.Model):
             raise AssertionError('Email is not a valid format')
 
         return login_email
-
