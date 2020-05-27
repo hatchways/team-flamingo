@@ -16,6 +16,9 @@ migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 
+# jwt extensions
+from util.validation_decorators.flask_wrappers import *
+
 # for flask-migrate to generate migration scripts
 from db_models.pluser import plUser
 from db_models.profile import Profile

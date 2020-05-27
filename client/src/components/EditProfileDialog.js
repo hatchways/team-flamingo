@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import {
   Button,
   Dialog,
@@ -10,6 +11,8 @@ import {
 } from "@material-ui/core";
 
 function EditProfileDialog(props) {
+  // Populate fields with current values of users profile
+
   // State variables
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -22,14 +25,23 @@ function EditProfileDialog(props) {
   };
 
   const handleEditDialog = (event) => {
-    // TODO: make PUT request to profile endpoint
-    console.log("Edit dialog");
+    // First we need to get the current user id
+    let userId;
+
+    axios.get("/api/v1/me").then((res) => (userId = res.data.user_id));
+
+    // Then we want to make PUT request to edit profile
+    axios.put(`/api/v1/users/${userId}/profile`, {
+      // TODO: all all of the fields
+    });
   };
 
   return (
     <div>
       <Button onClick={handleOpenDialog}>Edit profile</Button>
       <Dialog
+        fullWidth
+        maxWidth="md"
         open={dialogOpen}
         onClose={handleCloseDialog}
         aria-labelledby="form-dialog-title"
@@ -38,23 +50,23 @@ function EditProfileDialog(props) {
         <DialogContent>
           <Grid>
             <Grid item>
-              <TextField label="Location" />
+              <TextField label="Location" fullWidth />
             </Grid>
 
             <Grid item>
-              <TextField label="Description" />
+              <TextField label="Description" fullWidth multiline />
             </Grid>
 
             <Grid item>
-              <TextField label="Expertise" />
+              <TextField label="Expertise" fullWidth />
             </Grid>
 
             <Grid item>
-              <TextField label="LinkedIn profile" />
+              <TextField label="LinkedIn profile" fullWidth />
             </Grid>
 
             <Grid item>
-              <TextField label="Angel.co profile" />
+              <TextField label="Angel.co profile" fullWidth />
             </Grid>
           </Grid>
         </DialogContent>

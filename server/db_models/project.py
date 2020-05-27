@@ -1,6 +1,4 @@
-import re
 from app import db
-from sqlalchemy.orm import validates
 from sqlalchemy.dialects.postgresql import MONEY, ARRAY, TIMESTAMP
 
 project_industries_map = db.Table(

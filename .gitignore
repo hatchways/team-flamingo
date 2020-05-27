@@ -23,6 +23,8 @@ __pycache__/
 instance/
 .webassets-cache
 
+# Malcolm
+.help/*
 
 # PyCharm
 .idea/
@@ -32,4 +34,5 @@ instance/
 
 
 #TODO add .env to your gitignore
+.env
 
