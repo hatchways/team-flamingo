@@ -1,5 +1,6 @@
 import os
 
+
 class Config(object):
 	TEAM_NAME = os.environ.get('TEAM_NAME', "default-team-name")
 	SECRET_KEY = os.environ.get('SECRET_KEY', "default-secret-key")

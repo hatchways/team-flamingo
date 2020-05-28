@@ -4,6 +4,7 @@ from flask import jsonify, request
 from functools import wraps
 from app import db
 
+
 def validate_registration(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
@@ -30,10 +31,10 @@ def validate_registration(f):
         # Validate password
         if len(password) < 6 or len(password) > 64:
             return jsonify({'error': 'Password must be between 6 and 64 characters'}), 400
-        
+
         if not password == confirm:
             return jsonify({'error': 'Passwords must match'}), 400
-        
+
         return f(*args, **kwargs)
 
     return wrapper

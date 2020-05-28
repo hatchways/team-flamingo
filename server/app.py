@@ -16,9 +16,14 @@ migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 
+# jwt extensions
+from util.validation_decorators.flask_wrappers import *
+
 # for flask-migrate to generate migration scripts
 from db_models.pluser import plUser
 from db_models.profile import Profile
+from db_models.industries import Industry
+from db_models.project import Project
 
 # Route handlers
 from api.home_handler import home_handler
@@ -35,3 +40,10 @@ app.register_blueprint(login_handler)
 
 from api.profile_handler import profile_handler
 app.register_blueprint(profile_handler)
+
+from api.me_handler import me_handler
+app.register_blueprint(me_handler)
+
+from api.project_handler import project_handler
+app.register_blueprint(project_handler)
+
