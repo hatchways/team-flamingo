@@ -17,7 +17,6 @@ def get_profile(user_id):
     
     return jsonify(profile.serialize), 200
 
-
 @profile_handler.route('/api/v1/users/<user_id>/profile', methods=['PUT'])
 @validate_profile
 @jwt_required
