@@ -67,7 +67,7 @@ def validate_profile(f):
             if type(angelco_profile) is not str:
                 return jsonify({'error': 'Angel.co profile must be a valid string'}), 400
             if len(angelco_profile) > 64:
-                return jsonify({'error': 'Angel.ca profile must be 64 characters or less'}), 400
+                return jsonify({'error': 'Angel.co profile must be 64 characters or less'}), 400
 
         return f(*args, **kwargs)
     
