@@ -7,15 +7,24 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 profile_handler = Blueprint('profile_handler', __name__)
 
+@profile_handler.route('/api/v1/users/<user_id>/profile', methods=['GET'])
+@jwt_required
+def get_profile(user_id):
+    profile = Profile.query.filter_by(user_id=user_id).first()
+
+    if not profile:
+        return jsonify({'error': 'There is no profile with this user id'}), 400
+    
+    return jsonify(profile.serialize), 200
+
 @profile_handler.route('/api/v1/users/<user_id>/profile', methods=['PUT'])
 @validate_profile
 @jwt_required
 def edit_profile(user_id):
     # Ensure that the user is editing their own profile
-    user_email = get_jwt_identity()
-    email_of_profile = plUser.query.filter_by(id=user_id).first().login_email
+    current_user_id = get_jwt_identity()['user_id']
 
-    if user_email != email_of_profile:
+    if current_user_id != int(user_id):
         return ({'error': 'You are not authorized to edit this profile'}), 401
     
     # Save to profile
