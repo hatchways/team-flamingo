@@ -10,9 +10,12 @@ industries_handler = Blueprint('industries_handler', __name__)
 def industries():
     industries = Industry.query.all()
 
-    # Turn list of industries into serializable json (i.e dictionary)
-    industriesDict = {}
+    # Turn list of industries into serializable json (i.e list of key value pairs)
+    industriesList = []
     for industry in industries:
-        industriesDict[industry.id] = industry.name
+        industriesList.append({
+            'id': industry.id,
+            'name': industry.name
+        })
     
-    return jsonify(industriesDict), 200
+    return jsonify(industriesList), 200
