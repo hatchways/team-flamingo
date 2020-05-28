@@ -5,6 +5,7 @@ import boto3
 from botocore.exceptions import ClientError
 from flask_jwt_extended import jwt_required
 import imghdr
+import uuid
 
 s3_handler = Blueprint('s3_handler', __name__)
 
@@ -25,6 +26,7 @@ def list_files(bucket="plphotos"):
 
 
 @s3_handler.route("/api/v1/upload", methods=["POST"])
+@jwt_required
 def upload():
     # https://flask.palletsprojects.com/en/1.1.x/patterns/fileuploads/
     # request.files is ImmutableMultiDict([('image', <FileStorage: 'example2.png' ('image/png')>)])
@@ -32,9 +34,6 @@ def upload():
     # File of key image has to exist
     if 'image' not in request.files:
         return jsonify({"error": "file part not present"}), 400
-    # filename has to exist
-    if 'filename' not in request.files:
-        return jsonify({"error": "must provide filename in form body"}), 400
 
     # If filename doesn't exist
     file = request.files["image"]
@@ -48,15 +47,27 @@ def upload():
     # verify_type reads file
     file.seek(0)
 
-    # Secures filename for saving to disk
-    safe_filename = secure_filename(file.filename)
+    folder = request.form["folder"]
+    # Must exist
+    if not folder:
+        return jsonify({"error": "uuid or location not present"}), 400
 
-    bucket = BUCKET
+    # Valid folder name
+    if folder not in ["project", "profile"]:
+        return jsonify({"error": "folder not valid, must be 'project' or 'profile'"}), 400
 
-    resp = upload_file_object(file, bucket, safe_filename)
+    # Construct filename, is random
+    filename = "{0}/{1}.png".format(folder, uuid.uuid4())
+
+    resp = upload_file_object(file, BUCKET, filename)
     if not resp:
         return jsonify({"error": "something went wrong and the file was not uploaded"}), 500
     return jsonify({"success": "file uploaded"}), 200
+
+
+def addImageToUser(uuid, location):
+    # TODO: Add uuid to appropriate location. Either User.avatar or Project.photos
+    return True
 
 
 def verify_type(file):

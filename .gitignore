@@ -32,9 +32,6 @@ instance/
 # VSCode
 .vscode
 
-# DB Versioning
-server/migrations/
-
 #TODO add .env to your gitignore
 .env
 

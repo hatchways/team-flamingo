@@ -9,6 +9,8 @@ import axios from "axios";
 export default function UploadButton() {
   // CORE: Most important, object to hold file
   const fileInput = useRef(null);
+  // CORE: upload to profile or project
+  const [folderUploadTo, setFolderUploadTo] = useState("project");
 
   // CORE: Validation
   const [error, setError] = useState("");
@@ -44,6 +46,8 @@ export default function UploadButton() {
     // https://stackoverflow.com/questions/43013858/how-to-post-a-file-from-a-form-with-axios
     // CORE: form data & headers necessary
     var formData = new FormData();
+    //
+    formData.set("folder", folderUploadTo);
     formData.append("image", file);
 
     axios
@@ -57,7 +61,7 @@ export default function UploadButton() {
         console.log("res");
       })
       .catch((err) => {
-        console.log(err.response.data);
+        console.log(err.response);
         console.log("err");
       });
   };
