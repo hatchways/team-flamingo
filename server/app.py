@@ -47,3 +47,6 @@ app.register_blueprint(me_handler)
 from api.project_handler import project_handler
 app.register_blueprint(project_handler)
 
+from api.industries_handler import industries_handler
+app.register_blueprint(industries_handler)
+
