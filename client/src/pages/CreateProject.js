@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
     width: "60%",
   },
   chip: {
-    margin: "0 2px",
+    margin: "2px",
   },
 }));
 
@@ -231,7 +231,7 @@ function CreateProject(props) {
                       label={industry.name}
                       color="primary"
                       variant="outlined"
-                      onDelete={() => handleRemoveIndustry(industry.name)}
+                      onDelete={() => handleRemoveIndustry(industry)}
                       className={classes.chip}
                       key={industry.id}
                     />
