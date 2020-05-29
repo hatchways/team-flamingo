@@ -7,6 +7,7 @@ import UserDashboard from "./pages/Dashboard";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Project from "./pages/Project";
+import CreateProject from "./pages/CreateProject";
 
 import "./App.css";
 
@@ -15,6 +16,10 @@ function App() {
     <ThemeProvider theme={theme}>
       <BrowserRouter>
         <Switch>
+          <Route
+            path="/profile/:profileId/projects/create"
+            component={CreateProject}
+          />
           <Route path="/profile" component={UserDashboard} />
           <Route path="/signup" component={Signup} />
           <Route path="/login" component={Login} />
