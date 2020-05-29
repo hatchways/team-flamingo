@@ -1,18 +1,18 @@
-from db_models.profile import Profile
+from db_models.user import User
 from flask import jsonify, request
 from functools import wraps
 from app import db
 
-def validate_profile(f):
+def validate_user(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
         user_id = request.view_args['user_id']
 
-        # Ensure this profile exists
-        profile = Profile.query.filter_by(user_id=user_id).first()
+        # Ensure this user exists
+        user = User.query.filter_by(id=user_id).first()
 
-        if not profile:
-            return jsonify({'error': 'No profile exists with the given user id'})
+        if not user:
+            return jsonify({'error': 'No user exists with the given id'})
         
         # Grab all input data (They are all optional)
         profile_pics = request.json.get('profile_pics', None)

@@ -1,6 +1,6 @@
 import json
 from flask import jsonify, request, Blueprint
-from db_models.pluser import plUser
+from db_models.user import User
 from db_models.project import Project, project_industries_map
 from db_models.industries import Industry
 from app import bcrypt
@@ -18,7 +18,7 @@ project_handler = Blueprint('project_handler', __name__)
 @project_handler.route('/api/v1/user/<user_id>/projects', methods=['GET'])
 @jwt_required
 def get_projects(user_id):
-    user = plUser.query.filter_by(id=user_id).first()
+    user = User.query.filter_by(id=user_id).first()
 
     if user is None:
         return jsonify({"error": "User doesn't exist"}), 400
@@ -39,11 +39,11 @@ def post_project(user_id):
     data = request.get_json()
 
     # since user_id claim in token is taken from currentuser's id, id must exist
-    user = plUser.query.filter_by(id=user_id).first()
+    user = User.query.filter_by(id=user_id).first()
 
     project = Project(
         title=data["title"],
-        plUser_id=user_id,
+        User_id=user_id,
         subtitle=data["subtitle"],
         location=data["location"],
         photos=data["photos"],
