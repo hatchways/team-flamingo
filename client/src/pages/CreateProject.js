@@ -140,7 +140,7 @@ function CreateProject(props) {
     axios.get("/api/v1/industries").then((res) => {
       setValidIndustries(res.data);
     });
-  }, [false]); // Only call on initial mount
+  }, []); // Only call on initial mount
 
   // Handlers
   const handleAddIndustry = (event) => {
