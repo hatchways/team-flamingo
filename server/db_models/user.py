@@ -6,18 +6,24 @@ from sqlalchemy.orm import validates
 # Mock User class for testing.
 
 
-class plUser(db.Model):
-    __tablename__ = "plUser"  # use CamelCase for table names
+class User(db.Model):
+    __tablename__ = "users"  # use CamelCase for table names
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True,
                          unique=True, nullable=False)
     login_email = db.Column(db.String(64), index=True,
                             unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
-    projects = db.relationship("Project", backref="plUser")
+    projects = db.relationship("Project", backref="User")
+    profile_pics = db.Column(db.ARRAY(db.String(64)), nullable=True)
+    location = db.Column(db.String(64), nullable=True)
+    description = db.Column(db.Text, nullable=True)
+    expertise = db.Column(db.ARRAY(db.String(64)), nullable=True)
+    linkedin_profile = db.Column(db.String(64), nullable=True)
+    angelco_profile = db.Column(db.String(64), nullable=True)
     
     def __repr__(self):
-        return '<plUser {}>'.format(self.username)
+        return '<User {}>'.format(self.username)
 
     def set_password(self, password):
         if not password:
@@ -45,3 +51,15 @@ class plUser(db.Model):
             raise AssertionError('Email is not a valid format')
 
         return login_email
+    
+    @property
+    def serialize(self):
+        return {
+            'username': self.username,
+            'profile_pics': self.profile_pics,
+            'location': self.location,
+            'description': self.description,
+            'expertise': self.expertise,
+            'linkedin': self.linkedin_profile,
+            'angelco': self.angelco_profile 
+        }

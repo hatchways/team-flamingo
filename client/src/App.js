@@ -17,7 +17,7 @@ function App() {
       <BrowserRouter>
         <Switch>
           <Route
-            path="/profile/:profileId/projects/create"
+            path="/profile/:id/projects/create"
             component={CreateProject}
           />
           <Route path="/profile" component={UserDashboard} />

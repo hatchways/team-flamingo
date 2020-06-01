@@ -14,8 +14,8 @@ class Project(db.Model):
     __tablename__ = "project"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(64), index=True, unique=True)
-    plUser_id = db.Column(db.Integer, db.ForeignKey(
-        "plUser.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey(
+        "users.id"), nullable=False)
     subtitle = db.Column(db.Text)
     # "Toxi" Configuration
     industry = db.relationship(
@@ -27,4 +27,4 @@ class Project(db.Model):
     deadline = db.Column(TIMESTAMP)
 
     def __repr__(self):
-        return "{0} created by {1}".format(self.title, self.plUser_id)
+        return "{0} created by {1}".format(self.title, self.User_id)

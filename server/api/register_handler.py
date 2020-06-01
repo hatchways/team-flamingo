@@ -1,7 +1,6 @@
 import json
 from flask import jsonify, request, Blueprint
-from db_models.pluser import plUser
-from db_models.profile import Profile
+from db_models.user import User
 from app import bcrypt
 from app import db
 from flask_jwt_extended import create_access_token, set_access_cookies
@@ -15,20 +14,13 @@ register_handler = Blueprint('register_handler', __name__)
 def register():
     data = request.get_json()
 
-    user = plUser(
+    user = User(
         username=data['username'],
         login_email=data['login_email']
     )
     user.set_password(data['password'])
 
     db.session.add(user)
-    db.session.commit()
-
-    # We also want to create an empty profile for this user
-    profile = Profile()
-    profile.user_id = user.id
-
-    db.session.add(profile)
     db.session.commit()
 
     # Create token to be sent to user

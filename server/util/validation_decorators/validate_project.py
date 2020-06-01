@@ -1,4 +1,4 @@
-from db_models.pluser import plUser
+from db_models.user import User
 from db_models.project import Project
 from db_models.industries import Industry
 from flask import jsonify, request
