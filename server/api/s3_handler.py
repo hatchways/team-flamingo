@@ -1,11 +1,13 @@
 from flask import jsonify, request, Blueprint
-from werkzeug.utils import secure_filename
-import os
 import boto3
 from botocore.exceptions import ClientError
-from flask_jwt_extended import jwt_required
-import imghdr
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from db_models.profile import Profile
+from db_models.project import Project
+from app import db
 import uuid
+
+from util.validation_decorators.validate_files import validate_files
 
 s3_handler = Blueprint('s3_handler', __name__)
 
@@ -27,52 +29,59 @@ def list_files(bucket="plphotos"):
 
 @s3_handler.route("/api/v1/upload", methods=["POST"])
 @jwt_required
+@validate_files
 def upload():
-    # https://flask.palletsprojects.com/en/1.1.x/patterns/fileuploads/
-    # request.files is ImmutableMultiDict([('image', <FileStorage: 'example2.png' ('image/png')>)])
+    '''
+    If no project id is given, client-side must call edit profile itself
+    '''
 
-    # File of key image has to exist
-    if 'image' not in request.files:
-        return jsonify({"error": "file part not present"}), 400
-
-    # If filename doesn't exist
-    file = request.files["image"]
-    if file.filename == '':
-        return jsonify({"error": "No selected file"}), 400
-
-    # Validate the file headers look like an image file
-    if not verify_type(file):
-        return jsonify({"error": "Error while loading image, image is not in valid format"}), 400
-
-    # verify_type reads file
-    file.seek(0)
-
+    files = request.files.getlist("image")
     folder = request.form["folder"]
-    # Must exist
-    if not folder:
-        return jsonify({"error": "uuid or location not present"}), 400
+    project_id = int(request.form["project_id"])
 
-    # Valid folder name
-    if folder not in ["project", "profile"]:
-        return jsonify({"error": "folder not valid, must be 'project' or 'profile'"}), 400
+    current_user_id = get_jwt_identity()['user_id']
 
-    # Construct filename, is random
-    filename = "{0}/{1}.png".format(folder, uuid.uuid4())
+    for file in files:
 
-    resp = upload_file_object(file, BUCKET, filename)
-    if not resp:
-        return jsonify({"error": "something went wrong and the file was not uploaded"}), 500
-    return jsonify({"success": "file uploaded"}), 200
+        uniqueId = uuid.uuid4()
+        # Construct filename, is random
+        filename = "{0}/{1}.png".format(folder, uniqueId)
+
+        resp = addImageToUser(filename, folder, current_user_id, project_id)
+
+        if not resp:
+            return jsonify({"error": "File was not saved"}), 400
+
+        resp = upload_file_object(file, BUCKET, filename)
+        if not resp:
+            return jsonify({"error": "something went wrong and the file was not uploaded"}), 500
+
+    return jsonify({"success": "file uploaded", "stored at": filename}), 200
 
 
-def addImageToUser(uuid, location):
-    # TODO: Add uuid to appropriate location. Either User.avatar or Project.photos
-    return True
+def addImageToUser(uuid, location, user_id, project_id=None):
+    '''
+    Stores photo to appropriate location in db. Returns False if could not save
 
-
-def verify_type(file):
-    if imghdr.what("ignored", h=file.read()) is None:
-        return False
+    :param uuid: filename
+    :param location: folder to upload to 
+    :param user_id: current user
+    :param project_id: project to upload to, uploads to profile if false
+    :return: True if file was uploaded, else False
+    '''
+    if location == "project":
+        if project_id is not None:
+            project = Project.query.filter_by(id=project_id).first()
+            if project is None:
+                return False
+            project.photos.append(uuid)
+            print(project.photos)
+            print(project)
+            db.session.commit()
+    else:
+        profile = Profile.query.filter_by(user_id=user_id).first()
+        profile.profile_pics.append(uuid)
+        db.session.commit()
     return True
 
 

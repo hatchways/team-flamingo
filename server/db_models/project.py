@@ -1,5 +1,7 @@
 from app import db
 from sqlalchemy.dialects.postgresql import MONEY, ARRAY, TIMESTAMP
+from util.db.MutableList import MutableList
+
 
 project_industries_map = db.Table(
     "project_industries_map",
@@ -22,7 +24,8 @@ class Project(db.Model):
         "Industry", secondary=project_industries_map,
         lazy="select", backref=db.backref("project", lazy="select"))
     location = db.Column(db.String(64))
-    photos = db.Column(ARRAY(db.Text))
+    # photos = db.Column(ARRAY(db.Text))
+    photos = db.Column(MutableList.as_mutable(ARRAY(db.Text)))
     funding_goal = db.Column(MONEY)
     deadline = db.Column(TIMESTAMP)
 
