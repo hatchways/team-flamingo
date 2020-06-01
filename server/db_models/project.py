@@ -15,7 +15,7 @@ class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(64), index=True, unique=True)
     user_id = db.Column(db.Integer, db.ForeignKey(
-        "user.id"), nullable=False)
+        "users.id"), nullable=False)
     subtitle = db.Column(db.Text)
     # "Toxi" Configuration
     industry = db.relationship(
