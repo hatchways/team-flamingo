@@ -8,11 +8,6 @@ import {
   Grid,
   Checkbox,
   TextField,
-  Select,
-  MenuItem,
-  Chip,
-  FormControl,
-  InputLabel,
   FormGroup,
   FormControlLabel,
   Button,
@@ -44,15 +39,6 @@ const useStyles = makeStyles((theme) => ({
   select: {
     padding: "2px",
   },
-  inputLabel: {
-    color: "#000",
-    marginLeft: "2em",
-    fontWeight: "bold",
-    position: "absolute",
-    top: "50%",
-    transform: "translateY(-50%)",
-    fontSize: 14,
-  },
   marginTop: {
     marginTop: "2rem",
   },
@@ -62,9 +48,6 @@ const useStyles = makeStyles((theme) => ({
     color: theme.bgcolor,
     height: "3rem",
     width: "60%",
-  },
-  chip: {
-    margin: "2px",
   },
 }));
 
@@ -133,34 +116,9 @@ function CreateProject(props) {
 
   // State variables
   const [industries, setIndustries] = useState([]);
-  const [validIndustries, setValidIndustries] = useState([]);
   const [verified, setVerified] = useState(false);
 
-  // Populate valid industries
-  useEffect(() => {
-    axios.get("/api/v1/industries").then((res) => {
-      setValidIndustries(res.data);
-    });
-  }, []); // Only call on initial mount
-
   // Handlers
-  const handleAddIndustry = (event) => {
-    const newIndustry = event.target.value;
-    setIndustries((industries) => {
-      // If the industry is already chosen, we don't want a duplicate
-      if (industries.includes(newIndustry)) return [...industries];
-      else return [...industries, newIndustry];
-    });
-  };
-
-  const handleRemoveIndustry = (industry) => {
-    setIndustries((industries) => {
-      const index = industries.indexOf(industry);
-      industries.splice(index, 1);
-      return [...industries];
-    });
-  };
-
   const handleUpdateIndustries = (industries) => {
     setIndustries(industries);
   };

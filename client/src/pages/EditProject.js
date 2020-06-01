@@ -7,7 +7,6 @@ import {
   ListItem,
   Button,
   Divider,
-  Container,
   ListItemIcon,
   ListItemText,
   Drawer,
@@ -20,6 +19,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import { makeStyles } from "@material-ui/core/styles";
 
 import Navbar from "../components/Navbar";
+import IndustriesDropdown from "../components/IndustriesDropdown";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,11 +28,12 @@ const useStyles = makeStyles((theme) => ({
   },
   drawer: {
     borderRight: "1px solid #d3d3d3",
-    boxShadow: "10px 0 5px -2px #eee",
     height: "100%",
     width: "33%",
   },
   drawerPaper: {
+    boxShadow: "10px 0 5px -2px #eee",
+    height: "100%",
     width: "33%",
   },
   tab: {
@@ -61,10 +62,11 @@ const useStyles = makeStyles((theme) => ({
   listPadding: {
     padding: "0",
   },
-  previewButton: {
+  primaryButton: {
     backgroundColor: theme.primary,
     color: theme.bgcolor,
     margin: "2rem 0",
+    minWidth: "150px",
   },
   deleteContainer: {
     display: "flex",
@@ -86,22 +88,110 @@ const useStyles = makeStyles((theme) => ({
 function Basics(props) {
   const classes = useStyles();
 
+  // State variables
+  const [title, setTitle] = useState("");
+  const [subtitle, setSubtitle] = useState("");
+  const [industries, setIndustries] = useState([]);
+  const [location, setLocation] = useState("");
+  const [images, setImages] = useState([]);
+  const [fundingGoal, setFundingGoal] = useState(0);
+
+  const handleUpdateTitle = (event) => {
+    setTitle(event.target.value);
+  };
+
+  const handleUpdateSubtitle = (event) => {
+    setSubtitle(event.target.value);
+  };
+
+  const handleUpdateIndustries = (industries) => {
+    setIndustries(industries);
+  };
+
+  const handleUpdateLocation = (event) => {
+    setLocation(event.target.value);
+  };
+
+  const handleUpdateFundingGoal = (event) => {
+    setFundingGoal(event.target.value);
+  };
+
+  const handleSave = (event) => {
+    // TODO: save project edits
+  };
+
   return (
-    <>
-      <Typography className={classes.mainTitle} gutterBottom>
-        Start with basics
-      </Typography>
+    <Grid container direction="row" spacing={4}>
+      <Grid item xs={12}>
+        <Typography className={classes.mainTitle} gutterBottom>
+          Start with basics
+        </Typography>
+      </Grid>
 
-      <div>
-        <Typography>Project Title</Typography>
-        <TextField variant="outlined" fullWidth />
-      </div>
+      <Grid item xs={12}>
+        <Typography>Project title</Typography>
+        <TextField
+          variant="outlined"
+          fullWidth
+          value={title}
+          onChange={handleUpdateTitle}
+        />
+      </Grid>
 
-      <div>
+      <Grid item xs={12}>
         <Typography>Subtitle</Typography>
-        <TextField variant="outlined" fullWidth />
-      </div>
-    </>
+        <TextField
+          variant="outlined"
+          fullWidth
+          multiline
+          rows={3}
+          value={subtitle}
+          onChange={handleUpdateSubtitle}
+        />
+      </Grid>
+
+      <Grid item xs={12}>
+        <Typography>Industries</Typography>
+        <IndustriesDropdown onStateChange={handleUpdateIndustries} />
+      </Grid>
+
+      <Grid item xs={12}>
+        <Typography>Project location</Typography>
+        <TextField
+          variant="outlined"
+          fullWidth
+          value={location}
+          onChange={handleUpdateLocation}
+        />
+      </Grid>
+
+      <Grid item xs={12}>
+        <Typography>Download images</Typography>
+        {/* TODO: add in file upload component */}
+      </Grid>
+
+      <Grid item xs={12}>
+        <Typography>Funding goal amount</Typography>
+        <TextField
+          type="number"
+          variant="outlined"
+          fullWidth
+          value={fundingGoal}
+          onChange={handleUpdateFundingGoal}
+          InputProps={{ startAdornment: "$ " }}
+        />
+      </Grid>
+
+      <Grid item xs={12}>
+        <Button
+          variant="contained"
+          onClick={handleSave}
+          className={classes.primaryButton}
+        >
+          SAVE
+        </Button>
+      </Grid>
+    </Grid>
   );
 }
 
@@ -169,7 +259,7 @@ function EditProject(props) {
               Urban Jungle: eco-friendly coffee shop
             </Typography>
             <Button
-              className={classes.previewButton}
+              className={classes.primaryButton}
               size="medium"
               variant="contained"
               startIcon={<VisibilityIcon />}
@@ -188,6 +278,7 @@ function EditProject(props) {
                 <ListItem
                   button
                   onClick={() => handleTabChange(tab)}
+                  disabled={tab !== currentTab}
                   divider
                   className={classes.tab}
                   key={index}
