@@ -43,7 +43,7 @@ def post_project(user_id):
 
     project = Project(
         title=data["title"],
-        User_id=user_id,
+        user_id=user_id,
         subtitle=data["subtitle"],
         location=data["location"],
         photos=data["photos"],

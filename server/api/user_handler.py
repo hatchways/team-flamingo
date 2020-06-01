@@ -29,12 +29,14 @@ def edit_user(user_id):
     # Save to user
     user = User.query.filter_by(id=user_id).first()
 
-    user.profile_pics = request.json.get('user_pics', None)
-    user.location = request.json.get('location', None)
-    user.description = request.json.get('description', None)
-    user.expertise = request.json.get('expertise', None)
-    user.linkedin_profile = request.json.get('linkedin_profile', None)
-    user.angelco_profile = request.json.get('angelco_profile', None)
+    user_data = request.get_json()
+
+    user.profile_pics = user_data.get('user_pics', None)
+    user.location = user_data.get('location', None)
+    user.description = user_data.get('description', None)
+    user.expertise = user_data.get('expertise', None)
+    user.linkedin_profile = user_data.get('linkedin_profile', None)
+    user.angelco_profile = user_data.get('angelco_profile', None)
 
     db.session.commit()
 
