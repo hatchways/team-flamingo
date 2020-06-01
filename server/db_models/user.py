@@ -7,7 +7,7 @@ from sqlalchemy.orm import validates
 
 
 class User(db.Model):
-    __tablename__ = "user"  # use CamelCase for table names
+    __tablename__ = "users"  # use CamelCase for table names
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True,
                          unique=True, nullable=False)
