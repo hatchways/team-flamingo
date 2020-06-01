@@ -21,6 +21,7 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 
 import Navbar from "../components/Navbar";
+import IndustriesDropdown from "../components/IndustriesDropdown";
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -140,7 +141,7 @@ function CreateProject(props) {
     axios.get("/api/v1/industries").then((res) => {
       setValidIndustries(res.data);
     });
-  }, [false]); // Only call on initial mount
+  }, []); // Only call on initial mount
 
   // Handlers
   const handleAddIndustry = (event) => {
@@ -158,6 +159,10 @@ function CreateProject(props) {
       industries.splice(index, 1);
       return [...industries];
     });
+  };
+
+  const handleUpdateIndustries = (industries) => {
+    setIndustries(industries);
   };
 
   const handleVerified = (event) => {
@@ -198,46 +203,9 @@ function CreateProject(props) {
                 You can always update this later.
               </Box>
             </Typography>
-            <Grid item>
-              <FormControl fullWidth>
-                <InputLabel
-                  id="select-industries"
-                  classes={{ root: classes.inputLabel }}
-                >
-                  SELECT INDUSTRIES
-                </InputLabel>
-                <Select
-                  value={industries}
-                  onChange={handleAddIndustry}
-                  labelId="select-industries"
-                  variant="outlined"
-                >
-                  {validIndustries.map((industry) => {
-                    return (
-                      <MenuItem value={industry} key={industry.id}>
-                        {industry.name}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              </FormControl>
-            </Grid>
 
-            <Grid item className={classes.marginTop}>
-              <div>
-                {industries.map((industry) => {
-                  return (
-                    <Chip
-                      label={industry.name}
-                      color="primary"
-                      variant="outlined"
-                      onDelete={() => handleRemoveIndustry(industry)}
-                      className={classes.chip}
-                      key={industry.id}
-                    />
-                  );
-                })}
-              </div>
+            <Grid item>
+              <IndustriesDropdown onStateChange={handleUpdateIndustries} />
             </Grid>
 
             <Typography

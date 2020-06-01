@@ -11,11 +11,6 @@ def industries():
     industries = Industry.query.all()
 
     # Turn list of industries into serializable json (i.e list of key value pairs)
-    industriesList = []
-    for industry in industries:
-        industriesList.append({
-            'id': industry.id,
-            'name': industry.name
-        })
+    industriesList = [{'id': industry.id, 'name': industry.name} for industry in industries]
     
     return jsonify(industriesList), 200

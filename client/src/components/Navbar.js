@@ -15,6 +15,7 @@ const useStyles = makeStyles((theme) => ({
     background: "white",
     color: "black",
     elevation: 0,
+    zIndex: theme.zIndex.drawer + 1,
   },
   logo: {
     width: theme.spacing(4),
@@ -28,25 +29,24 @@ const useStyles = makeStyles((theme) => ({
 
 function NavBar(props) {
   const classes = useStyles();
+
   return (
     <Box mb={8}>
-      <Container>
-        <AppBar variant="outlined" className={classes.appBar} position="fixed">
-          <Toolbar>
-            <img
-              className={classes.logo}
-              src={logo}
-              alt="Product Launch Logo"
-            ></img>
-            <Typography variant="h6" className={classes.title} component="h1">
-              Product Launch
-            </Typography>
-            <Button color="inherit">Explore</Button>
-            <Button color="inherit">Launch</Button>
-            <Button color="inherit">Login</Button>
-          </Toolbar>
-        </AppBar>
-      </Container>
+      <AppBar variant="outlined" className={classes.appBar} position="fixed">
+        <Toolbar>
+          <img
+            className={classes.logo}
+            src={logo}
+            alt="Product Launch Logo"
+          ></img>
+          <Typography variant="h6" className={classes.title} component="h1">
+            Product Launch
+          </Typography>
+          <Button color="inherit">Explore</Button>
+          <Button color="inherit">Launch</Button>
+          <Button color="inherit">Login</Button>
+        </Toolbar>
+      </AppBar>
     </Box>
   );
 }

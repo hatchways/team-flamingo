@@ -7,6 +7,7 @@ import UserDashboard from "./pages/Dashboard";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import CreateProject from "./pages/CreateProject";
+import EditProject from "./pages/EditProject";
 
 import "./App.css";
 
@@ -18,6 +19,10 @@ function App() {
           <Route
             path="/profile/:profileId/projects/create"
             component={CreateProject}
+          />
+          <Route
+            path="/profile/:profileId/projects/:projectId/edit"
+            component={EditProject}
           />
           <Route path="/profile" component={UserDashboard} />
           <Route path="/signup" component={Signup} />
