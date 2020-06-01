@@ -147,6 +147,7 @@ function UserInfo(props) {
           {user.expertise.map((value, step) => {
             return (
               <Button
+                key={step}
                 className={classes.roundButton}
                 variant="outlined"
                 size="small"

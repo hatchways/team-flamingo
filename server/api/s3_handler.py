@@ -1,6 +1,6 @@
 import json
 from flask import jsonify, request, Blueprint
-from db_models.pluser import plUser
+from db_models.user import User
 from app import db
 from util.upload_photo import *
 

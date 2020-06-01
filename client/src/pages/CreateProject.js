@@ -172,7 +172,7 @@ function CreateProject(props) {
   const handleContinue = (event) => {
     event.preventDefault();
     // TODO: Create project with current data, then
-    // redirect to /profile/:profileId/projects/edit
+    // redirect to /profile/:id/projects/edit
   };
 
   return (

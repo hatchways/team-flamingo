@@ -1,4 +1,4 @@
-from db_models.pluser import plUser
+from db_models.user import User
 from flask import jsonify, request
 from functools import wraps
 from app import db
@@ -14,7 +14,7 @@ def validate_login(f):
         if not login_email or not password:
             return jsonify({'error': 'Email and password is required'}), 400
 
-        user = plUser.query.filter_by(login_email=login_email).first()
+        user = User.query.filter_by(login_email=login_email).first()
 
         if not user:
             return jsonify({'error': 'Email does not exist'}), 400

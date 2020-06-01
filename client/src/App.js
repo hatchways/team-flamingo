@@ -6,6 +6,7 @@ import { theme } from "./themes/theme";
 import UserDashboard from "./pages/Dashboard";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
+import Project from "./pages/Project";
 import CreateProject from "./pages/CreateProject";
 import EditProject from "./pages/EditProject";
 
@@ -17,7 +18,7 @@ function App() {
       <BrowserRouter>
         <Switch>
           <Route
-            path="/profile/:profileId/projects/create"
+            path="/profile/:id/projects/create"
             component={CreateProject}
           />
           <Route
@@ -27,6 +28,7 @@ function App() {
           <Route path="/profile" component={UserDashboard} />
           <Route path="/signup" component={Signup} />
           <Route path="/login" component={Login} />
+          <Route path="/project" component={Project} />
         </Switch>
       </BrowserRouter>
     </ThemeProvider>
