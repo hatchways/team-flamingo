@@ -19,7 +19,7 @@ services:
       context: ./server
       dockerfile: Dockerfile
     volumes:
-      # - "/usr/src/app/migrations/"
+      - "/usr/src/app/migrations/"
       - "./server:/usr/src/app"
     ports:
       - "5000:5000"
