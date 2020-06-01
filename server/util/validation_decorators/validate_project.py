@@ -1,4 +1,4 @@
-from db_models.pluser import plUser
+from db_models.user import User
 from db_models.project import Project
 from db_models.industries import Industry
 from flask import jsonify, request
@@ -6,11 +6,16 @@ from functools import wraps
 from app import db
 from sqlalchemy import or_
 import re
+from flask_jwt_extended import get_jwt_identity
 
 
 def validate_project(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
+
+        user_id = request.view_args['user_id']
+        if (int(user_id) != get_jwt_identity()["user_id"]):
+            return jsonify({"error": "not authenticated"}), 401
 
         title = request.json.get('title', None)
         subtitle = request.json.get('subtitle', None)

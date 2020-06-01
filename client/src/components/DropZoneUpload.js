@@ -26,11 +26,9 @@ function DropZoneUpload(props) {
     // CORE: form data & headers necessary
     var formData = new FormData();
     //
-    console.log(files);
     formData.set("folder", props.uploadLocation);
-    if (props.projectId) {
-      formData.set("project_id", props.projectId);
-    }
+    formData.set("project_id", props.projectId ? props.projectId : null);
+
     files.forEach((image) => {
       formData.append("image", image);
     });

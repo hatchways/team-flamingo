@@ -19,10 +19,11 @@ def validate_files(f):
             if file.filename == '':
                 return jsonify({"error": "No selected file"}), 400
 
-        try:
-            project_id = int(request.form["project_id"])
-        except:
-            return jsonify({"error": "project_id not present. Must be an id or null"}), 400
+        if request.form["project_id"] != "null":
+            try:
+                project_id = int(request.form["project_id"])
+            except:
+                return jsonify({"error": "project_id not present. Must be an id or null"}), 400
 
         folder = request.form["folder"]
         # Must exist
@@ -30,7 +31,7 @@ def validate_files(f):
             return jsonify({"error": "uuid or location not present"}), 400
 
         # Valid folder name
-        if folder not in ["project", "profile"]:
+        if folder not in ["project", "user"]:
             return jsonify({"error": "folder not valid, must be 'project' or 'profile'"}), 400
 
         return f(*args, **kwargs)

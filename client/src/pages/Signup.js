@@ -109,6 +109,7 @@ function Signup(props) {
         login_email: email,
         password: password,
         confirm: confirm,
+        profile_pics: ["default"],
       })
       .then((res) => {
         // TODO: Redirect to profile specific to user
@@ -191,6 +192,7 @@ function Signup(props) {
 
             <Grid item>
               <TextField
+                type="Password"
                 label="Password"
                 variant="outlined"
                 fullWidth
@@ -209,6 +211,7 @@ function Signup(props) {
 
             <Grid item>
               <TextField
+                type="Password"
                 label="Confirm password"
                 variant="outlined"
                 fullWidth

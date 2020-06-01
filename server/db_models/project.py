@@ -15,14 +15,14 @@ project_industries_map = db.Table(
 class Project(db.Model):
     __tablename__ = "project"
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey(
+        "users.id"), nullable=False)
     title = db.Column(db.String(64), index=True, unique=True)
-    plUser_id = db.Column(db.Integer, db.ForeignKey(
-        "plUser.id"), nullable=False)
     subtitle = db.Column(db.Text)
     # "Toxi" Configuration
     industry = db.relationship(
         "Industry", secondary=project_industries_map,
-        lazy="select", backref=db.backref("project", lazy="select"))
+        lazy="select", backref=db.backref("Project", lazy="select"))
     location = db.Column(db.String(64))
     # photos = db.Column(ARRAY(db.Text))
     photos = db.Column(MutableList.as_mutable(ARRAY(db.Text)))
@@ -30,4 +30,4 @@ class Project(db.Model):
     deadline = db.Column(TIMESTAMP)
 
     def __repr__(self):
-        return "{0} created by {1}".format(self.title, self.plUser_id)
+        return "{0} created by {1}".format(self.title, self.User_id)

@@ -1,30 +1,18 @@
 from flask import jsonify, request, Blueprint
-import boto3
 from botocore.exceptions import ClientError
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from db_models.profile import Profile
-from db_models.project import Project
-from app import db
 import uuid
+import boto3
+from app import db
 
-from util.validation_decorators.validate_files import validate_files
+
+from db_models.project import Project
+from db_models.user import User
+from util.validation_decorators.validate_image_files import validate_files
 
 s3_handler = Blueprint('s3_handler', __name__)
 
 BUCKET = "plphotos"
-
-
-@s3_handler.route('/api/v1/allphotos', methods=['GET'])
-@jwt_required
-def list_files(bucket="plphotos"):
-    # This route isn't actually necessary, photo urls will be stored in Profile.photos
-    s3 = boto3.client('s3')
-    contents = s3.list_objects_v2(Bucket=BUCKET)
-
-    if contents is None:
-        return jsonify({"error": "contents not found"})
-
-    return jsonify({"photos": contents}), 200
 
 
 @s3_handler.route("/api/v1/upload", methods=["POST"])
@@ -37,8 +25,10 @@ def upload():
 
     files = request.files.getlist("image")
     folder = request.form["folder"]
-    project_id = int(request.form["project_id"])
-
+    try:
+        project_id = int(request.form["project_id"])
+    except:
+        project_id = None
     current_user_id = get_jwt_identity()['user_id']
 
     for file in files:
@@ -75,12 +65,10 @@ def addImageToUser(uuid, location, user_id, project_id=None):
             if project is None:
                 return False
             project.photos.append(uuid)
-            print(project.photos)
-            print(project)
             db.session.commit()
     else:
-        profile = Profile.query.filter_by(user_id=user_id).first()
-        profile.profile_pics.append(uuid)
+        user = User.query.filter_by(id=user_id).first()
+        user.profile_pics.append(uuid)
         db.session.commit()
     return True
 
