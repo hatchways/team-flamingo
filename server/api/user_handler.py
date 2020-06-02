@@ -6,6 +6,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 user_handler = Blueprint('user_handler', __name__)
 
+
 @user_handler.route('/api/v1/users/<user_id>/profile', methods=['GET'])
 @jwt_required
 def get_user(user_id):
@@ -13,8 +14,9 @@ def get_user(user_id):
 
     if not user:
         return jsonify({'error': 'There is no user with this user id'}), 400
-    
+
     return jsonify(user.serialize), 200
+
 
 @user_handler.route('/api/v1/users/<user_id>/profile', methods=['PUT'])
 @validate_user
@@ -25,7 +27,7 @@ def edit_user(user_id):
 
     if current_user_id != int(user_id):
         return ({'error': 'You are not authorized to edit this user'}), 401
-    
+
     # Save to user
     user = User.query.filter_by(id=user_id).first()
 
@@ -40,5 +42,4 @@ def edit_user(user_id):
 
     db.session.commit()
 
-    return jsonify(user.serialize), 200 
-    
+    return jsonify(user.serialize), 200
