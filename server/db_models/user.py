@@ -2,6 +2,8 @@ import re
 from app import db
 from app import bcrypt
 from sqlalchemy.orm import validates
+from sqlalchemy.dialects.postgresql import ARRAY
+from util.db.MutableList import MutableList
 
 # Mock User class for testing.
 
@@ -14,8 +16,9 @@ class User(db.Model):
     login_email = db.Column(db.String(64), index=True,
                             unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
-    projects = db.relationship("Project", backref="User")
-    profile_pics = db.Column(db.ARRAY(db.String(64)), nullable=True)
+    projects = db.relationship("Project", backref="users")
+    profile_pics = db.Column(MutableList.as_mutable(
+        ARRAY(db.Text)), nullable=False)
     location = db.Column(db.String(64), nullable=True)
     description = db.Column(db.Text, nullable=True)
     expertise = db.Column(db.ARRAY(db.String(64)), nullable=False)

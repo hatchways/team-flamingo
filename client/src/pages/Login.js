@@ -161,6 +161,7 @@ function Login(props) {
 
             <Grid item>
               <TextField
+                type="Password"
                 label="Password"
                 variant="outlined"
                 fullWidth
