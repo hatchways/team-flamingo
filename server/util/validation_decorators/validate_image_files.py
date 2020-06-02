@@ -1,6 +1,5 @@
 from flask import jsonify, request
 from functools import wraps
-import imghdr
 
 
 def validate_files(f):
@@ -37,9 +36,3 @@ def validate_files(f):
         return f(*args, **kwargs)
 
     return wrapper
-
-
-def verify_type(file):
-    if imghdr.what("ignored", h=file.read()) is None:
-        return False
-    return True

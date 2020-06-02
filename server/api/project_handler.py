@@ -36,16 +36,16 @@ def post_project(user_id):
     user = User.query.filter_by(id=user_id).first()
 
     project = Project(
-        title=data["title"],
+        title=request.json.get('title', None),
         user_id=user_id,
-        subtitle=data["subtitle"],
-        location=data["location"],
-        photos=data["photos"],
-        funding_goal=data["funding_goal"],
-        deadline=data["deadline"]
+        subtitle=request.json.get('subtitle', None),
+        location=request.json.get('location', None),
+        photos=request.json.get('photos', []),
+        funding_goal=request.json.get('funding_goal', None),
+        deadline=request.json.get('deadline', None)
     )
 
-    project.industry[:] = industryList(data["industry"])
+    project.industry[:] = industryList(request.json.get('industry', []))
 
     user.projects.append(project)
     db.session.commit()

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@material-ui/core";
 import { DropzoneDialog } from "material-ui-dropzone";
 import axios from "axios";
@@ -17,15 +17,8 @@ function DropZoneUpload(props) {
   const handleOpen = (event) => {
     setOpen(true);
   };
-  const handleUpload = (event) => {
-    event.preventDefault();
-
-    // Will only ever grab the first file, doesn't support multiple uploads
-
-    // https://stackoverflow.com/questions/43013858/how-to-post-a-file-from-a-form-with-axios
-    // CORE: form data & headers necessary
-    var formData = new FormData();
-    //
+  const handleUpload = () => {
+    let formData = new FormData();
     formData.set("folder", props.uploadLocation);
     formData.set("project_id", props.projectId ? props.projectId : null);
 
@@ -48,10 +41,13 @@ function DropZoneUpload(props) {
         console.log("err");
       });
   };
+  useEffect(() => {
+    if (props.submit) handleUpload();
+  }, [props.submit]);
+
   return (
     <div>
       <Button onClick={handleOpen}>Add Image</Button>
-      <Button onClick={handleUpload}>Submit</Button>
       <DropzoneDialog
         open={open}
         onSave={handleSave}
@@ -60,8 +56,8 @@ function DropZoneUpload(props) {
         maxFileSize={5000000}
         onClose={handleClose}
       />
-      {files.map((file) => {
-        return <p>{file.name}</p>;
+      {files.map((file, index) => {
+        return <p key={index}>{file.name}</p>;
       })}
     </div>
   );

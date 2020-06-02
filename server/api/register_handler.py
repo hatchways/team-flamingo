@@ -17,7 +17,7 @@ def register():
     user = User(
         username=data['username'],
         login_email=data['login_email'],
-        profile_pics=data['profile_pics']
+        profile_pics=[]
     )
     user.set_password(data['password'])
 

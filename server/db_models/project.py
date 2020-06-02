@@ -17,17 +17,17 @@ class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey(
         "users.id"), nullable=False)
-    title = db.Column(db.String(64), index=True, unique=True)
-    subtitle = db.Column(db.Text)
+    title = db.Column(db.String(64), index=True, unique=True, nullable=True)
+    subtitle = db.Column(db.Text, nullable=True)
     # "Toxi" Configuration
     industry = db.relationship(
         "Industry", secondary=project_industries_map,
         lazy="select", backref=db.backref("Project", lazy="select"))
-    location = db.Column(db.String(64))
-    # photos = db.Column(ARRAY(db.Text))
-    photos = db.Column(MutableList.as_mutable(ARRAY(db.Text)))
-    funding_goal = db.Column(MONEY)
-    deadline = db.Column(TIMESTAMP)
+    location = db.Column(db.String(64), nullable=True)
+    photos = db.Column(MutableList.as_mutable(
+        ARRAY(db.Text)), default=[], nullable=False)
+    funding_goal = db.Column(MONEY, nullable=True)
+    deadline = db.Column(TIMESTAMP, nullable=True)
 
     def __repr__(self):
         return "{0} created by {1}".format(self.title, self.User_id)

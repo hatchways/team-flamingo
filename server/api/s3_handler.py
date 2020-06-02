@@ -46,7 +46,7 @@ def upload():
         if not resp:
             return jsonify({"error": "something went wrong and the file was not uploaded"}), 500
 
-    return jsonify({"success": "file uploaded", "stored at": filename}), 200
+    return jsonify({"success": "file uploaded", "storedAt": filename}), 200
 
 
 def addImageToUser(uuid, location, user_id, project_id=None):
