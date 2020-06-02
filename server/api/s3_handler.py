@@ -25,14 +25,13 @@ def upload():
 
     files = request.files.getlist("image")
     folder = request.form["folder"]
-    try:
+    if folder == "project":
         project_id = int(request.form["project_id"])
-    except:
+    else:
         project_id = None
     current_user_id = get_jwt_identity()['user_id']
 
     for file in files:
-
         uniqueId = uuid.uuid4()
         # Construct filename, is random
         filename = "{0}/{1}.png".format(folder, uniqueId)
@@ -60,12 +59,13 @@ def addImageToUser(uuid, location, user_id, project_id=None):
     :return: True if file was uploaded, else False
     '''
     if location == "project":
-        if project_id is not None:
-            project = Project.query.filter_by(id=project_id).first()
-            if project is None:
-                return False
-            project.photos.append(uuid)
-            db.session.commit()
+        if project_id is None:
+            return False
+        project = Project.query.filter_by(id=project_id).first()
+        if project is None:
+            return False
+        project.photos.append(uuid)
+        db.session.commit()
     else:
         user = User.query.filter_by(id=user_id).first()
         user.profile_pics.append(uuid)
