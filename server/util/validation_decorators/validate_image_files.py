@@ -28,7 +28,7 @@ def validate_files(f):
             return jsonify({"error": "folder not valid, must be 'project' or 'user'"}), 400
 
         # if saving to project, project_id must be int
-        if request.form["folder"] == "project":
+        if folder == "project":
             try:
                 project_id = int(request.form["project_id"])
             except:
