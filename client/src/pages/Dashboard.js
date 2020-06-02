@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import {
   Typography,
@@ -21,9 +21,11 @@ import projectpic3 from "../staticImages/projPicture3.png";
 import profpic1 from "../staticImages/profpic1.png";
 
 import NavBar from "../components/Navbar";
+import axios from "axios";
+import { useLocation } from "react-router-dom";
 
 const userStatic = {
-  name: "Alexander Faa",
+  username: "Alexander Faa",
   location: "New York, NY",
   description: "I just have a great passion for all things coffee",
   expertise: ["marketing", "coffee", "technology"],
@@ -119,7 +121,7 @@ function UserInfo(props) {
         {/* User Info */}
         <Box>
           <Typography variant="h6" component="p">
-            {user.name}
+            {user.username}
           </Typography>
           <Typography color="textSecondary">{user.location}</Typography>
         </Box>
@@ -144,7 +146,7 @@ function UserInfo(props) {
         {/* Expertise */}
         <Box marginTop={2}>
           <Typography fontWeight="fontWeightMedium">Expertise</Typography>
-          {user.expertise.map((value, step) => {
+          {[].map((value, step) => {
             return (
               <Button
                 key={step}
@@ -168,13 +170,13 @@ function UserInfo(props) {
             Looking to invest in
           </Typography>
 
-          <Button
+          {/* <Button
             className={classes.highlightButton}
             variant="outlined"
             size="small"
           >
             {user.wantInvestIn}
-          </Button>
+          </Button> */}
         </Container>
       </Box>
     </Box>
@@ -214,6 +216,29 @@ function ProjectCard(props) {
 
 function UserDashboard(props) {
   const classes = useStyles();
+  const [user, setUser] = useState({});
+  const [projects, setProjects] = useState({});
+
+  const location = useLocation();
+  const id = location.pathname.match(/profile\/(\d)/);
+
+  useEffect(() => {
+    async function fetchData() {
+      const res = await axios(`/api/v1/users/${id[1]}/profile`);
+      setUser(res.data);
+      // .get(`/api/v1/users/${id[1]}/profile`)
+      // .then((res) => {
+      //   setUser(res.data);
+      //   console.log(user);
+      // })
+      // .catch((err) => {
+      //   console.log(err);
+      // });
+    }
+    fetchData();
+  }, []);
+  console.log(user);
+
   return (
     <div className={classes.root}>
       {/* Top Navbar */}
@@ -222,7 +247,7 @@ function UserDashboard(props) {
       <Grid container>
         {/* User Information Sidebar */}
         <Grid item xs={3}>
-          <UserInfo user={userStatic} />
+          <UserInfo user={user} />
         </Grid>
         {/* Invested in and Personal Projects */}
         <Grid item xs={9}>

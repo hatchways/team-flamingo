@@ -20,7 +20,7 @@ function App() {
             path="/profile/:id/projects/create"
             component={CreateProject}
           />
-          <Route path="/profile" component={UserDashboard} />
+          <Route path="/profile/:id" component={UserDashboard} />
           <Route path="/signup" component={Signup} />
           <Route path="/login" component={Login} />
           <Route path="/project" component={Project} />

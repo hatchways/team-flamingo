@@ -18,10 +18,10 @@ class User(db.Model):
     profile_pics = db.Column(db.ARRAY(db.String(64)), nullable=True)
     location = db.Column(db.String(64), nullable=True)
     description = db.Column(db.Text, nullable=True)
-    expertise = db.Column(db.ARRAY(db.String(64)), nullable=True)
+    expertise = db.Column(db.ARRAY(db.String(64)), nullable=False)
     linkedin_profile = db.Column(db.String(64), nullable=True)
     angelco_profile = db.Column(db.String(64), nullable=True)
-    
+
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
@@ -51,7 +51,7 @@ class User(db.Model):
             raise AssertionError('Email is not a valid format')
 
         return login_email
-    
+
     @property
     def serialize(self):
         return {
@@ -61,5 +61,5 @@ class User(db.Model):
             'description': self.description,
             'expertise': self.expertise,
             'linkedin': self.linkedin_profile,
-            'angelco': self.angelco_profile 
+            'angelco': self.angelco_profile
         }
