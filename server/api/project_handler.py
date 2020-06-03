@@ -48,6 +48,7 @@ def post_project(user_id):
         location=data["location"],
         photos=data["photos"],
         funding_goal=data["funding_goal"],
+        current_funding=0,
         deadline=data["deadline"]
     )
 

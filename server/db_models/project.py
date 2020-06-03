@@ -24,7 +24,11 @@ class Project(db.Model):
     location = db.Column(db.String(64))
     photos = db.Column(ARRAY(db.Text))
     funding_goal = db.Column(MONEY)
+    current_funding = db.Column(MONEY)
     deadline = db.Column(TIMESTAMP)
+    funds = db.relationship('Fund', backref='project')
 
     def __repr__(self):
         return "{0} created by {1}".format(self.title, self.User_id)
+    
+    

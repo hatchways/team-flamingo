@@ -8,6 +8,7 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Project from "./pages/Project";
 import CreateProject from "./pages/CreateProject";
+import Payment from "./pages/Payment";
 
 import "./App.css";
 
@@ -24,6 +25,7 @@ function App() {
           <Route path="/signup" component={Signup} />
           <Route path="/login" component={Login} />
           <Route path="/project" component={Project} />
+          <Route path="/payment" component={Payment} />
         </Switch>
       </BrowserRouter>
     </ThemeProvider>

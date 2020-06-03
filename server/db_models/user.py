@@ -3,18 +3,24 @@ from app import db
 from app import bcrypt
 from sqlalchemy.orm import validates
 
-# Mock User class for testing.
-
+users_funded_projects_map = db.Table(
+    'users_funded_projects_map',
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
+    db.Column('project_id', db.Integer, db.ForeignKey('project.id'), primary_key=True)
+)
 
 class User(db.Model):
-    __tablename__ = "users"  # use CamelCase for table names
+    __tablename__ = 'users'  # use CamelCase for table names
     id = db.Column(db.Integer, primary_key=True)
+    stripe_customer_id = db.Column(db.String(64), nullable=False)
     username = db.Column(db.String(64), index=True,
                          unique=True, nullable=False)
     login_email = db.Column(db.String(64), index=True,
                             unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
-    projects = db.relationship("Project", backref="User")
+    projects = db.relationship('Project', backref='user')
+    funded_projects = db.relationship("Project", secondary=users_funded_projects_map,
+        lazy="subquery", backref=db.backref('users', lazy=True))
     profile_pics = db.Column(db.ARRAY(db.String(64)), nullable=True)
     location = db.Column(db.String(64), nullable=True)
     description = db.Column(db.Text, nullable=True)
