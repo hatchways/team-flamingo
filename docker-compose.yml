@@ -27,6 +27,8 @@ services:
       - "db"
     environment:
       - DB_CONNECTION_STRING=postgresql://postgres:dev@db:5432/hatchways
+    env_file:
+      - aws-config.env
 
   db:
     image: postgres:12.3
