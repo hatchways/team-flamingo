@@ -8,13 +8,26 @@ import {
   DialogActions,
   TextField,
   Grid,
+  Typography,
 } from "@material-ui/core";
 
+import DropZoneUpload from "../components/DropZoneUpload";
+
 function EditProfileDialog(props) {
-  // Populate fields with current values of users profile
+  // Used for initializing values
+  const user = props.user;
 
   // State variables
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  const [profilePics, setProfilePics] = useState(user.profilePics);
+  const [location, setLocation] = useState(user.location);
+  const [description, setDescription] = useState(user.description);
+  const [expertise, setExpertise] = useState(user.expertise);
+  const [linkedin, setLinkedin] = useState(user.linkedin);
+  const [angelco, setAngelco] = useState(user.angelco);
+
+  const [submit, setSubmit] = useState(false);
 
   const handleOpenDialog = (event) => {
     setDialogOpen(true);
@@ -24,14 +37,12 @@ function EditProfileDialog(props) {
     setDialogOpen(false);
   };
 
-  const handleEditDialog = (event) => {
-    // First we need to get the current user id
-    let userId;
-
-    axios.get("/api/v1/me").then((res) => (userId = res.data.user_id));
+  const handleSaveDialog = (event) => {
+    // Trigger photo upload to s3
+    setSubmit(true);
 
     // Then we want to make PUT request to edit profile
-    axios.put(`/api/v1/users/${userId}/profile`, {
+    axios.put(`/api/v1/users/${user.userId}/profile`, {
       // TODO: all all of the fields
     });
   };
@@ -48,25 +59,41 @@ function EditProfileDialog(props) {
       >
         <DialogTitle id="form-dialog-title">Edit profile</DialogTitle>
         <DialogContent>
-          <Grid>
-            <Grid item>
-              <TextField label="Location" fullWidth />
+          <Grid container spacing={4}>
+            <Grid item xs={12}>
+              <Typography>Profile pics</Typography>
+              <DropZoneUpload submit={submit} uploadLocation="user" />
             </Grid>
 
-            <Grid item>
-              <TextField label="Description" fullWidth multiline />
+            <Grid item xs={12}>
+              <Typography>Location</Typography>
+              <TextField variant="outlined" fullWidth value={location} />
             </Grid>
 
-            <Grid item>
-              <TextField label="Expertise" fullWidth />
+            <Grid item xs={12}>
+              <Typography>Description</Typography>
+              <TextField
+                variant="outlined"
+                fullWidth
+                multiline
+                rows={3}
+                value={description}
+              />
             </Grid>
 
-            <Grid item>
-              <TextField label="LinkedIn profile" fullWidth />
+            <Grid item xs={12}>
+              <Typography>Expertise</Typography>
+              <TextField variant="outlined" fullWidth value={expertise} />
             </Grid>
 
-            <Grid item>
-              <TextField label="Angel.co profile" fullWidth />
+            <Grid item xs={12}>
+              <Typography>Linkedin profile</Typography>
+              <TextField variant="outlined" fullWidth value={linkedin} />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Typography>Angel.co profile</Typography>
+              <TextField variant="outlined" fullWidth value={angelco} />
             </Grid>
           </Grid>
         </DialogContent>
@@ -74,7 +101,7 @@ function EditProfileDialog(props) {
         <DialogActions>
           <Button onClick={handleCloseDialog}>CANCEL</Button>
 
-          <Button onClick={handleEditDialog}>SAVE</Button>
+          <Button onClick={handleSaveDialog}>SAVE</Button>
         </DialogActions>
       </Dialog>
     </div>

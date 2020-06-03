@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 import {
   Typography,
@@ -24,11 +25,14 @@ import NavBar from "../components/Navbar";
 import EditProfileDialog from "../components/EditProfileDialog";
 
 const userStatic = {
+  id: 2,
+  profilePics: [],
   name: "Alexander Faa",
   location: "New York, NY",
   description: "I just have a great passion for all things coffee",
   expertise: ["marketing", "coffee", "technology"],
-  wantInvestIn: "Coffee",
+  linkedin: "https://linkedin.com/in/alexanderfaa",
+  angelco: "https://angel.co/alexanderfaa",
 };
 const projectStatic = [
   {
@@ -112,6 +116,15 @@ const useStyles = makeStyles((theme) => ({
 function UserInfo(props) {
   const classes = useStyles();
   const user = props.user;
+
+  const [isOwnProfile, setIsOwnProfile] = useState(false);
+
+  useEffect(() => {
+    axios.get("/api/v1/me").then((res) => {
+      if (res.data.user_id == user.id) setIsOwnProfile(true);
+    });
+  }, [isOwnProfile]);
+
   return (
     <Box height="100%" className={classes.userInfoShadow}>
       <Container align="center">
@@ -125,19 +138,20 @@ function UserInfo(props) {
           <Typography color="textSecondary">{user.location}</Typography>
         </Box>
 
-        {/* Send a message */}
-        <Box className={classes.ySpacing}>
-          <Button
-            className={classes.sendMessage}
-            size="large"
-            variant="outlined"
-            disableElevation
-          >
-            Send a Message
-          </Button>
-        </Box>
-
-        <EditProfileDialog />
+        {isOwnProfile ? (
+          <EditProfileDialog user={user} />
+        ) : (
+          <Box className={classes.ySpacing}>
+            <Button
+              className={classes.sendMessage}
+              size="large"
+              variant="outlined"
+              disableElevation
+            >
+              Send a Message
+            </Button>
+          </Box>
+        )}
 
         {/* Description */}
         <Box className={classes.ySpacing}>
