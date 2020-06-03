@@ -32,7 +32,6 @@ instance/
 # VSCode
 .vscode
 
-
-#TODO add .env to your gitignore
+# .env
 .env
-
+aws-config.env

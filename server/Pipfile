@@ -15,6 +15,8 @@ flask-cors = "*"
 flask-bcrypt = "*"
 flask-jwt-extended = "*"
 stripe = "*"
+boto3 = "*"
+awscli = "*"
 
 [requires]
 python_version = "3.7"
