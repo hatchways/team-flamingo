@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
     background: "white",
     color: "black",
     elevation: 0,
+    zIndex: theme.zIndex.drawer + 1,
   },
   logo: {
     width: theme.spacing(4),
@@ -38,39 +39,38 @@ const useStyles = makeStyles((theme) => ({
 
 function NavBar(props) {
   const classes = useStyles();
+
   return (
     <Box mb={8}>
-      <Container>
-        <AppBar variant="outlined" className={classes.appBar} position="fixed">
-          <Toolbar>
-            <Link component={LinkTo} to="/profile">
-              <img
-                className={classes.logo}
-                src={logo}
-                alt="Product Launch Logo"
-              ></img>
+      <AppBar variant="outlined" className={classes.appBar} position="fixed">
+        <Toolbar>
+          <Link component={LinkTo} to="/profile">
+            <img
+              className={classes.logo}
+              src={logo}
+              alt="Product Launch Logo"
+            ></img>
+          </Link>
+          <Typography variant="h6" className={classes.title} component="h1">
+            <Link
+              component={LinkTo}
+              to="/profile"
+              className={classes.titleLink}
+              color="inherit"
+            >
+              Product Launch
             </Link>
-            <Typography variant="h6" className={classes.title} component="h1">
-              <Link
-                component={LinkTo}
-                to="/profile"
-                className={classes.titleLink}
-                color="inherit"
-              >
-                Product Launch
-              </Link>
-            </Typography>
+          </Typography>
 
-            <Button color="inherit" component={LinkTo} to="/project">
-              Explore
-            </Button>
-            <Button color="inherit">Launch</Button>
-            <Button color="inherit" component={LinkTo} to="/signup">
-              Signup
-            </Button>
-          </Toolbar>
-        </AppBar>
-      </Container>
+          <Button color="inherit" component={LinkTo} to="/project">
+            Explore
+          </Button>
+          <Button color="inherit">Launch</Button>
+          <Button color="inherit" component={LinkTo} to="/signup">
+            Signup
+          </Button>
+        </Toolbar>
+      </AppBar>
     </Box>
   );
 }
