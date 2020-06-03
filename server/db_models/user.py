@@ -2,6 +2,8 @@ import re
 from app import db
 from app import bcrypt
 from sqlalchemy.orm import validates
+from sqlalchemy.dialects.postgresql import ARRAY
+from util.db.MutableList import MutableList
 
 users_funded_projects_map = db.Table(
     'users_funded_projects_map',
@@ -21,13 +23,14 @@ class User(db.Model):
     projects = db.relationship('Project', backref='user')
     funded_projects = db.relationship("Project", secondary=users_funded_projects_map,
         lazy="subquery", backref=db.backref('users', lazy=True))
-    profile_pics = db.Column(db.ARRAY(db.String(64)), nullable=True)
+    profile_pics = db.Column(MutableList.as_mutable(
+        ARRAY(db.Text)), nullable=False)
     location = db.Column(db.String(64), nullable=True)
     description = db.Column(db.Text, nullable=True)
     expertise = db.Column(db.ARRAY(db.String(64)), nullable=True)
     linkedin_profile = db.Column(db.String(64), nullable=True)
     angelco_profile = db.Column(db.String(64), nullable=True)
-    
+
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
@@ -57,7 +60,7 @@ class User(db.Model):
             raise AssertionError('Email is not a valid format')
 
         return login_email
-    
+
     @property
     def serialize(self):
         return {
@@ -67,5 +70,5 @@ class User(db.Model):
             'description': self.description,
             'expertise': self.expertise,
             'linkedin': self.linkedin_profile,
-            'angelco': self.angelco_profile 
+            'angelco': self.angelco_profile
         }

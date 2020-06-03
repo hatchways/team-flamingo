@@ -24,6 +24,7 @@ def register():
         username=data['username'],
         login_email=data['login_email'],
         stripe_customer_id=customer.id
+        profile_pics=[]
     )
     user.set_password(data['password'])
 

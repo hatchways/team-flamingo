@@ -33,6 +33,7 @@ services:
       - aws-config.env
       - stripe-config.env
 
+
   db:
     image: postgres:12.3
     ports:
