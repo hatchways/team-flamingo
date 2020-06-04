@@ -14,6 +14,7 @@ python-dotenv = "*"
 flask-cors = "*"
 flask-bcrypt = "*"
 flask-jwt-extended = "*"
+stripe = "*"
 boto3 = "*"
 awscli = "*"
 

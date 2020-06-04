@@ -1,14 +1,12 @@
 import json
 from flask import jsonify, request, Blueprint
 from config import Config
+from payments.payout_project import payout_project
+
 ping_handler = Blueprint('ping_handler', __name__)
 
-
-@ping_handler.route('/api/v1/ping', methods=['POST'])
+@ping_handler.route('/api/v1/ping', methods=['GET'])
 def ping():
-    if request.method == 'POST':
-        body = json.loads(request.get_data())
-        if body['teamName'] in Config.TEAM_NAME.split(', '):
-            return jsonify({'response': "{} is now part of the team".format(body['teamName'])}), 200
-        else:
-            return jsonify({'response': "{} is not part of the team, change your .env".format(body['teamName'])}), 400
+    funds = payout_project(3)
+
+    return jsonify([fund.payment_method_id for fund in funds]), 200

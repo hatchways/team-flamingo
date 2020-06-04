@@ -5,6 +5,7 @@ from flask_migrate import Migrate
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
+import stripe
 
 app = Flask(__name__)  # ProductLaunch app
 app.config.from_object(Config)
@@ -15,6 +16,7 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
+stripe.api_key = Config.STRIPE_SECRET_KEY
 
 # jwt extensions
 from util.validation_decorators.flask_wrappers import *
@@ -23,6 +25,8 @@ from util.validation_decorators.flask_wrappers import *
 from db_models.user import User
 from db_models.industries import Industry
 from db_models.project import Project
+from db_models.fund import Fund
+from db_models.payment_method import PaymentMethod
 
 # Route handlers
 from api.home_handler import home_handler
@@ -54,3 +58,6 @@ app.register_blueprint(logout_handler)
 
 from api.industries_handler import industries_handler
 app.register_blueprint(industries_handler)
+
+from api.payment_handler import payment_handler
+app.register_blueprint(payment_handler)
