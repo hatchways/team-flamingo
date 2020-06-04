@@ -30,9 +30,7 @@ function ExpertiseChips(props) {
 
   const handleRemoveChip = (chip) => {
     setChips((chips) => {
-      const index = chips.indexOf(chip);
-      chips.splice(index, 1);
-      return [...chips];
+      return chips.filter((c) => c !== chip);
     });
   };
 
