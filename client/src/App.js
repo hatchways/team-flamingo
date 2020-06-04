@@ -10,7 +10,6 @@ import Project from "./pages/Project";
 import CreateProject from "./pages/CreateProject";
 import EditProject from "./pages/EditProject";
 import Payment from "./pages/Payment";
-import Upload from "./pages/Upload";
 
 import "./App.css";
 
@@ -30,7 +29,6 @@ function App() {
           <Route path="/profile" component={UserDashboard} />
           <Route path="/signup" component={Signup} />
           <Route path="/login" component={Login} />
-          <Route path="/upload" component={Upload} />
           <Route path="/project" component={Project} />
           <Route path="/payment" component={Payment} />
         </Switch>
