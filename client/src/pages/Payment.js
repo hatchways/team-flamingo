@@ -11,9 +11,8 @@ function Payment(props) {
   const handleSetupPaymentMethod = async (event) => {
     const sessionId = await axios
       .post("/api/v1/payment/session", {
-        success_url:
-          "http://localhost:3000/payment?session_id={CHECKOUT_SESSION_ID}&redirect=/project",
-        cancel_url: "http://localhost:3000/login",
+        success_url: `${window.location.origin}/payment?session_id={CHECKOUT_SESSION_ID}&redirect=/project`,
+        cancel_url: `${window.location.origin}/login`,
       })
       .then((res) => res.data.session_id)
       .catch((err) => console.log(err));
@@ -26,8 +25,10 @@ function Payment(props) {
   };
 
   useEffect(() => {
-    const sessionId = query.parse(props.location.search).session_id;
-    const redirectPath = query.parse(props.location.search).redirect;
+    const { session_id: sessionId, redirect: redirectPath } = query.parse(
+      props.location.search
+    );
+
     if (sessionId) {
       axios
         .post("/api/v1/payment/payment-method", {
