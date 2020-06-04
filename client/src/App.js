@@ -10,6 +10,7 @@ import Project from "./pages/Project";
 import CreateProject from "./pages/CreateProject";
 import Main from "./pages/Main";
 import Logout from "./pages/Logout";
+import EditProject from "./pages/EditProject";
 
 import "./App.css";
 
@@ -33,13 +34,18 @@ function App() {
           )}
         />
         <Switch>
-          <Route path="/project" component={Project} />
-          <Route path="/profile/:id" component={UserDashboard} />
+          <Route
+            path="/profile/:profileId/projects/:projectId/edit"
+            component={EditProject}
+          />
           <Route
             path="/profile/:id/projects/create"
             component={CreateProject}
           />
+
           <Route path="/profile/:id" component={UserDashboard} />
+          <Route path="/project" component={Project} />
+
           <Route
             path="/signup"
             // component={Login}

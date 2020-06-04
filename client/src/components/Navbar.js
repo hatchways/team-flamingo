@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
     background: "white",
     color: "black",
     elevation: 0,
+    zIndex: theme.zIndex.drawer + 1,
   },
   logo: {
     width: theme.spacing(4),
@@ -41,57 +42,55 @@ function NavBar(props) {
 
   return (
     <Box mb={8}>
-      <Container>
-        <AppBar variant="outlined" className={classes.appBar} position="fixed">
-          <Toolbar>
-            <Link component={LinkTo} to="/">
-              <img
-                className={classes.logo}
-                src={logo}
-                alt="Product Launch Logo"
-              ></img>
+      <AppBar variant="outlined" className={classes.appBar} position="fixed">
+        <Toolbar>
+          <Link component={LinkTo} to="/profile">
+            <img
+              className={classes.logo}
+              src={logo}
+              alt="Product Launch Logo"
+            ></img>
+          </Link>
+          <Typography variant="h6" className={classes.title} component="h1">
+            <Link
+              component={LinkTo}
+              to="/profile"
+              className={classes.titleLink}
+              color="inherit"
+            >
+              Product Launch
             </Link>
-            <Typography variant="h6" className={classes.title} component="h1">
-              <Link
-                component={LinkTo}
-                to="/profile"
-                className={classes.titleLink}
-                color="inherit"
-              >
-                Product Launch
-              </Link>
-            </Typography>
+          </Typography>
 
-            {props.currentUser && (
-              <Button color="inherit" component={LinkTo} to={props.userProfile}>
-                {props.currentUser.login_email}
-              </Button>
-            )}
-
-            <Button color="inherit" component={LinkTo} to={"/project"}>
-              Explore
+          {props.currentUser && (
+            <Button color="inherit" component={LinkTo} to={props.userProfile}>
+              {props.currentUser.login_email}
             </Button>
-            <Button color="inherit">Launch</Button>
-            {!props.currentUser && (
-              <div>
-                <Button color="inherit" component={LinkTo} to="/login">
-                  Login
-                </Button>
-                <Button color="inherit" component={LinkTo} to="/signup">
-                  Signup
-                </Button>
-              </div>
-            )}
-            {props.currentUser && (
-              <div>
-                <Button color="inherit" component={LinkTo} to="/logout">
-                  Logout
-                </Button>
-              </div>
-            )}
-          </Toolbar>
-        </AppBar>
-      </Container>
+          )}
+
+          <Button color="inherit" component={LinkTo} to={"/project"}>
+            Explore
+          </Button>
+          <Button color="inherit">Launch</Button>
+          {!props.currentUser && (
+            <div>
+              <Button color="inherit" component={LinkTo} to="/login">
+                Login
+              </Button>
+              <Button color="inherit" component={LinkTo} to="/signup">
+                Signup
+              </Button>
+            </div>
+          )}
+          {props.currentUser && (
+            <div>
+              <Button color="inherit" component={LinkTo} to="/logout">
+                Logout
+              </Button>
+            </div>
+          )}
+        </Toolbar>
+      </AppBar>
     </Box>
   );
 }
