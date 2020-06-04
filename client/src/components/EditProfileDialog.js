@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import axios from "axios";
 import {
   Button,
@@ -12,6 +12,7 @@ import {
 } from "@material-ui/core";
 
 import DropZoneUpload from "../components/DropZoneUpload";
+import ExpertiseChips from "../components/ExpertiseChips";
 
 function EditProfileDialog(props) {
   // Used for initializing values
@@ -20,14 +21,13 @@ function EditProfileDialog(props) {
   // State variables
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const [profilePics, setProfilePics] = useState(user.profilePics);
   const [location, setLocation] = useState(user.location);
   const [description, setDescription] = useState(user.description);
   const [expertise, setExpertise] = useState(user.expertise);
   const [linkedin, setLinkedin] = useState(user.linkedin);
   const [angelco, setAngelco] = useState(user.angelco);
 
-  const [submit, setSubmit] = useState(false);
+  const [upload, setUpload] = useState(false);
 
   const handleOpenDialog = (event) => {
     setDialogOpen(true);
@@ -37,15 +37,46 @@ function EditProfileDialog(props) {
     setDialogOpen(false);
   };
 
-  const handleSaveDialog = (event) => {
-    // Trigger photo upload to s3
-    setSubmit(true);
-
-    // Then we want to make PUT request to edit profile
-    axios.put(`/api/v1/users/${user.userId}/profile`, {
-      // TODO: all all of the fields
-    });
+  const handleUpdateExpertise = (expertise) => {
+    setExpertise(expertise);
   };
+
+  const handleUpdateDescription = (event) => {
+    setDescription(event.target.value);
+  };
+
+  const handleUpdateLocation = (event) => {
+    setLocation(event.target.value);
+  };
+
+  const handleUpdateLinkedin = (event) => {
+    setLinkedin(event.target.value);
+  };
+
+  const handleUpdateAngelco = (event) => {
+    setAngelco(event.target.value);
+  };
+
+  const handleTriggerFileUpload = (event) => {
+    // Trigger photo upload to s3
+    setUpload(true);
+
+    setDialogOpen(false);
+  };
+
+  const handleSave = useCallback((profilePics) => {
+    axios
+      .put(`/api/v1/user/${user.id}/profile`, {
+        profile_pics: [profilePics],
+        location: location,
+        description: description,
+        expertise: expertise,
+        linkedin_profile: linkedin,
+        angelco_profile: angelco,
+      })
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
+  });
 
   return (
     <div>
@@ -62,12 +93,21 @@ function EditProfileDialog(props) {
           <Grid container spacing={4}>
             <Grid item xs={12}>
               <Typography>Profile pics</Typography>
-              <DropZoneUpload submit={submit} uploadLocation="user" />
+              <DropZoneUpload
+                upload={upload}
+                uploadLocation="user"
+                handleUploadSuccess={handleSave}
+              />
             </Grid>
 
             <Grid item xs={12}>
               <Typography>Location</Typography>
-              <TextField variant="outlined" fullWidth value={location} />
+              <TextField
+                variant="outlined"
+                fullWidth
+                value={location}
+                onChange={handleUpdateLocation}
+              />
             </Grid>
 
             <Grid item xs={12}>
@@ -78,22 +118,35 @@ function EditProfileDialog(props) {
                 multiline
                 rows={3}
                 value={description}
+                onChange={handleUpdateDescription}
               />
             </Grid>
 
             <Grid item xs={12}>
-              <Typography>Expertise</Typography>
-              <TextField variant="outlined" fullWidth value={expertise} />
+              <ExpertiseChips
+                onStateChange={handleUpdateExpertise}
+                expertiseList={expertise}
+              />
             </Grid>
 
             <Grid item xs={12}>
               <Typography>Linkedin profile</Typography>
-              <TextField variant="outlined" fullWidth value={linkedin} />
+              <TextField
+                variant="outlined"
+                fullWidth
+                value={linkedin}
+                onChange={handleUpdateLinkedin}
+              />
             </Grid>
 
             <Grid item xs={12}>
               <Typography>Angel.co profile</Typography>
-              <TextField variant="outlined" fullWidth value={angelco} />
+              <TextField
+                variant="outlined"
+                fullWidth
+                value={angelco}
+                onChange={handleUpdateAngelco}
+              />
             </Grid>
           </Grid>
         </DialogContent>
@@ -101,7 +154,7 @@ function EditProfileDialog(props) {
         <DialogActions>
           <Button onClick={handleCloseDialog}>CANCEL</Button>
 
-          <Button onClick={handleSaveDialog}>SAVE</Button>
+          <Button onClick={handleTriggerFileUpload}>SAVE</Button>
         </DialogActions>
       </Dialog>
     </div>
