@@ -109,11 +109,11 @@ function Signup(props) {
         login_email: email,
         password: password,
         confirm: confirm,
-        profile_pics: ["default"],
       })
       .then((res) => {
+        props.handleUserChange(true);
         // TODO: Redirect to profile specific to user
-        history.push("/profile");
+        history.push("/");
       })
       .catch((error) => {
         setSignupError(error.response.data.error);

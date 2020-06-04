@@ -101,9 +101,9 @@ function Login(props) {
       })
       .then((res) => {
         handleRememberMe();
-
+        props.handleUserChange(true);
         // TODO: redirect to profile specific to user
-        history.push("/profile");
+        history.push("/");
       })
       .catch((error) => {
         setInvalidLogin(true);

@@ -38,12 +38,13 @@ const useStyles = makeStyles((theme) => ({
 
 function NavBar(props) {
   const classes = useStyles();
+
   return (
     <Box mb={8}>
       <Container>
         <AppBar variant="outlined" className={classes.appBar} position="fixed">
           <Toolbar>
-            <Link component={LinkTo} to="/profile">
+            <Link component={LinkTo} to="/">
               <img
                 className={classes.logo}
                 src={logo}
@@ -61,13 +62,33 @@ function NavBar(props) {
               </Link>
             </Typography>
 
-            <Button color="inherit" component={LinkTo} to="/project">
+            {props.currentUser && (
+              <Button color="inherit" component={LinkTo} to={props.userProfile}>
+                {props.currentUser.login_email}
+              </Button>
+            )}
+
+            <Button color="inherit" component={LinkTo} to={"/project"}>
               Explore
             </Button>
             <Button color="inherit">Launch</Button>
-            <Button color="inherit" component={LinkTo} to="/signup">
-              Signup
-            </Button>
+            {!props.currentUser && (
+              <div>
+                <Button color="inherit" component={LinkTo} to="/login">
+                  Login
+                </Button>
+                <Button color="inherit" component={LinkTo} to="/signup">
+                  Signup
+                </Button>
+              </div>
+            )}
+            {props.currentUser && (
+              <div>
+                <Button color="inherit" component={LinkTo} to="/logout">
+                  Logout
+                </Button>
+              </div>
+            )}
           </Toolbar>
         </AppBar>
       </Container>

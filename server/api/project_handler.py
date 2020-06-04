@@ -13,7 +13,7 @@ from util.validation_decorators.validate_project import validate_project
 project_handler = Blueprint('project_handler', __name__)
 
 
-@project_handler.route('/api/v1/user/<user_id>/projects', methods=['GET'])
+@project_handler.route('/api/v1/users/<user_id>/projects', methods=['GET'])
 @jwt_required
 def get_projects(user_id):
     user = User.query.filter_by(id=user_id).first()
@@ -21,12 +21,12 @@ def get_projects(user_id):
     if user is None:
         return jsonify({"error": "User doesn't exist"}), 400
 
-    projects = [row2dict(p) for p in user.projects]
+    projects = [p.serialize for p in user.projects]
 
     return jsonify(projects), 200
 
 
-@project_handler.route('/api/v1/user/<user_id>/projects', methods=['POST'])
+@project_handler.route('/api/v1/users/<user_id>/projects', methods=['POST'])
 @jwt_required
 @validate_project
 def post_project(user_id):
@@ -42,7 +42,9 @@ def post_project(user_id):
         location=request.json.get('location', None),
         photos=request.json.get('photos', []),
         funding_goal=request.json.get('funding_goal', None),
-        deadline=request.json.get('deadline', None)
+        current_invested=request.json.get('current_invested', None),
+        deadline=request.json.get('deadline', None),
+        equity=request.json.get('equity', None)
     )
 
     project.industry[:] = industryList(request.json.get('industry', []))
@@ -53,7 +55,7 @@ def post_project(user_id):
     return jsonify({"success": "project created"}), 201
 
 
-@project_handler.route('/api/v1/user/<user_id>/projects/<project_id>', methods=['PUT'])
+@project_handler.route('/api/v1/users/<user_id>/projects/<project_id>', methods=['PUT'])
 @jwt_required
 @validate_project
 def update_project(user_id, project_id):
@@ -69,8 +71,10 @@ def update_project(user_id, project_id):
     project.photos = data["photos"]
     # Probably shouldn't be able to change funding goal
     project.funding_goal = data["funding_goal"]
+    project.current_invested = data['current_invested'],
     project.industry[:] = industryList(data["industry"])
     project.deadline = data["deadline"]
+    project.equity = data["equity"]
 
     db.session.commit()
 

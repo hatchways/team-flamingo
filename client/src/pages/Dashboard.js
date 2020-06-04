@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useLocation } from "react-router-dom";
+import moment from "moment";
 
 import {
   Typography,
@@ -10,57 +13,20 @@ import {
   CardMedia,
   CardContent,
   Divider,
+  Grid,
 } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-
-import projectpic1 from "../staticImages/projPicture1.png";
-import projectpic2 from "../staticImages/projPicture2.png";
-import projectpic3 from "../staticImages/projPicture3.png";
-import profpic1 from "../staticImages/profpic1.png";
-
+import { Link as RouterLink } from "react-router-dom";
 import NavBar from "../components/Navbar";
-import axios from "axios";
-import { useLocation } from "react-router-dom";
 
-const userStatic = {
-  username: "Alexander Faa",
-  location: "New York, NY",
-  description: "I just have a great passion for all things coffee",
-  expertise: ["marketing", "coffee", "technology"],
-  wantInvestIn: "Coffee",
-};
-const projectStatic = [
-  {
-    photo: projectpic1,
-    name: "Urban Jungle: eco-friendly coffee shop",
-    currentInvested: 23874,
-    wantedInvestement: 40000,
-    equity: 0.1,
-    timeLeft: 44,
-  },
-  {
-    photo: projectpic2,
-    name: "Cafe Black: The Future of coffee",
-    currentInvested: 2647,
-    wantedInvestement: 60000,
-    equity: 0.1,
-    timeLeft: 60,
-  },
-  {
-    photo: projectpic3,
-    name: "Easy to use, Powerful AI Camera",
-    currentInvested: 34912,
-    wantedInvestement: 55000,
-    equity: 0.18,
-    timeLeft: 12,
-  },
-];
+moment.updateLocale("en", { relativeTime: { future: "%s to go" } });
+const LinkTo = React.forwardRef((props, ref) => <RouterLink {...props} />);
 
 const useStyles = makeStyles((theme) => ({
   root: {
     color: "black",
+    height: "100vh",
   },
   userInfoShadow: {
     paddingTop: theme.spacing(3),
@@ -113,11 +79,23 @@ const useStyles = makeStyles((theme) => ({
 function UserInfo(props) {
   const classes = useStyles();
   const user = props.user;
+
   return (
     <Box height="100%" className={classes.userInfoShadow}>
       <Container align="center">
         {/* Avatar */}
-        <Avatar className={classes.avatar} src={profpic1}></Avatar>
+        {user.current_avatar > 0 || user.current_avatar === 0 ? (
+          <Avatar
+            className={classes.avatar}
+            src={
+              "https://plphotos.s3.us-east-2.amazonaws.com/" +
+              user.profile_pics[user.current_avatar]
+            }
+          />
+        ) : (
+          // Default avatar
+          <Avatar className={classes.avatar} />
+        )}
         {/* User Info */}
         <Box>
           <Typography variant="h6" component="p">
@@ -146,7 +124,7 @@ function UserInfo(props) {
         {/* Expertise */}
         <Box marginTop={2}>
           <Typography fontWeight="fontWeightMedium">Expertise</Typography>
-          {[].map((value, step) => {
+          {user.expertise.map((value, step) => {
             return (
               <Button
                 key={step}
@@ -170,13 +148,18 @@ function UserInfo(props) {
             Looking to invest in
           </Typography>
 
-          {/* <Button
-            className={classes.highlightButton}
-            variant="outlined"
-            size="small"
-          >
-            {user.wantInvestIn}
-          </Button> */}
+          {user.invest_in.map((value, step) => {
+            return (
+              <Button
+                key={step}
+                className={classes.highlightButton}
+                variant="outlined"
+                size="small"
+              >
+                {value}
+              </Button>
+            );
+          })}
         </Container>
       </Box>
     </Box>
@@ -186,27 +169,33 @@ function UserInfo(props) {
 function ProjectCard(props) {
   const classes = useStyles();
   const projectInfo = props.project;
+  const fromNow = moment(projectInfo.deadline).fromNow();
+
   return (
     <Grid item xs={6}>
       <Card elevation={8}>
         <CardMedia
           className={classes.media}
           component="img"
-          src={projectInfo.photo}
+          src={
+            projectInfo.photos[0]
+              ? "https://plphotos.s3.us-east-2.amazonaws.com/" +
+                projectInfo.photos[0]
+              : ""
+          }
         ></CardMedia>
         <CardContent>
           <Typography className={classes.cardTitle} variant="h5" component="h4">
-            {projectInfo.name}
+            {projectInfo.title}
           </Typography>
           <Typography className={classes.cardInvested} display="inline">
-            ${projectInfo.currentInvested}
+            {projectInfo.current_invested}
           </Typography>
           <Typography color="textSecondary" display="inline">
-            {" / " + projectInfo.wantedInvestement}
+            {" / " + projectInfo.funding_goal}
           </Typography>
           <Typography variant="body2" color="textSecondary">
-            Equity exchange: {projectInfo.equity * 100}% |
-            {" " + projectInfo.timeLeft} days to go
+            Equity exchange: {projectInfo.equity * 100}% |{" " + fromNow}
           </Typography>
         </CardContent>
       </Card>
@@ -214,40 +203,66 @@ function ProjectCard(props) {
   );
 }
 
+function ErrorPage(props) {
+  return (
+    <div>
+      <NavBar />
+      <Container align="center">{props.err}</Container>
+    </div>
+  );
+}
+
 function UserDashboard(props) {
   const classes = useStyles();
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState();
+  const [err, setErr] = useState();
   const [projects, setProjects] = useState({});
 
   const location = useLocation();
-  const id = location.pathname.match(/profile\/(\d)/);
+  const id = location.pathname.match(/profile\/(\d+)/);
 
   useEffect(() => {
     async function fetchData() {
-      const res = await axios(`/api/v1/users/${id[1]}/profile`);
-      setUser(res.data);
-      // .get(`/api/v1/users/${id[1]}/profile`)
-      // .then((res) => {
-      //   setUser(res.data);
-      //   console.log(user);
-      // })
-      // .catch((err) => {
-      //   console.log(err);
-      // });
+      try {
+        console.log("Fetching user data");
+        const userRes = await axios(`/api/v1/users/${id[1]}/profile`);
+        const projRes = await axios(`/api/v1/users/${id[1]}/projects`);
+        setUser(userRes.data);
+        setProjects(projRes.data);
+      } catch (err) {
+        console.log("error:");
+        console.dir(err);
+        const code = err.response.status;
+        if (code === 400) {
+          setErr(<p>{err.response.data.error}</p>);
+        } else if (code === 401) {
+          setErr(
+            <div>
+              <p>You must be logged in to view this page</p>
+              <Button color="inherit" component={LinkTo} to="/login">
+                Login
+              </Button>
+              <Button color="inherit" component={LinkTo} to="/signup">
+                Signup
+              </Button>
+            </div>
+          );
+        } else {
+          setErr("Unknown Error");
+        }
+      }
     }
     fetchData();
-  }, []);
-  console.log(user);
+  }, [location]);
 
-  return (
-    <div className={classes.root}>
-      {/* Top Navbar */}
-      <NavBar />
-
-      <Grid container>
+  if (err) {
+    return <ErrorPage err={err} />;
+  } else {
+    return (
+      <Grid container className={classes.root}>
         {/* User Information Sidebar */}
         <Grid item xs={3}>
-          <UserInfo user={user} />
+          {user ? <UserInfo user={user} /> : ""}
         </Grid>
         {/* Invested in and Personal Projects */}
         <Grid item xs={9}>
@@ -256,15 +271,17 @@ function UserDashboard(props) {
               <Box fontWeight="fontWeightMedium">Invested In: </Box>
             </Typography>
             <Grid container spacing={6}>
-              {projectStatic.map((value, step) => {
-                return <ProjectCard key={step} project={value} />;
-              })}
+              {projects.length
+                ? projects.map((value, step) => {
+                    return <ProjectCard key={step} project={value} />;
+                  })
+                : ""}
             </Grid>
           </Container>
         </Grid>
       </Grid>
-    </div>
-  );
+    );
+  }
 }
 
 export default UserDashboard;
