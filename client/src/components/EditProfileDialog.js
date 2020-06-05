@@ -64,19 +64,22 @@ function EditProfileDialog(props) {
     setDialogOpen(false);
   };
 
-  const handleSave = useCallback((profilePics) => {
-    axios
-      .put(`/api/v1/user/${user.id}/profile`, {
-        profile_pics: [profilePics],
-        location: location,
-        description: description,
-        expertise: expertise,
-        linkedin_profile: linkedin,
-        angelco_profile: angelco,
-      })
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
-  });
+  const handleSave = useCallback(
+    (profilePics) => {
+      axios
+        .put(`/api/v1/user/${user.id}/profile`, {
+          profile_pics: [profilePics],
+          location: location,
+          description: description,
+          expertise: expertise,
+          linkedin_profile: linkedin,
+          angelco_profile: angelco,
+        })
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err));
+    },
+    [location, description, expertise, linkedin, angelco, user]
+  );
 
   return (
     <div>
