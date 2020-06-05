@@ -64,6 +64,7 @@ class User(db.Model):
     @property
     def serialize(self):
         return {
+            'id': self.id,
             'username': self.username,
             'profile_pics': self.profile_pics,
             'location': self.location,
