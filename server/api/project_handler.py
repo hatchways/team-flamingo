@@ -26,7 +26,7 @@ def get_projects(user_id):
     return jsonify(projects), 200
 
 
-@project_handler.route('/api/v1/user/<user_id>/projects', methods=['POST'])
+@project_handler.route('/api/v1/users/<user_id>/projects', methods=['POST'])
 @jwt_required
 @validate_project
 def post_project(user_id):
@@ -53,7 +53,7 @@ def post_project(user_id):
     return jsonify({"success": "project created"}), 201
 
 
-@project_handler.route('/api/v1/user/<user_id>/projects/<project_id>', methods=['PUT'])
+@project_handler.route('/api/v1/users/<user_id>/projects/<project_id>', methods=['PUT'])
 @jwt_required
 @validate_project
 def update_project(user_id, project_id):

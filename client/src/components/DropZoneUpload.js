@@ -1,9 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@material-ui/core";
 import { DropzoneDialog } from "material-ui-dropzone";
 import axios from "axios";
 
-function DropZoneUpload(props) {
+function DropZoneUpload({
+  uploadLocation,
+  projectId,
+  upload,
+  handleUploadSuccess,
+}) {
   const [files, setFiles] = useState([]);
   const [open, setOpen] = useState(false);
   const handleClose = (event) => {
@@ -19,8 +24,8 @@ function DropZoneUpload(props) {
   };
   const handleUpload = () => {
     let formData = new FormData();
-    formData.set("folder", props.uploadLocation);
-    formData.set("project_id", props.projectId ? props.projectId : null);
+    formData.set("folder", uploadLocation);
+    formData.set("project_id", projectId ? projectId : null);
 
     files.forEach((image) => {
       formData.append("image", image);
@@ -33,21 +38,21 @@ function DropZoneUpload(props) {
         },
       })
       .then((res) => {
-        console.log(res);
-        console.log("res");
+        handleUploadSuccess(res.data.storedAt);
       })
       .catch((err) => {
         console.log(err.response);
-        console.log("err");
       });
   };
   useEffect(() => {
-    if (props.submit) handleUpload();
-  }, [props.submit]);
+    if (upload) handleUpload();
+  }, [upload]);
 
   return (
     <div>
-      <Button onClick={handleOpen}>Add Image</Button>
+      <Button onClick={handleOpen} variant="outlined" color="primary">
+        Add Image
+      </Button>
       <DropzoneDialog
         open={open}
         onSave={handleSave}
