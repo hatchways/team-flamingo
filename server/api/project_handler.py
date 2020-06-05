@@ -42,7 +42,8 @@ def post_project(user_id):
         location=request.json.get('location', None),
         photos=request.json.get('photos', []),
         funding_goal=request.json.get('funding_goal', None),
-        deadline=request.json.get('deadline', None)
+        deadline=request.json.get('deadline', None),
+        current_funding=0
     )
 
     project.industry[:] = industryList(request.json.get('industry', []))
