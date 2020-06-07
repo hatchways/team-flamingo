@@ -1,5 +1,6 @@
 from flask import jsonify, request, Blueprint
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from app import app
 from app import stripe
 from app import db
 from db_models.user import User
@@ -41,21 +42,17 @@ def create_session():
 
 @payment_handler.route('/api/v1/payment/payment-method', methods=['POST'])
 def create_payment_method():
-    session_id = request.json.get('session_id', None)
+    session = request.get_json()
+    user = User.query.filter_by(stripe_customer_id=session['data']['object']['customer']).first()
 
-    if not session_id:
-        return jsonify({'error': 'Stripe session id must be provided'}), 400
-
-    session = stripe.checkout.Session.retrieve(session_id)
-    # return jsonify(session)
-    user_id = session.metadata.user_id
-    intent = stripe.SetupIntent.retrieve(session.setup_intent)
+    setup_intent = session['data']['object']['setup_intent']
+    intent = stripe.SetupIntent.retrieve(setup_intent)
     stripe_payment_method = stripe.PaymentMethod.retrieve(intent.payment_method)
 
     # TODO: Create a new payment method
     payment_method = PaymentMethod(
-        id=stripe_payment_method.id,
-        user_id=user_id,
+        stripe_payment_method_id=stripe_payment_method.id,
+        user_id=user.id,
         card_brand=stripe_payment_method.card.brand,
         exp_month=stripe_payment_method.card.exp_month,
         exp_year=stripe_payment_method.card.exp_year,
@@ -65,7 +62,7 @@ def create_payment_method():
     db.session.add(payment_method)
     db.session.commit()
 
-    return jsonify(payment_method.serialize), 201
+    return "", 201
 
 @payment_handler.route('/api/v1/payment/payment-method', methods=['GET'])
 @jwt_required
@@ -90,14 +87,18 @@ def fund_project(project_id):
 
     data = request.get_json()
 
+    if not data['fund_amount'] or not data['payment_method']:
+        return jsonify({'error': 'Must provide payment method and funding amount'}), 400
+
     fund_amount = int(data['fund_amount'])
-    payment_method = data['payment_method']
+    payment_method = PaymentMethod.query.filter_by(id=data['payment_method']).first()
+
 
     # TODO: Add fund to database
     fund = Fund(
         user_id=user_id,
         project_id=project_id,
-        payment_method_id=payment_method,
+        payment_method_id=payment_method.stripe_payment_method_id,
         fund_amount=fund_amount
     )
 

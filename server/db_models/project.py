@@ -33,5 +33,18 @@ class Project(db.Model):
 
     def __repr__(self):
         return "{0} created by {1}".format(self.title, self.User_id)
-    
-    
+
+    @property
+    def serialize(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'title': self.title,
+            'subtitle': self.subtitle,
+            'industry': self.industry,
+            'location': self.location,
+            'photos': self.photos,
+            'funding_goal': self.funding_goal,
+            'current_funding': self.current_funding,
+            'deadline': self.deadline
+        }
