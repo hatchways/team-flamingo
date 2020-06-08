@@ -13,7 +13,7 @@ from util.validation_decorators.validate_project import validate_project
 project_handler = Blueprint('project_handler', __name__)
 
 
-@project_handler.route('/api/v1/user/<user_id>/projects', methods=['GET'])
+@project_handler.route('/api/v1/users/<user_id>/projects', methods=['GET'])
 @jwt_required
 def get_projects(user_id):
     user = User.query.filter_by(id=user_id).first()
@@ -39,6 +39,7 @@ def post_project(user_id):
         title=request.json.get('title', None),
         user_id=user_id,
         subtitle=request.json.get('subtitle', None),
+        description=request.json.get('description', None),
         location=request.json.get('location', None),
         photos=request.json.get('photos', []),
         funding_goal=request.json.get('funding_goal', None),
@@ -46,12 +47,12 @@ def post_project(user_id):
         current_funding=0
     )
 
-    project.industry[:] = industryList(request.json.get('industry', []))
+    project.industry[:] = industryList(request.json.get('industries', []))
 
     user.projects.append(project)
     db.session.commit()
 
-    return jsonify({"success": "project created"}), 201
+    return jsonify({'success': 'project created', 'project_id': project.id}), 201
 
 
 @project_handler.route('/api/v1/users/<user_id>/projects/<project_id>', methods=['PUT'])
@@ -80,11 +81,11 @@ def update_project(user_id, project_id):
 
 def industryList(industries):
     '''
-    Takes an array of strings signifying industries.
+    Takes an array of id's signifying industries.
     Returns array of industry models
     If none given, return empty array
     '''
     if(len(industries) == 0):
         return []
-    filters = [Industry.name == i for i in industries]
+    filters = [Industry.id == i for i in industries]
     return db.session.query(Industry).filter(or_(*filters)).all()

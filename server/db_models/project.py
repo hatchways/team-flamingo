@@ -19,6 +19,7 @@ class Project(db.Model):
         "users.id"), nullable=False)
     title = db.Column(db.String(64), index=True, unique=True, nullable=True)
     subtitle = db.Column(db.Text, nullable=True)
+    description = db.Column(db.Text, index=True, unique=True, nullable=True)
     # "Toxi" Configuration
     industry = db.relationship(
         "Industry", secondary=project_industries_map,
@@ -27,7 +28,7 @@ class Project(db.Model):
     photos = db.Column(MutableList.as_mutable(
         ARRAY(db.Text)), default=[], nullable=False)
     funding_goal = db.Column(MONEY, nullable=True)
-    current_funding = db.Column(MONEY)
+    current_funding = db.Column(MONEY, nullable=True)
     funds = db.relationship('Fund', backref='project')
     deadline = db.Column(TIMESTAMP, nullable=True)
 
