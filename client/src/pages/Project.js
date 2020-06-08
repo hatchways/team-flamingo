@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
+import { useHistory } from "react-router-dom";
 
 import {
   Typography,
@@ -41,6 +42,7 @@ const userStatic = {
   location: "New York, NY",
 };
 const projectStatic = {
+  id: 3,
   title: "Urban Jungle",
   subtitle: "Coffee. Community",
   currentInvested: 29000,
@@ -151,8 +153,19 @@ function ProjectPanel(props) {
 
 function UserInfo(props) {
   const classes = useStyles();
+  const history = useHistory();
+
   const proj = props.project;
   const user = props.user;
+
+  const handleFund = () => {
+    history.push({
+      pathname: `/project/${proj.id}/fund`,
+      state: {
+        title: proj.title,
+      },
+    });
+  };
 
   return (
     <Card>
@@ -196,7 +209,12 @@ function UserInfo(props) {
         <Button size="large" variant="outlined" disableElevation>
           Send a Message
         </Button>
-        <Button size="large" variant="outlined" disableElevation>
+        <Button
+          size="large"
+          variant="outlined"
+          disableElevation
+          onClick={handleFund}
+        >
           Fund This Project
         </Button>
       </Box>

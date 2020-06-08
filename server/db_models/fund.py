@@ -8,5 +8,5 @@ class Fund(db.Model):
     project_id = db.Column(db.Integer, db.ForeignKey(
         "project.id"), nullable=False)
     payment_method_id = db.Column(db.String(64), db.ForeignKey(
-        "payment_method.id"), nullable=False)
+        "payment_method.stripe_payment_method_id"), nullable=False)
     fund_amount = db.Column(MONEY, nullable=False)

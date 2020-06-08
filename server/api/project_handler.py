@@ -24,7 +24,7 @@ def get_project(project_id):
 
 @project_handler.route('/api/v1/users/<user_id>/projects', methods=['GET'])
 @jwt_required
-def get_projects(user_id):
+def get_users_projects(user_id):
     user = User.query.filter_by(id=user_id).first()
 
     if user is None:
