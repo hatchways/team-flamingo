@@ -3,6 +3,7 @@ from flask import jsonify, request, Blueprint
 from db_models.user import User
 from app import bcrypt
 from app import db
+from app import stripe
 from flask_jwt_extended import create_access_token, set_access_cookies
 from util.validation_decorators.validate_registration import validate_registration
 
@@ -14,12 +15,18 @@ register_handler = Blueprint('register_handler', __name__)
 def register():
     data = request.get_json()
 
+    customer = stripe.Customer.create(
+        email=data['login_email'],
+        name=data['username']
+    )
+
     user = User(
         username=data['username'],
         login_email=data['login_email'],
         profile_pics=[],
         expertise=[],
-        invest_in=[]
+        invest_in=[],
+        stripe_customer_id=customer.id
     )
     user.set_password(data['password'])
 
@@ -33,4 +40,4 @@ def register():
     response = jsonify({'register': True})
     set_access_cookies(response, token)
 
-    return response, 200
+    return response, 201

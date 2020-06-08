@@ -12,6 +12,8 @@ services:
     depends_on:
       - "server"
     stdin_open: true
+    environment:
+      - REACT_APP_STRIPE_PUBLISHABLE_KEY=pk_test_G450FX1Gk9KIm5LyKaq8UdVx007DXDHkFi
 
   server:
     restart: always
@@ -29,6 +31,8 @@ services:
       - DB_CONNECTION_STRING=postgresql://postgres:dev@db:5432/hatchways
     env_file:
       - aws-config.env
+      - stripe-config.env
+
 
   db:
     image: postgres:12.3

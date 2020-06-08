@@ -19,6 +19,7 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import { Link as RouterLink } from "react-router-dom";
 import NavBar from "../components/Navbar";
+import EditProfileDialog from "../components/EditProfileDialog";
 
 moment.updateLocale("en", { relativeTime: { future: "%s to go" } });
 const LinkTo = React.forwardRef((props, ref) => <RouterLink {...props} />);
@@ -80,6 +81,14 @@ function UserInfo(props) {
   const classes = useStyles();
   const user = props.user;
 
+  const [isOwnProfile, setIsOwnProfile] = useState(false);
+
+  useEffect(() => {
+    axios.get("/api/v1/me").then((res) => {
+      if (res.data.user_id == user.id) setIsOwnProfile(true);
+    });
+  }, [isOwnProfile]);
+
   return (
     <Box height="100%" className={classes.userInfoShadow}>
       <Container align="center">
@@ -104,17 +113,20 @@ function UserInfo(props) {
           <Typography color="textSecondary">{user.location}</Typography>
         </Box>
 
-        {/* Send a message */}
-        <Box className={classes.ySpacing}>
-          <Button
-            className={classes.sendMessage}
-            size="large"
-            variant="outlined"
-            disableElevation
-          >
-            Send a Message
-          </Button>
-        </Box>
+        {isOwnProfile ? (
+          <EditProfileDialog user={user} />
+        ) : (
+          <Box className={classes.ySpacing}>
+            <Button
+              className={classes.sendMessage}
+              size="large"
+              variant="outlined"
+              disableElevation
+            >
+              Send a Message
+            </Button>
+          </Box>
+        )}
 
         {/* Description */}
         <Box className={classes.ySpacing}>
@@ -189,7 +201,7 @@ function ProjectCard(props) {
             {projectInfo.title}
           </Typography>
           <Typography className={classes.cardInvested} display="inline">
-            {projectInfo.current_invested}
+            {projectInfo.current_funding}
           </Typography>
           <Typography color="textSecondary" display="inline">
             {" / " + projectInfo.funding_goal}

@@ -10,6 +10,7 @@ import Project from "./pages/Project";
 import CreateProject from "./pages/CreateProject";
 import Main from "./pages/Main";
 import Logout from "./pages/Logout";
+import Payment from "./pages/Payment";
 import EditProject from "./pages/EditProject";
 
 import "./App.css";
@@ -66,6 +67,7 @@ function App() {
               <Logout {...props} handleUserChange={handleUserChange} />
             )}
           />
+          <Route path="/payment" component={Payment} />
           <Route path="/:404">
             <h1>404 Page Not Found</h1>
           </Route>

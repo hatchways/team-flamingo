@@ -23,7 +23,7 @@ def validate_project(f):
         photos = request.json.get('photos', [])
         industry = request.json.get('industry', [])
         goal = request.json.get('funding_goal', None)
-        current_invested = request.json.get('current_invested', None)
+        current_funding = request.json.get('current_funding', None)
         equity = request.json.get('equity', None)
         deadline = request.json.get('deadline', None)
 
@@ -63,10 +63,10 @@ def validate_project(f):
                 return jsonify({"error": "Funding goal is not a float"}), 400
 
         # Verify current amount invested is a float
-        if current_invested:
-            if type(current_invested) is not float:
+        if current_funding:
+            if type(current_funding) is not float:
                 return jsonify({"error": "Current Invested is not a float"}), 400
-            if current_invested < 0:
+            if current_funding < 0:
                 return jsonify({"error": "Current Invested is less than 0"}), 400
 
         # Verify equity is a float and between 0 and 1

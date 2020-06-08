@@ -27,7 +27,8 @@ class Project(db.Model):
     photos = db.Column(MutableList.as_mutable(
         ARRAY(db.Text)), default=[], nullable=False)
     funding_goal = db.Column(MONEY, nullable=True)
-    current_invested = db.Column(MONEY, nullable=True)
+    current_funding = db.Column(MONEY)
+    funds = db.relationship('Fund', backref='project')
     deadline = db.Column(TIMESTAMP, nullable=True)
     equity = db.Column(db.Float, nullable=True)
 
@@ -44,7 +45,7 @@ class Project(db.Model):
             'location': self.location,
             'photos': self.photos,
             'funding_goal': self.funding_goal,
-            'current_invested': self.current_invested,
+            'current_funding': self.current_funding,
             'deadline': self.deadline,
             'equity': self.equity
         }

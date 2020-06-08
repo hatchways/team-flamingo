@@ -35,3 +35,4 @@ instance/
 # .env
 .env
 aws-config.env
+stripe-config.env

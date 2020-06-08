@@ -42,9 +42,14 @@ def post_project(user_id):
         location=request.json.get('location', None),
         photos=request.json.get('photos', []),
         funding_goal=request.json.get('funding_goal', None),
-        current_invested=request.json.get('current_invested', None),
+        << << << < HEAD
+        current_funding=request.json.get('current_funding', None),
         deadline=request.json.get('deadline', None),
         equity=request.json.get('equity', None)
+        == == == =
+        deadline=request.json.get('deadline', None),
+        current_funding=0
+        >> >>>> > dev
     )
 
     project.industry[:] = industryList(request.json.get('industry', []))
@@ -71,7 +76,7 @@ def update_project(user_id, project_id):
     project.photos = data["photos"]
     # Probably shouldn't be able to change funding goal
     project.funding_goal = data["funding_goal"]
-    project.current_invested = data['current_invested'],
+    project.current_funding = data['current_funding'],
     project.industry[:] = industryList(data["industry"])
     project.deadline = data["deadline"]
     project.equity = data["equity"]
