@@ -11,4 +11,5 @@ class Config(object):
 	JWT_TOKEN_LOCATION = os.environ.get('JWT_TOKEN_LOCATION')
 	JWT_COOKIE_CSRF_PROTECT = os.environ.get('JWT_COOKIE_CSRF_PROTECT') == 'True'
 	STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
+	STRIPE_CREATE_WEBHOOK_ON_STARTUP = os.environ.get('STRIPE_CREATE_WEBHOOK_ON_STARTUP') == 'True'
 

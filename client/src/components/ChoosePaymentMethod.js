@@ -52,8 +52,10 @@ function ChoosePaymentMethod({ onUpdatePayment }) {
   };
 
   const handleChangeMethod = (event) => {
-    setChosenMethod(event.target.value);
-    onUpdatePayment(event.target.value);
+    const method = event.target.value;
+
+    setChosenMethod(method);
+    onUpdatePayment(method);
   };
 
   const PaymentCard = ({ method }) => (
