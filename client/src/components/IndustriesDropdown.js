@@ -58,9 +58,7 @@ function IndustriesDropdown(props) {
 
   const handleRemoveIndustry = (industry) => {
     setIndustries((industries) => {
-      const index = industries.indexOf(industry);
-      industries.splice(index, 1);
-      return [...industries];
+      return industries.filter((i) => i !== industry);
     });
   };
 
