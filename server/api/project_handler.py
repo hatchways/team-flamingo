@@ -12,6 +12,15 @@ from util.validation_decorators.validate_project import validate_project
 
 project_handler = Blueprint('project_handler', __name__)
 
+@project_handler.route('/api/v1/projects/<project_id>', methods=['GET'])
+@jwt_required
+def get_project(project_id):
+    project = Project.query.filter_by(id=project_id).first()
+
+    if not project:
+        return jsonify({'error': 'There is no project with the given id'}), 404
+
+    return jsonify(project.serialize)
 
 @project_handler.route('/api/v1/users/<user_id>/projects', methods=['GET'])
 @jwt_required
@@ -36,15 +45,16 @@ def post_project(user_id):
     user = User.query.filter_by(id=user_id).first()
 
     project = Project(
-        title=request.json.get('title', None),
+        title=data.get('title', None),
         user_id=user_id,
-        subtitle=request.json.get('subtitle', None),
-        description=request.json.get('description', None),
-        location=request.json.get('location', None),
-        photos=request.json.get('photos', []),
-        funding_goal=request.json.get('funding_goal', None),
-        deadline=request.json.get('deadline', None),
-        current_funding=0
+        subtitle=data.get('subtitle', None),
+        description=data.get('description', None),
+        location=data.get('location', None),
+        photos=data.get('photos', []),
+        funding_goal=data.get('funding_goal', None),
+        deadline=data.get('deadline', None),
+        current_funding=0,
+        live=data.get('live', False)
     )
 
     project.industry[:] = industryList(request.json.get('industries', []))
@@ -65,14 +75,18 @@ def update_project(user_id, project_id):
     if project is None:
         return jsonify({"error": "project does not exist"}), 400
 
-    project.title = data["title"]
-    project.subtitle = data["subtitle"]
-    project.location = data["location"]
-    project.photos = data["photos"]
+    project.title = data.get("title", project.title)
+    project.subtitle = data.get("subtitle", project.subtitle)
+    project.description = data.get("description", project.description)
+    project.location = data.get("location", project.location)
+    project.photos = data.get("photos", project.photos)
+    project.industry[:] = industryList(data["industry"]) or project.industry[:]
     # Probably shouldn't be able to change funding goal
-    project.funding_goal = data["funding_goal"]
-    project.industry[:] = industryList(data["industry"])
-    project.deadline = data["deadline"]
+
+    if not project.live:
+        project.funding_goal = data.get("funding_goal", project.funding_goal)
+        project.deadline = data.get("deadline", project.deadline)
+        project.live = data.get("live", False)
 
     db.session.commit()
 

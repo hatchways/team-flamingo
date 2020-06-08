@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import {
   Typography,
@@ -12,6 +12,7 @@ import {
   Drawer,
   Toolbar,
   TextField,
+  CircularProgress,
 } from "@material-ui/core";
 import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 import VisibilityIcon from "@material-ui/icons/Visibility";
@@ -20,6 +21,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import Navbar from "../components/Navbar";
 import IndustriesDropdown from "../components/IndustriesDropdown";
+import DropZoneUpload from "../components/DropZoneUpload";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -87,14 +89,29 @@ const useStyles = makeStyles((theme) => ({
 
 function Basics(props) {
   const classes = useStyles();
+  const projectId = props.match.params.projectId;
+  const project = undefined;
 
   // State variables
+  const [loading, setLoading] = useState(true);
+  const [upload, setUpload] = useState(false);
   const [title, setTitle] = useState("");
   const [subtitle, setSubtitle] = useState("");
   const [industries, setIndustries] = useState([]);
   const [location, setLocation] = useState("");
   const [images, setImages] = useState([]);
   const [fundingGoal, setFundingGoal] = useState(0);
+
+  // Get current project info to prepopulate fields
+  useEffect(() => {
+    axios
+      .get(`/api/v1/projects/${projectId}`)
+      .then((res) => {
+        project = res.data;
+        setLoading(false);
+      })
+      .catch((err) => console.log(err));
+  }, [projectId, project]);
 
   const handleUpdateTitle = (event) => {
     setTitle(event.target.value);
@@ -116,9 +133,13 @@ function Basics(props) {
     setFundingGoal(event.target.value);
   };
 
-  const handleSave = (event) => {
-    // TODO: save project edits
+  const handleTriggerFileUpload = (event) => {
+    setUpload(true);
   };
+
+  const handleSave = useCallback((projectPics) => {
+    // axios.put()
+  });
 
   return (
     <Grid container direction="row" spacing={4}>
@@ -167,7 +188,11 @@ function Basics(props) {
 
       <Grid item xs={12}>
         <Typography>Download images</Typography>
-        {/* TODO: add in file upload component */}
+        <DropZoneUpload
+          upload={upload}
+          uploadLocation="project"
+          handleUploadSuccess={handleSave}
+        />
       </Grid>
 
       <Grid item xs={12}>
@@ -185,7 +210,7 @@ function Basics(props) {
       <Grid item xs={12}>
         <Button
           variant="contained"
-          onClick={handleSave}
+          onClick={handleTriggerFileUpload}
           className={classes.primaryButton}
         >
           SAVE
