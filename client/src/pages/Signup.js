@@ -14,8 +14,6 @@ import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 
-import NavBar from "../components/Navbar";
-
 import { validateEmail } from "../util/validateEmail";
 
 const useStyles = makeStyles((theme) => ({
@@ -109,11 +107,11 @@ function Signup(props) {
         login_email: email,
         password: password,
         confirm: confirm,
-        profile_pics: ["default"],
       })
       .then((res) => {
+        props.handleUserLog(true);
         // TODO: Redirect to profile specific to user
-        history.push("/profile");
+        history.push("/");
       })
       .catch((error) => {
         setSignupError(error.response.data.error);
@@ -128,7 +126,6 @@ function Signup(props) {
 
   return (
     <div>
-      <NavBar />
       <Container maxWidth="sm">
         <Typography variant="h2" align="center" className={classes.header}>
           <Box fontWeight="fontWeightMedium" fontSize={40}>

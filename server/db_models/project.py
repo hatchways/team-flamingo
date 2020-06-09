@@ -30,8 +30,22 @@ class Project(db.Model):
     current_funding = db.Column(MONEY)
     funds = db.relationship('Fund', backref='project')
     deadline = db.Column(TIMESTAMP, nullable=True)
+    equity = db.Column(db.Float, nullable=True)
 
     def __repr__(self):
-        return "{0} created by {1}".format(self.title, self.User_id)
-    
-    
+        return "{0} created by user with id {1}".format(self.title, self.User_id)
+
+    @property
+    def serialize(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'subtitle': self.subtitle,
+            'industry': [i.serialize for i in self.industry],
+            'location': self.location,
+            'photos': self.photos,
+            'funding_goal': self.funding_goal,
+            'current_funding': self.current_funding,
+            'deadline': self.deadline,
+            'equity': self.equity
+        }

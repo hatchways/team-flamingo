@@ -23,14 +23,16 @@ def validate_project(f):
         photos = request.json.get('photos', [])
         industry = request.json.get('industry', [])
         goal = request.json.get('funding_goal', None)
+        current_funding = request.json.get('current_funding', None)
+        equity = request.json.get('equity', None)
         deadline = request.json.get('deadline', None)
 
         # Verify Length of Title
-        if title is not None and len(title) > 64:
+        if title and len(title) > 64:
             return jsonify({'error': 'Title must be between less than 64 characters'}), 400
 
         # Verify Length of Location
-        if location is not None and len(location) > 64:
+        if location and len(location) > 64:
             return jsonify({'error': 'Location must be between less than 64 characters'}), 400
 
         # Verify photos is in proper form, an array of strings
@@ -56,17 +58,29 @@ def validate_project(f):
                 return jsonify({"error": "That industry does not exist, please contact us to add an additional industry or choose one from the list"}), 400
 
         # Verify goal is a float
-        try:
-            if goal is not None:
-                float(goal)
-        except:
-            return jsonify({"error": "Funding goal is not a float"})
+        if goal:
+            if type(goal) is not float:
+                return jsonify({"error": "Funding goal is not a float"}), 400
+
+        # Verify current amount invested is a float
+        if current_funding:
+            if type(current_funding) is not float:
+                return jsonify({"error": "Current Invested is not a float"}), 400
+            if current_funding < 0:
+                return jsonify({"error": "Current Invested is less than 0"}), 400
+
+        # Verify equity is a float and between 0 and 1
+        if equity:
+            if type(equity) is not float:
+                return jsonify({"error": "Equity  is not a float"}), 400
+            if equity < 0 or equity > 1:
+                return jsonify({"error": "Equity must be between 0 and 1"}), 400
 
         # Verify deadline is a valid date
-        if deadline is not None:
+        if deadline:
             # This deadline is ISO 8016 or a "Special Value" in Postgres for datetime
-            if not re.fullmatch(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}(\+\d{1,2}:\d{2}|(Z))', deadline) and deadline not in ["epoch", "infinity", "-infinity", "now", "today", "tomorrow", "yesterday"]:
-                return jsonify({"error": "Deadline is not in correct date format"})
+            if not re.fullmatch(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\+\d{1,2}:\d{2}|(Z))', deadline) and deadline not in ["epoch", "infinity", "-infinity", "now", "today", "tomorrow", "yesterday"]:
+                return jsonify({"error": "Deadline is not in correct date format"}), 400
 
         return f(*args, **kwargs)
     return wrapper

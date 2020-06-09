@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Redirect } from "react-router-dom";
+import moment from "moment";
 
 import {
   Typography,
@@ -11,59 +13,18 @@ import {
   CardMedia,
   CardContent,
   Divider,
+  Grid,
 } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-
-import projectpic1 from "../staticImages/projPicture1.png";
-import projectpic2 from "../staticImages/projPicture2.png";
-import projectpic3 from "../staticImages/projPicture3.png";
-import profpic1 from "../staticImages/profpic1.png";
-
-import NavBar from "../components/Navbar";
 import EditProfileDialog from "../components/EditProfileDialog";
 
-const userStatic = {
-  id: 2,
-  profilePics: [],
-  name: "Alexander Faa",
-  location: "New York, NY",
-  description: "I just have a great passion for all things coffee",
-  expertise: ["marketing", "coffee", "technology"],
-  linkedin: "https://linkedin.com/in/alexanderfaa",
-  angelco: "https://angel.co/alexanderfaa",
-};
-const projectStatic = [
-  {
-    photo: projectpic1,
-    name: "Urban Jungle: eco-friendly coffee shop",
-    currentInvested: 23874,
-    wantedInvestement: 40000,
-    equity: 0.1,
-    timeLeft: 44,
-  },
-  {
-    photo: projectpic2,
-    name: "Cafe Black: The Future of coffee",
-    currentInvested: 2647,
-    wantedInvestement: 60000,
-    equity: 0.1,
-    timeLeft: 60,
-  },
-  {
-    photo: projectpic3,
-    name: "Easy to use, Powerful AI Camera",
-    currentInvested: 34912,
-    wantedInvestement: 55000,
-    equity: 0.18,
-    timeLeft: 12,
-  },
-];
+moment.updateLocale("en", { relativeTime: { future: "%s to go" } });
 
 const useStyles = makeStyles((theme) => ({
   root: {
     color: "black",
+    height: "100vh",
   },
   userInfoShadow: {
     paddingTop: theme.spacing(3),
@@ -129,17 +90,31 @@ function UserInfo(props) {
     <Box height="100%" className={classes.userInfoShadow}>
       <Container align="center">
         {/* Avatar */}
-        <Avatar className={classes.avatar} src={profpic1}></Avatar>
+        {user.current_avatar > 0 || user.current_avatar === 0 ? (
+          <Avatar
+            className={classes.avatar}
+            src={
+              process.env.REACT_APP_AWS_ROOT +
+              user.profile_pics[user.current_avatar]
+            }
+          />
+        ) : (
+          // Default avatar
+          <Avatar className={classes.avatar} />
+        )}
         {/* User Info */}
         <Box>
           <Typography variant="h6" component="p">
-            {user.name}
+            {user.username}
           </Typography>
           <Typography color="textSecondary">{user.location}</Typography>
         </Box>
 
         {isOwnProfile ? (
-          <EditProfileDialog user={user} />
+          <EditProfileDialog
+            user={user}
+            handleUserEdited={props.handleUserEdited}
+          />
         ) : (
           <Box className={classes.ySpacing}>
             <Button
@@ -185,13 +160,18 @@ function UserInfo(props) {
             Looking to invest in
           </Typography>
 
-          <Button
-            className={classes.highlightButton}
-            variant="outlined"
-            size="small"
-          >
-            {user.wantInvestIn}
-          </Button>
+          {user.invest_in.map((value, step) => {
+            return (
+              <Button
+                key={step}
+                className={classes.highlightButton}
+                variant="outlined"
+                size="small"
+              >
+                {value}
+              </Button>
+            );
+          })}
         </Container>
       </Box>
     </Box>
@@ -201,27 +181,32 @@ function UserInfo(props) {
 function ProjectCard(props) {
   const classes = useStyles();
   const projectInfo = props.project;
+  const fromNow = moment(projectInfo.deadline).fromNow();
+
   return (
     <Grid item xs={6}>
       <Card elevation={8}>
         <CardMedia
           className={classes.media}
           component="img"
-          src={projectInfo.photo}
+          src={
+            projectInfo.photos[0]
+              ? process.env.REACT_APP_AWS_ROOT + projectInfo.photos[0]
+              : ""
+          }
         ></CardMedia>
         <CardContent>
           <Typography className={classes.cardTitle} variant="h5" component="h4">
-            {projectInfo.name}
+            {projectInfo.title}
           </Typography>
           <Typography className={classes.cardInvested} display="inline">
-            ${projectInfo.currentInvested}
+            {projectInfo.current_funding}
           </Typography>
           <Typography color="textSecondary" display="inline">
-            {" / " + projectInfo.wantedInvestement}
+            {" / " + projectInfo.funding_goal}
           </Typography>
           <Typography variant="body2" color="textSecondary">
-            Equity exchange: {projectInfo.equity * 100}% |
-            {" " + projectInfo.timeLeft} days to go
+            Equity exchange: {projectInfo.equity * 100}% |{" " + fromNow}
           </Typography>
         </CardContent>
       </Card>
@@ -231,31 +216,68 @@ function ProjectCard(props) {
 
 function UserDashboard(props) {
   const classes = useStyles();
-  return (
-    <div className={classes.root}>
-      {/* Top Navbar */}
-      <NavBar />
+  const [user, setUser] = useState();
+  const [projects, setProjects] = useState({});
+  const [error, setError] = useState();
 
-      <Grid container>
-        {/* User Information Sidebar */}
-        <Grid item xs={3}>
-          <UserInfo user={userStatic} />
-        </Grid>
-        {/* Invested in and Personal Projects */}
-        <Grid item xs={9}>
-          <Container className={classes.projectContainer}>
-            <Typography className={classes.ySpacing} variant="h2">
-              <Box fontWeight="fontWeightMedium">Invested In: </Box>
-            </Typography>
-            <Grid container spacing={6}>
-              {projectStatic.map((value, step) => {
-                return <ProjectCard key={step} project={value} />;
-              })}
-            </Grid>
-          </Container>
-        </Grid>
+  const handleUserEdited = (user) => {
+    setUser(user);
+  };
+
+  const id = props.match.params.id;
+
+  useEffect(() => {
+    async function fetchUser() {
+      const userRes = await axios(`/api/v1/users/${id}/profile`);
+      setUser(userRes.data);
+    }
+    async function fetchProject() {
+      const projRes = await axios(`/api/v1/users/${id}/projects`);
+      setProjects(projRes.data);
+    }
+    async function fetchData() {
+      try {
+        await Promise.all([fetchUser(), fetchProject()]);
+      } catch (err) {
+        console.dir(err);
+        if (err.response.status === 400) {
+          setError(err.response);
+        }
+      }
+    }
+    fetchData();
+  }, [id]);
+
+  if (error) {
+    return <Redirect to="/404" />;
+  }
+
+  return (
+    <Grid container className={classes.root}>
+      {/* User Information Sidebar */}
+      <Grid item xs={3}>
+        {user ? (
+          <UserInfo user={user} handleUserEdited={handleUserEdited} />
+        ) : (
+          ""
+        )}
       </Grid>
-    </div>
+      {/* Invested in and Personal Projects */}
+      <Grid item xs={9}>
+        <Container className={classes.projectContainer}>
+          <Typography className={classes.ySpacing} variant="h2">
+            <Box fontWeight="fontWeightMedium">Invested In: </Box>
+          </Typography>
+          <Grid container spacing={6}>
+            {projects.length
+              ? projects.map((value, step) => {
+                  return <ProjectCard key={step} project={value} />;
+                })
+              : ""}
+          </Grid>
+        </Container>
+      </Grid>
+    </Grid>
   );
 }
 

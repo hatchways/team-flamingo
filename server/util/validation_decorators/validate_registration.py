@@ -19,13 +19,13 @@ def validate_registration(f):
         # Validate username
         if len(username) < 3 or len(username) > 64:
             return jsonify({'error': 'Username must be between 3 and 64 characters'}), 400
-        if db.session.query(User.id).filter_by(username=username).scalar() is not None:
+        if db.session.query(User.id).filter_by(username=username).scalar():
             return jsonify({'error': 'Username is not unique'}), 400
 
         # Validate login email
         if not re.fullmatch(r'\w+[.|\w]\w+@\w+[.]\w+[.|\w+]\w+', login_email):
             return jsonify({'error': 'Email is not a valid format'}), 400
-        if db.session.query(User.id).filter_by(login_email=login_email).scalar() is not None:
+        if db.session.query(User.id).filter_by(login_email=login_email).scalar():
             return jsonify({'error': 'Login email is not unique'}), 400
 
         # Validate password
