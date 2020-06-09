@@ -10,6 +10,7 @@ import Project from "./pages/Project";
 import CreateProject from "./pages/CreateProject";
 import Payment from "./pages/Payment";
 import EditProject from "./pages/EditProject";
+import Explore from "./pages/Explore";
 
 import "./App.css";
 
@@ -31,6 +32,7 @@ function App() {
           <Route path="/login" component={Login} />
           <Route path="/project" component={Project} />
           <Route path="/payment" component={Payment} />
+          <Route path="/" component={Explore} />
         </Switch>
       </BrowserRouter>
     </ThemeProvider>
