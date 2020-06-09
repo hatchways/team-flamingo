@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import moment from "moment";
 
 import {
@@ -17,12 +17,9 @@ import {
 } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core/styles";
-import { Link as RouterLink } from "react-router-dom";
-import NavBar from "../components/Navbar";
 import EditProfileDialog from "../components/EditProfileDialog";
 
 moment.updateLocale("en", { relativeTime: { future: "%s to go" } });
-const LinkTo = React.forwardRef((props, ref) => <RouterLink {...props} />);
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -97,7 +94,7 @@ function UserInfo(props) {
           <Avatar
             className={classes.avatar}
             src={
-              "https://plphotos.s3.us-east-2.amazonaws.com/" +
+              process.env.REACT_APP_AWS_ROOT +
               user.profile_pics[user.current_avatar]
             }
           />
@@ -114,7 +111,10 @@ function UserInfo(props) {
         </Box>
 
         {isOwnProfile ? (
-          <EditProfileDialog user={user} />
+          <EditProfileDialog
+            user={user}
+            handleUserEdited={props.handleUserEdited}
+          />
         ) : (
           <Box className={classes.ySpacing}>
             <Button
@@ -191,8 +191,7 @@ function ProjectCard(props) {
           component="img"
           src={
             projectInfo.photos[0]
-              ? "https://plphotos.s3.us-east-2.amazonaws.com/" +
-                projectInfo.photos[0]
+              ? process.env.REACT_APP_AWS_ROOT + projectInfo.photos[0]
               : ""
           }
         ></CardMedia>
@@ -215,85 +214,67 @@ function ProjectCard(props) {
   );
 }
 
-function ErrorPage(props) {
-  return (
-    <div>
-      <NavBar />
-      <Container align="center">{props.err}</Container>
-    </div>
-  );
-}
-
 function UserDashboard(props) {
   const classes = useStyles();
   const [user, setUser] = useState();
-  const [err, setErr] = useState();
   const [projects, setProjects] = useState({});
 
-  const location = useLocation();
-  const id = location.pathname.match(/profile\/(\d+)/);
+  const handleUserEdited = (user) => {
+    setUser(user);
+  };
+
+  const id = props.match.params.id;
 
   useEffect(() => {
+    async function fetchUser() {
+      const userRes = await axios(`/api/v1/users/${id}/profile`);
+      setUser(userRes.data);
+    }
+    async function fetchProject() {
+      const projRes = await axios(`/api/v1/users/${id}/projects`);
+      setProjects(projRes.data);
+    }
     async function fetchData() {
       try {
-        console.log("Fetching user data");
-        const userRes = await axios(`/api/v1/users/${id[1]}/profile`);
-        const projRes = await axios(`/api/v1/users/${id[1]}/projects`);
-        setUser(userRes.data);
-        setProjects(projRes.data);
+        fetchUser();
+        fetchProject();
       } catch (err) {
-        console.log("error:");
         console.dir(err);
-        const code = err.response.status;
-        if (code === 400) {
-          setErr(<p>{err.response.data.error}</p>);
-        } else if (code === 401) {
-          setErr(
-            <div>
-              <p>You must be logged in to view this page</p>
-              <Button color="inherit" component={LinkTo} to="/login">
-                Login
-              </Button>
-              <Button color="inherit" component={LinkTo} to="/signup">
-                Signup
-              </Button>
-            </div>
-          );
-        } else {
-          setErr("Unknown Error");
+        if (err.response.status === 400) {
+          return <Redirect to="/404" />;
         }
       }
     }
     fetchData();
-  }, [location]);
+  }, [id]);
 
-  if (err) {
-    return <ErrorPage err={err} />;
-  } else {
-    return (
-      <Grid container className={classes.root}>
-        {/* User Information Sidebar */}
-        <Grid item xs={3}>
-          {user ? <UserInfo user={user} /> : ""}
-        </Grid>
-        {/* Invested in and Personal Projects */}
-        <Grid item xs={9}>
-          <Container className={classes.projectContainer}>
-            <Typography className={classes.ySpacing} variant="h2">
-              <Box fontWeight="fontWeightMedium">Invested In: </Box>
-            </Typography>
-            <Grid container spacing={6}>
-              {projects.length
-                ? projects.map((value, step) => {
-                    return <ProjectCard key={step} project={value} />;
-                  })
-                : ""}
-            </Grid>
-          </Container>
-        </Grid>
+  return (
+    <Grid container className={classes.root}>
+      {/* User Information Sidebar */}
+      <Grid item xs={3}>
+        {user ? (
+          <UserInfo user={user} handleUserEdited={handleUserEdited} />
+        ) : (
+          ""
+        )}
       </Grid>
-    );
-  }
+      {/* Invested in and Personal Projects */}
+      <Grid item xs={9}>
+        <Container className={classes.projectContainer}>
+          <Typography className={classes.ySpacing} variant="h2">
+            <Box fontWeight="fontWeightMedium">Invested In: </Box>
+          </Typography>
+          <Grid container spacing={6}>
+            {projects.length
+              ? projects.map((value, step) => {
+                  return <ProjectCard key={step} project={value} />;
+                })
+              : ""}
+          </Grid>
+        </Container>
+      </Grid>
+    </Grid>
+  );
 }
 
 export default UserDashboard;

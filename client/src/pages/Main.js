@@ -5,28 +5,26 @@ import axios from "axios";
 function Main(props) {
   const [currentUser, setCurrentUser] = useState(false);
   const [userProfile, setUserProfile] = useState("");
+  const { isCustomized, handleUserChange } = props;
 
   useEffect(() => {
-    const checkForUser = props.checkForUser;
-    const handleUserChange = props.handleUserChange;
     async function fetchData() {
-      if (!checkForUser) {
+      if (isCustomized) {
         return;
       }
       try {
-        console.log("fetching info for navbar");
         const res = await axios(`/api/v1/me`);
         setUserProfile(`/profile/${res.data.user_id}`);
         setCurrentUser(res.data);
+        handleUserChange({ isCustom: true, isAuth: true });
       } catch (err) {
-        console.log("navbar error:");
         console.dir(err.response.data.error);
         setCurrentUser(false);
+        handleUserChange({ isCustom: true, isAuth: false });
       }
-      handleUserChange(false);
     }
     fetchData();
-  }, [props.checkForUser, props.handleUserChange]);
+  }, [isCustomized, handleUserChange]);
 
   return <NavBar currentUser={currentUser} userProfile={userProfile} />;
 }

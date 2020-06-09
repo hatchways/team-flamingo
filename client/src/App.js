@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ThemeProvider } from "@material-ui/styles";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 
@@ -12,15 +12,27 @@ import Main from "./pages/Main";
 import Logout from "./pages/Logout";
 import Payment from "./pages/Payment";
 import EditProject from "./pages/EditProject";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 import "./App.css";
 
 function App() {
   // True: Check for user, False: Don't Check for User
-  const [checkForUser, setCheckForUser] = useState(true);
-  function handleUserChange(val) {
-    setCheckForUser(val);
+  const [isCustomized, setIsCustomized] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    localStorage.getItem("isAuth") ? true : false
+  );
+  function handleUserChange({ isCustom, isAuth }) {
+    setIsCustomized(isCustom);
+    setIsAuthenticated(isAuth);
+    localStorage.setItem("isAuth", isAuth);
   }
+  useEffect(() => {
+    if (isAuthenticated) {
+      handleUserChange({ isCustom: false, isAuth: true });
+    }
+  }, []);
+
   return (
     <ThemeProvider theme={theme}>
       <BrowserRouter>
@@ -30,7 +42,7 @@ function App() {
             <Main
               {...props}
               handleUserChange={handleUserChange}
-              checkForUser={checkForUser}
+              isCustomized={isCustomized}
             />
           )}
         />
@@ -44,21 +56,27 @@ function App() {
             component={CreateProject}
           />
 
-          <Route path="/profile/:id" component={UserDashboard} />
+          <ProtectedRoute
+            path="/profile/:id"
+            component={UserDashboard}
+            isAuthenticated={isAuthenticated}
+          />
           <Route path="/project" component={Project} />
 
           <Route
             path="/signup"
-            // component={Login}
             render={(props) => (
               <Signup {...props} handleUserChange={handleUserChange} />
             )}
           />
           <Route
             path="/login"
-            // component={Login}
             render={(props) => (
-              <Login {...props} handleUserChange={handleUserChange} />
+              <Login
+                {...props}
+                nothing={props.nothing}
+                handleUserChange={handleUserChange}
+              />
             )}
           />
           <Route

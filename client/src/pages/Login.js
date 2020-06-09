@@ -16,8 +16,6 @@ import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 
-import NavBar from "../components/Navbar";
-
 import { validateEmail } from "../util/validateEmail";
 
 const useStyles = makeStyles((theme) => ({
@@ -101,7 +99,7 @@ function Login(props) {
       })
       .then((res) => {
         handleRememberMe();
-        props.handleUserChange(true);
+        props.handleUserChange({ isCustom: false, isAuth: true });
         // TODO: redirect to profile specific to user
         history.push("/");
       })
@@ -118,7 +116,6 @@ function Login(props) {
 
   return (
     <div>
-      <NavBar />
       <Container maxWidth="sm">
         <Typography variant="h2" align="center" className={classes.header}>
           <Box fontWeight="fontWeightMedium" fontSize={40}>
