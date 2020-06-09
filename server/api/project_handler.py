@@ -73,7 +73,7 @@ def update_project(user_id, project_id):
 
     project = Project.query.filter_by(id=project_id).first()
     if project is None:
-        return jsonify({'error': 'project does not exist'}), 400
+        return jsonify({'error': 'project does not exist'}), 400    
 
     project.title = data.get('title', project.title)
     project.subtitle = data.get('subtitle', project.subtitle)
@@ -84,7 +84,6 @@ def update_project(user_id, project_id):
     industry = data.get('industry', False)
     if industry:
         project.industry[:] = industryList(industry)
-    # Probably shouldn't be able to change funding goal
 
     if not project.live:
         project.funding_goal = data.get('funding_goal', project.funding_goal)

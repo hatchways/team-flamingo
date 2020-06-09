@@ -146,7 +146,7 @@ function CreateProject(props) {
     axios
       .post(`/api/v1/users/${userId}/projects`, {
         description: description,
-        industries: industries.map((industry) => industry.id),
+        industries: industries.map((industry) => industry.name),
         location: location,
       })
       .then((res) => {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
+import query from "query-string";
 import {
   Typography,
   Grid,
@@ -27,6 +28,7 @@ import Basics from "../components/edit_project_tabs/Basics";
 import Story from "../components/edit_project_tabs/Story";
 import Funding from "../components/edit_project_tabs/Funding";
 import Payment from "../components/edit_project_tabs/Payment";
+import Live from "../components/edit_project_tabs/Live";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -92,7 +94,8 @@ function EditProject(props) {
   const classes = useStyles();
   const userId = props.match.params.profileId;
   const projectId = props.match.params.projectId;
-  const tabs = ["Basics", "Story", "Funding", "Payment"];
+  const tabs = ["Basics", "Story", "Funding", "Payment", "Live"];
+  const searchTab = query.parse(props.location.search).tab;
 
   const renderTab = (currentTab, project) => {
     const props = {
@@ -113,6 +116,8 @@ function EditProject(props) {
         return <Funding {...props} />;
       case "Payment":
         return <Payment {...props} />;
+      case "Live":
+        return <Live {...props} />;
       default:
         return <Basics {...props} />;
     }
@@ -121,7 +126,9 @@ function EditProject(props) {
   // State variables
   const [project, setProject] = useState();
   const [loading, setLoading] = useState(true);
-  const [currentTab, setCurrentTab] = useState("Basics");
+  const [currentTab, setCurrentTab] = useState(
+    searchTab ? searchTab : "Basics"
+  );
 
   // Get current project info to prepopulate fields
   useEffect(() => {
@@ -132,10 +139,11 @@ function EditProject(props) {
         setLoading(false);
       })
       .catch((err) => console.log(err));
-  }, [projectId]);
+  }, [projectId, currentTab]);
 
   // Handlers
   const handleTabChange = (tab) => {
+    props.history.push(window.location.pathname + "?tab=" + tab);
     setCurrentTab(tab);
   };
 

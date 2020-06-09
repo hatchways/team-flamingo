@@ -37,6 +37,7 @@ from db_models.industries import Industry
 from db_models.project import Project
 from db_models.fund import Fund
 from db_models.payment_method import PaymentMethod
+from db_models.connected_account import ConnectedAccount
 
 # Route handlers
 from api.home_handler import home_handler

@@ -34,9 +34,17 @@ function Funding(props) {
   const userId = props.userId;
   const project = props.project;
 
-  const [fundingGoal, setFundingGoal] = useState(project.funding_goal);
-  const [equity, setEquity] = useState("");
-  const [deadline, setDeadline] = useState(project.deadline);
+  const [fundingGoal, setFundingGoal] = useState(
+    // This converts the money string provided by backend
+    // to number that can be understood by TextField
+    Number(project.funding_goal.replace(/[^0-9.-]+/g, ""))
+  );
+  const [equity, setEquity] = useState(project.equity);
+  const [deadline, setDeadline] = useState(
+    project.deadline
+      ? moment(project.deadline).toISOString()
+      : moment(new Date()).toISOString()
+  );
 
   const handleUpdateFundingGoal = (event) => {
     setFundingGoal(event.target.value);

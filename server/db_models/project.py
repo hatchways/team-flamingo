@@ -2,7 +2,6 @@ from app import db
 from sqlalchemy.dialects.postgresql import MONEY, ARRAY, TIMESTAMP
 from util.db.MutableList import MutableList
 
-
 project_industries_map = db.Table(
     'project_industries_map',
     db.Column('industry_id', db.Integer, db.ForeignKey(
@@ -31,6 +30,8 @@ class Project(db.Model):
     current_funding = db.Column(MONEY, nullable=True)
     funds = db.relationship('Fund', backref='project')
     deadline = db.Column(TIMESTAMP, nullable=True)
+    stripe_state = db.Column(db.String(128), nullable=True)
+    connected_account = db.relationship('ConnectedAccount', backref='project', lazy=True, uselist=False)
     live = db.Column(db.Boolean, default=False, nullable=False)
 
     def __repr__(self):
@@ -50,6 +51,7 @@ class Project(db.Model):
             'funding_goal': self.funding_goal,
             'current_funding': self.current_funding,
             'deadline': self.deadline,
+            'connected_account': True if self.connected_account else False,
             'live': self.live
         }
     

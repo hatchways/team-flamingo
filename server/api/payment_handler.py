@@ -1,5 +1,6 @@
-from flask import jsonify, request, Blueprint
+from flask import jsonify, request, redirect, Blueprint
 from flask_jwt_extended import jwt_required, get_jwt_identity
+import uuid
 from app import app
 from app import stripe
 from app import db
@@ -7,6 +8,7 @@ from db_models.user import User
 from db_models.project import Project
 from db_models.payment_method import PaymentMethod
 from db_models.fund import Fund
+from db_models.connected_account import ConnectedAccount
 from util.money_to_decimal import money_to_decimal
 
 payment_handler = Blueprint('payment_handler', __name__)
@@ -115,5 +117,54 @@ def fund_project(project_id):
     db.session.commit()
 
     return jsonify({'success': True}), 201
+
+
+@payment_handler.route('/api/v1/payment/generate-state/<project_id>', methods=['GET'])
+@jwt_required
+def generate_state_for_stripe_auth(project_id):
+    project = Project.query.filter_by(id=project_id).first()
+
+    unique_state = uuid.uuid4()
+
+    project.stripe_state = unique_state
+
+    db.session.commit()
+
+    return jsonify({'state': project.stripe_state}), 200
+
+
+@payment_handler.route('/api/v1/payment/connect-account', methods=['GET'])
+def create_connected_account():
+    state = request.args.get('state')
+
+    project = Project.query.filter_by(stripe_state=state).first()
+
+    if not project:
+        return jsonify({'error': 'Invalid state provided'}), 403
+    
+    # Send the authorization code to Stripe's API
+    code = request.args.get('code')
+    try:
+        response = stripe.OAuth.token(grant_type="authorization_code", code=code,)
+    except stripe.oauth_error.OAuthError as e:
+        return jsonify({"error": "Invalid authorization code: " + code}), 400
+    except Exception as e:
+        return jsonify({"error": "An unknown error occurred."}), 500
+    
+    connected_account_id = response['stripe_user_id']
+
+    connected_account = ConnectedAccount(
+        project_id=project.id,
+        stripe_connected_account_id=connected_account_id
+    )
+
+    db.session.add(connected_account)
+    db.session.commit()
+
+    redirect_url = 'http://localhost:3000/profile/' + str(project.user.id) + '/projects/' + str(project.id) + '/edit?tab=Payment'
+
+    return redirect(redirect_url)
+    
+    
 
     
