@@ -30,7 +30,7 @@ def get_users_projects(user_id):
     if user is None:
         return jsonify({'error': 'User doesnt exist'}), 400
 
-    projects = [row2dict(p) for p in user.projects]
+    projects = [p.serialize for p in user.projects]
 
     return jsonify(projects), 200
 
@@ -52,6 +52,7 @@ def post_project(user_id):
         location=data.get('location', None),
         photos=data.get('photos', []),
         funding_goal=data.get('funding_goal', None),
+        equity=request.json.get('equity', None),
         deadline=data.get('deadline', None),
         current_funding=0,
         live=data.get('live', False)
@@ -80,6 +81,7 @@ def update_project(user_id, project_id):
     project.description = data.get('description', project.description)
     project.location = data.get('location', project.location)
     project.photos = data.get('photos', project.photos)
+    project.equity = data.get('equity', project.equity)
 
     industry = data.get('industry', False)
     if industry:

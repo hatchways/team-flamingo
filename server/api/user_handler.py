@@ -33,10 +33,12 @@ def edit_user(user_id):
 
     user_data = request.get_json()
 
-    user.profile_pics = user_data.get('profile_pics', None)
+    user.profile_pics = user_data.get('profile_pics', [])
+    user.current_avatar = user_data.get('current_avatar', None)
     user.location = user_data.get('location', None)
     user.description = user_data.get('description', None)
-    user.expertise = user_data.get('expertise', None)
+    user.expertise = user_data.get('expertise', [])
+    user.invest_in = user_data.get('invest_in', [])
     user.linkedin_profile = user_data.get('linkedin_profile', None)
     user.angelco_profile = user_data.get('angelco_profile', None)
 

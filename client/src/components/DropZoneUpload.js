@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@material-ui/core";
 import { DropzoneDialog } from "material-ui-dropzone";
 import axios from "axios";
@@ -24,6 +24,9 @@ function DropZoneUpload({
     setOpen(true);
   };
   const handleUpload = () => {
+    if (!files.length) {
+      return handleUploadSuccess(false);
+    }
     let formData = new FormData();
     formData.set("folder", uploadLocation);
     formData.set("project_id", projectId ? projectId : null);

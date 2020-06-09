@@ -49,10 +49,9 @@ class Project(db.Model):
             'location': self.location,
             'photos': self.photos,
             'funding_goal': self.funding_goal,
+            'equity': self.equity,
             'current_funding': self.current_funding,
             'deadline': self.deadline,
             'connected_account': True if self.connected_account else False,
             'live': self.live
         }
-    
-    

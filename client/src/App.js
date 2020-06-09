@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { ThemeProvider } from "@material-ui/styles";
 import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
 
@@ -11,29 +11,77 @@ import CreateProject from "./pages/CreateProject";
 import EditProject from "./pages/EditProject";
 import FundProject from "./pages/FundProject";
 import NotFound from "./pages/404NotFound";
+import Main from "./pages/Main";
+import Logout from "./pages/Logout";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 import "./App.css";
 
 function App() {
+  // True: User signed in, False: User Logged Out
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    localStorage.getItem("isAuth") ? true : false
+  );
+  function handleUserLog(isAuth) {
+    setIsAuthenticated(isAuth);
+    localStorage.setItem("isAuth", isAuth);
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <BrowserRouter>
+        <Route
+          path="/"
+          render={(props) => (
+            <Main
+              {...props}
+              handleUserLog={handleUserLog}
+              isAuthenticated={isAuthenticated}
+            />
+          )}
+        />
         <Switch>
-          <Route
-            path="/profile/:id/projects/create"
-            component={CreateProject}
-          />
           <Route
             path="/profile/:profileId/projects/:projectId/edit"
             component={EditProject}
           />
-          <Route path="/profile" component={UserDashboard} />
-          <Route path="/signup" component={Signup} />
-          <Route path="/login" component={Login} />
-          <Route path="/project/:projectId/fund" component={FundProject} />
+          <Route
+            path="/profile/:id/projects/create"
+            component={CreateProject}
+          />
+
+          <ProtectedRoute
+            path="/profile/:id"
+            component={UserDashboard}
+            isAuthenticated={isAuthenticated}
+          />
           <Route path="/project" component={Project} />
-          <Route path="/404" component={NotFound} />
-          <Redirect from="*" to="/404" />
+
+          <Route
+            path="/signup"
+            render={(props) => (
+              <Signup {...props} handleUserLog={handleUserLog} />
+            )}
+          />
+          <Route
+            path="/login"
+            render={(props) => (
+              <Login {...props} handleUserLog={handleUserLog} />
+            )}
+          />
+          <Route
+            path="/logout"
+            render={(props) => (
+              <Logout {...props} handleUserLog={handleUserLog} />
+            )}
+          />
+          <Route path="/payment" component={Payment} />
+          <Route path="/:404">
+            <h1>404 Page Not Found</h1>
+          </Route>
+          <Route path="/">
+            <h1>Home Page</h1>
+          </Route>
         </Switch>
       </BrowserRouter>
     </ThemeProvider>

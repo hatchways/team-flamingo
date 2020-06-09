@@ -1,7 +1,6 @@
 import React from "react";
 import {
   Box,
-  Container,
   AppBar,
   Toolbar,
   Typography,
@@ -37,14 +36,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function NavBar(props) {
+function NavBar({ currentUser, userProfile }) {
   const classes = useStyles();
-
   return (
     <Box mb={8}>
       <AppBar variant="outlined" className={classes.appBar} position="fixed">
         <Toolbar>
-          <Link component={LinkTo} to="/profile">
+          <Link component={LinkTo} to="/">
             <img
               className={classes.logo}
               src={logo}
@@ -54,7 +52,7 @@ function NavBar(props) {
           <Typography variant="h6" className={classes.title} component="h1">
             <Link
               component={LinkTo}
-              to="/profile"
+              to="/"
               className={classes.titleLink}
               color="inherit"
             >
@@ -62,13 +60,33 @@ function NavBar(props) {
             </Link>
           </Typography>
 
-          <Button color="inherit" component={LinkTo} to="/project">
+          {currentUser && (
+            <Button color="inherit" component={LinkTo} to={userProfile}>
+              {currentUser.login_email}
+            </Button>
+          )}
+
+          <Button color="inherit" component={LinkTo} to={"/project"}>
             Explore
           </Button>
           <Button color="inherit">Launch</Button>
-          <Button color="inherit" component={LinkTo} to="/signup">
-            Signup
-          </Button>
+          {!currentUser && (
+            <div>
+              <Button color="inherit" component={LinkTo} to="/login">
+                Login
+              </Button>
+              <Button color="inherit" component={LinkTo} to="/signup">
+                Signup
+              </Button>
+            </div>
+          )}
+          {currentUser && (
+            <div>
+              <Button color="inherit" component={LinkTo} to="/logout">
+                Logout
+              </Button>
+            </div>
+          )}
         </Toolbar>
       </AppBar>
     </Box>

@@ -11,11 +11,10 @@ class Industry(db.Model):
     # name = db.Column(db.String(32), unique=True)
 
     def __repr__(self):
-        return 'The {0} industry'.format(self.name)
-    
+        return "The {0} industry".format(self.name)
+
     @property
     def serialize(self):
         return {
-            'id': self.id,
-            'name': self.name
+            'name': self.name,
         }

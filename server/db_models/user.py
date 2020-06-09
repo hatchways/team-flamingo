@@ -25,9 +25,13 @@ class User(db.Model):
         lazy='subquery', backref=db.backref('users', lazy=True))
     profile_pics = db.Column(MutableList.as_mutable(
         ARRAY(db.Text)), nullable=False)
+    current_avatar = db.Column(db.Integer, nullable=True)
     location = db.Column(db.String(64), nullable=True)
     description = db.Column(db.Text, nullable=True)
-    expertise = db.Column(db.ARRAY(db.String(64)), nullable=True)
+    expertise = db.Column(MutableList.as_mutable(
+        ARRAY(db.String(64))), nullable=False)
+    invest_in = db.Column(MutableList.as_mutable(
+        ARRAY(db.String(64))), nullable=False)
     linkedin_profile = db.Column(db.String(64), nullable=True)
     angelco_profile = db.Column(db.String(64), nullable=True)
 
@@ -67,9 +71,11 @@ class User(db.Model):
             'id': self.id,
             'username': self.username,
             'profile_pics': self.profile_pics,
+            'current_avatar': self.current_avatar,
             'location': self.location,
             'description': self.description,
             'expertise': self.expertise,
+            'invest_in': self.invest_in,
             'linkedin': self.linkedin_profile,
             'angelco': self.angelco_profile
         }

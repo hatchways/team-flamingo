@@ -17,6 +17,7 @@ import ExpertiseChips from "../components/ExpertiseChips";
 function EditProfileDialog(props) {
   // Used for initializing values
   const user = props.user;
+  let curPhotos = user.profile_pics;
 
   // State variables
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -24,6 +25,7 @@ function EditProfileDialog(props) {
   const [location, setLocation] = useState(user.location);
   const [description, setDescription] = useState(user.description);
   const [expertise, setExpertise] = useState(user.expertise);
+  const [interest, setInterest] = useState(user.invest_in);
   const [linkedin, setLinkedin] = useState(user.linkedin);
   const [angelco, setAngelco] = useState(user.angelco);
 
@@ -39,6 +41,10 @@ function EditProfileDialog(props) {
 
   const handleUpdateExpertise = (expertise) => {
     setExpertise(expertise);
+  };
+
+  const handleUpdateInterest = (interest) => {
+    setInterest(interest);
   };
 
   const handleUpdateDescription = (event) => {
@@ -66,16 +72,25 @@ function EditProfileDialog(props) {
 
   const handleSave = useCallback(
     (profilePics) => {
+      if (profilePics) {
+        curPhotos.push(profilePics);
+      }
       axios
-        .put(`/api/v1/user/${user.id}/profile`, {
-          profile_pics: [profilePics],
+        .put(`/api/v1/users/${user.id}/profile`, {
+          profile_pics: curPhotos,
+          current_avatar: curPhotos.length - 1,
           location: location,
           description: description,
           expertise: expertise,
+          invest_in: interest,
           linkedin_profile: linkedin,
           angelco_profile: angelco,
         })
-        .then((res) => console.log(res))
+        .then((res) => {
+          console.log(res);
+          setUpload(false);
+          props.handleUserEdited(res.data);
+        })
         .catch((err) => console.log(err));
     },
     [location, description, expertise, linkedin, angelco, user]
@@ -108,7 +123,7 @@ function EditProfileDialog(props) {
               <TextField
                 variant="outlined"
                 fullWidth
-                value={location}
+                value={location || ""}
                 onChange={handleUpdateLocation}
               />
             </Grid>
@@ -120,7 +135,7 @@ function EditProfileDialog(props) {
                 fullWidth
                 multiline
                 rows={3}
-                value={description}
+                value={description || ""}
                 onChange={handleUpdateDescription}
               />
             </Grid>
@@ -133,11 +148,18 @@ function EditProfileDialog(props) {
             </Grid>
 
             <Grid item xs={12}>
+              <ExpertiseChips
+                onStateChange={handleUpdateInterest}
+                expertiseList={interest}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
               <Typography>Linkedin profile</Typography>
               <TextField
                 variant="outlined"
                 fullWidth
-                value={linkedin}
+                value={linkedin || ""}
                 onChange={handleUpdateLinkedin}
               />
             </Grid>
@@ -147,7 +169,7 @@ function EditProfileDialog(props) {
               <TextField
                 variant="outlined"
                 fullWidth
-                value={angelco}
+                value={angelco || ""}
                 onChange={handleUpdateAngelco}
               />
             </Grid>
