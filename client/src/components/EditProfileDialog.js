@@ -25,6 +25,7 @@ function EditProfileDialog(props) {
   const [location, setLocation] = useState(user.location);
   const [description, setDescription] = useState(user.description);
   const [expertise, setExpertise] = useState(user.expertise);
+  const [interest, setInterest] = useState(user.invest_in);
   const [linkedin, setLinkedin] = useState(user.linkedin);
   const [angelco, setAngelco] = useState(user.angelco);
 
@@ -40,6 +41,10 @@ function EditProfileDialog(props) {
 
   const handleUpdateExpertise = (expertise) => {
     setExpertise(expertise);
+  };
+
+  const handleUpdateInterest = (interest) => {
+    setInterest(interest);
   };
 
   const handleUpdateDescription = (event) => {
@@ -77,6 +82,7 @@ function EditProfileDialog(props) {
           location: location,
           description: description,
           expertise: expertise,
+          invest_in: interest,
           linkedin_profile: linkedin,
           angelco_profile: angelco,
         })
@@ -117,7 +123,7 @@ function EditProfileDialog(props) {
               <TextField
                 variant="outlined"
                 fullWidth
-                value={location}
+                value={location || ""}
                 onChange={handleUpdateLocation}
               />
             </Grid>
@@ -129,7 +135,7 @@ function EditProfileDialog(props) {
                 fullWidth
                 multiline
                 rows={3}
-                value={description}
+                value={description || ""}
                 onChange={handleUpdateDescription}
               />
             </Grid>
@@ -142,11 +148,18 @@ function EditProfileDialog(props) {
             </Grid>
 
             <Grid item xs={12}>
+              <ExpertiseChips
+                onStateChange={handleUpdateInterest}
+                expertiseList={interest}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
               <Typography>Linkedin profile</Typography>
               <TextField
                 variant="outlined"
                 fullWidth
-                value={linkedin}
+                value={linkedin || ""}
                 onChange={handleUpdateLinkedin}
               />
             </Grid>
@@ -156,7 +169,7 @@ function EditProfileDialog(props) {
               <TextField
                 variant="outlined"
                 fullWidth
-                value={angelco}
+                value={angelco || ""}
                 onChange={handleUpdateAngelco}
               />
             </Grid>

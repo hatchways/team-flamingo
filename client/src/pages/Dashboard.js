@@ -218,6 +218,7 @@ function UserDashboard(props) {
   const classes = useStyles();
   const [user, setUser] = useState();
   const [projects, setProjects] = useState({});
+  const [error, setError] = useState();
 
   const handleUserEdited = (user) => {
     setUser(user);
@@ -236,17 +237,20 @@ function UserDashboard(props) {
     }
     async function fetchData() {
       try {
-        fetchUser();
-        fetchProject();
+        await Promise.all([fetchUser(), fetchProject()]);
       } catch (err) {
         console.dir(err);
         if (err.response.status === 400) {
-          return <Redirect to="/404" />;
+          setError(err.response);
         }
       }
     }
     fetchData();
   }, [id]);
+
+  if (error) {
+    return <Redirect to="/404" />;
+  }
 
   return (
     <Grid container className={classes.root}>
