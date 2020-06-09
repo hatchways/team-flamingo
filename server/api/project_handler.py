@@ -28,7 +28,7 @@ def get_users_projects(user_id):
     user = User.query.filter_by(id=user_id).first()
 
     if user is None:
-        return jsonify({"error": "User doesn't exist"}), 400
+        return jsonify({'error': 'User doesnt exist'}), 400
 
     projects = [row2dict(p) for p in user.projects]
 
@@ -73,33 +73,36 @@ def update_project(user_id, project_id):
 
     project = Project.query.filter_by(id=project_id).first()
     if project is None:
-        return jsonify({"error": "project does not exist"}), 400
+        return jsonify({'error': 'project does not exist'}), 400
 
-    project.title = data.get("title", project.title)
-    project.subtitle = data.get("subtitle", project.subtitle)
-    project.description = data.get("description", project.description)
-    project.location = data.get("location", project.location)
-    project.photos = data.get("photos", project.photos)
-    project.industry[:] = industryList(data["industry"]) or project.industry[:]
+    project.title = data.get('title', project.title)
+    project.subtitle = data.get('subtitle', project.subtitle)
+    project.description = data.get('description', project.description)
+    project.location = data.get('location', project.location)
+    project.photos = data.get('photos', project.photos)
+
+    industry = data.get('industry', False)
+    if industry:
+        project.industry[:] = industryList(industry)
     # Probably shouldn't be able to change funding goal
 
     if not project.live:
-        project.funding_goal = data.get("funding_goal", project.funding_goal)
-        project.deadline = data.get("deadline", project.deadline)
-        project.live = data.get("live", False)
+        project.funding_goal = data.get('funding_goal', project.funding_goal)
+        project.deadline = data.get('deadline', project.deadline)
+        project.live = data.get('live', False)
 
     db.session.commit()
 
-    return jsonify({"success": "project updated"}), 200
+    return jsonify({'success': 'project updated'}), 200
 
 
 def industryList(industries):
     '''
-    Takes an array of id's signifying industries.
+    Takes an array of strings signifying industries.
     Returns array of industry models
     If none given, return empty array
     '''
     if(len(industries) == 0):
         return []
-    filters = [Industry.id == i for i in industries]
+    filters = [Industry.name == i for i in industries]
     return db.session.query(Industry).filter(or_(*filters)).all()

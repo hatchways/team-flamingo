@@ -62,7 +62,7 @@ def create_payment_method():
     db.session.add(payment_method)
     db.session.commit()
 
-    return "", 201
+    return '', 201
 
 @payment_handler.route('/api/v1/payment/payment-method', methods=['GET'])
 @jwt_required

@@ -4,26 +4,26 @@ from util.db.MutableList import MutableList
 
 
 project_industries_map = db.Table(
-    "project_industries_map",
-    db.Column("industry_id", db.Integer, db.ForeignKey(
+    'project_industries_map',
+    db.Column('industry_id', db.Integer, db.ForeignKey(
         'industry.id'), primary_key=True),
-    db.Column("project_id", db.Integer, db.ForeignKey(
+    db.Column('project_id', db.Integer, db.ForeignKey(
         'project.id'), primary_key=True)
 )
 
 
 class Project(db.Model):
-    __tablename__ = "project"
+    __tablename__ = 'project'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey(
-        "users.id"), nullable=False)
+        'users.id'), nullable=False)
     title = db.Column(db.String(64), index=True, unique=True, nullable=True)
     subtitle = db.Column(db.Text, nullable=True)
     description = db.Column(db.Text, index=True, unique=True, nullable=True)
-    # "Toxi" Configuration
+    # 'Toxi' Configuration
     industry = db.relationship(
-        "Industry", secondary=project_industries_map,
-        lazy="select", backref=db.backref("Project", lazy="select"))
+        'Industry', secondary=project_industries_map,
+        lazy='select', backref=db.backref('Project', lazy='select'))
     location = db.Column(db.String(64), nullable=True)
     photos = db.Column(MutableList.as_mutable(
         ARRAY(db.Text)), default=[], nullable=False)
@@ -34,7 +34,7 @@ class Project(db.Model):
     live = db.Column(db.Boolean, default=False, nullable=False)
 
     def __repr__(self):
-        return "{0} created by {1}".format(self.title, self.User_id)
+        return '{0} created by {1}'.format(self.title, self.User_id)
     
     @property
     def serialize(self):
@@ -44,7 +44,7 @@ class Project(db.Model):
             'title': self.title,
             'subtitle': self.subtitle,
             'description': self.description,
-            'industry': self.industry,
+            'industry': [i.serialize for i in self.industry],
             'location': self.location,
             'photos': self.photos,
             'funding_goal': self.funding_goal,

@@ -66,7 +66,7 @@ def validate_project(f):
         if deadline is not None:
             # This deadline is ISO 8016 or a "Special Value" in Postgres for datetime
             if not re.fullmatch(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}(\+\d{1,2}:\d{2}|(Z))', deadline) and deadline not in ["epoch", "infinity", "-infinity", "now", "today", "tomorrow", "yesterday"]:
-                return jsonify({"error": "Deadline is not in correct date format"})
+                return jsonify({"error": "Deadline is not in correct date format"}), 400
 
         return f(*args, **kwargs)
     return wrapper

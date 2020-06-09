@@ -7,6 +7,6 @@ def current_user(identity):
     # creating access tokens will be slower in exchange for faster auth
     user = User.query.filter_by(login_email=identity).first()
     return {
-        "login_email": identity,
-        "user_id": user.id
+        'login_email': identity,
+        'user_id': user.id
     }

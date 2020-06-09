@@ -21,8 +21,8 @@ class User(db.Model):
                             unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
     projects = db.relationship('Project', backref='user')
-    funded_projects = db.relationship("Project", secondary=users_funded_projects_map,
-        lazy="subquery", backref=db.backref('users', lazy=True))
+    funded_projects = db.relationship('Project', secondary=users_funded_projects_map,
+        lazy='subquery', backref=db.backref('users', lazy=True))
     profile_pics = db.Column(MutableList.as_mutable(
         ARRAY(db.Text)), nullable=False)
     location = db.Column(db.String(64), nullable=True)
