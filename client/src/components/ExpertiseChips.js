@@ -42,7 +42,7 @@ function ExpertiseChips(props) {
     <>
       <Typography>Expertise</Typography>
       <TextField
-        value={expertise}
+        value={expertise || ""}
         fullWidth
         variant="outlined"
         onKeyPress={(event) => {
