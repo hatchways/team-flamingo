@@ -72,11 +72,7 @@ function App() {
           <Route
             path="/login"
             render={(props) => (
-              <Login
-                {...props}
-                nothing={props.nothing}
-                handleUserChange={handleUserChange}
-              />
+              <Login {...props} handleUserChange={handleUserChange} />
             )}
           />
           <Route
