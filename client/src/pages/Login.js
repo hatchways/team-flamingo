@@ -99,7 +99,7 @@ function Login(props) {
       })
       .then((res) => {
         handleRememberMe();
-        props.handleUserChange({ isCustom: false, isAuth: true });
+        props.handleUserLog(true);
         // TODO: redirect to profile specific to user
         history.push("/");
       })

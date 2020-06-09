@@ -109,7 +109,7 @@ function Signup(props) {
         confirm: confirm,
       })
       .then((res) => {
-        props.handleUserChange({ isCustom: false, isAuth: true });
+        props.handleUserLog(true);
         // TODO: Redirect to profile specific to user
         history.push("/");
       })

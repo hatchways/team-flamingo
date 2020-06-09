@@ -7,7 +7,7 @@ function Logout(props) {
   async function logout() {
     try {
       await axios.post(`/api/v1/logout`);
-      props.handleUserChange({ isCustom: false, isAuth: false });
+      props.handleUserLog(false);
       // TODO: snackbar with "successful logout"
       history.push("/");
     } catch (err) {

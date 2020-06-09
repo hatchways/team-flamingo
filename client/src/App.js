@@ -17,21 +17,14 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import "./App.css";
 
 function App() {
-  // True: Check for user, False: Don't Check for User
-  const [isCustomized, setIsCustomized] = useState(true);
+  // True: User signed in, False: User Logged Out
   const [isAuthenticated, setIsAuthenticated] = useState(
     localStorage.getItem("isAuth") ? true : false
   );
-  function handleUserChange({ isCustom, isAuth }) {
-    setIsCustomized(isCustom);
+  function handleUserLog(isAuth) {
     setIsAuthenticated(isAuth);
     localStorage.setItem("isAuth", isAuth);
   }
-  useEffect(() => {
-    if (isAuthenticated) {
-      handleUserChange({ isCustom: false, isAuth: true });
-    }
-  }, []);
 
   return (
     <ThemeProvider theme={theme}>
@@ -41,8 +34,8 @@ function App() {
           render={(props) => (
             <Main
               {...props}
-              handleUserChange={handleUserChange}
-              isCustomized={isCustomized}
+              handleUserLog={handleUserLog}
+              isAuthenticated={isAuthenticated}
             />
           )}
         />
@@ -66,19 +59,19 @@ function App() {
           <Route
             path="/signup"
             render={(props) => (
-              <Signup {...props} handleUserChange={handleUserChange} />
+              <Signup {...props} handleUserLog={handleUserLog} />
             )}
           />
           <Route
             path="/login"
             render={(props) => (
-              <Login {...props} handleUserChange={handleUserChange} />
+              <Login {...props} handleUserLog={handleUserLog} />
             )}
           />
           <Route
             path="/logout"
             render={(props) => (
-              <Logout {...props} handleUserChange={handleUserChange} />
+              <Logout {...props} handleUserLog={handleUserLog} />
             )}
           />
           <Route path="/payment" component={Payment} />
