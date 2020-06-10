@@ -21,8 +21,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Live(props) {
   const classes = useStyles();
-  const userId = props.userId;
-  const project = props.project;
+  const { userId, project } = props;
 
   const [canGoLive, setCanGoLive] = useState(false);
   const [isLive, setIsLive] = useState(project.live);

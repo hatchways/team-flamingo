@@ -10,8 +10,7 @@ import {
 import DeleteIcon from "@material-ui/icons/Delete";
 
 function DeleteProject(props) {
-  const projectId = props.projectId;
-  const userId = props.userId;
+  const { projectId, userId } = props;
 
   const [open, setOpen] = useState(false);
 

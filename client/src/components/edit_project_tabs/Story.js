@@ -19,8 +19,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Story(props) {
   const classes = useStyles();
-  const userId = props.userId;
-  const project = props.project;
+  const { userId, project } = props;
 
   // State variables
   const [description, setDescription] = useState(project.description);

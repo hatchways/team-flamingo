@@ -21,8 +21,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Basics(props) {
   const classes = useStyles();
-  const userId = props.userId;
-  const project = props.project;
+  const { userId, project } = props;
 
   // State variables
   const [upload, setUpload] = useState(false);

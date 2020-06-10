@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import axios from "axios";
-import DateFnsUtils from "@date-io/date-fns";
+import MomentUtils from "@date-io/moment";
 import moment from "moment";
 import { Grid, Typography, TextField, Button } from "@material-ui/core";
 import {
@@ -26,8 +26,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Funding(props) {
   const classes = useStyles();
-  const userId = props.userId;
-  const project = props.project;
+  const { userId, project } = props;
 
   const [fundingGoal, setFundingGoal] = useState(
     // This converts the money string provided by backend
@@ -121,12 +120,12 @@ function Funding(props) {
 
       <Grid item xs={12}>
         <Typography>Funding deadline</Typography>
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <MuiPickersUtilsProvider utils={MomentUtils}>
           <KeyboardDatePicker
             value={deadline}
             onChange={(date) => handleUpdateDeadline(date)}
             minDate={moment(new Date()).toISOString()}
-            format="dd/MM/yyyy"
+            format="DD/MM/yyyy"
             disabled={project.live}
           />
         </MuiPickersUtilsProvider>
