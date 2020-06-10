@@ -23,8 +23,6 @@ import projectMain from "../staticImages/projMain.png";
 import projectInfo from "../staticImages/projInfo.png";
 import profpic1 from "../staticImages/profpic1.png";
 
-import NavBar from "../components/Navbar";
-
 const useStyles = makeStyles((theme) => ({
   root: {
     color: "black",
@@ -110,7 +108,6 @@ function ProjectPanel(props) {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  const classes = useStyles();
 
   const proj = props.project;
 
@@ -223,12 +220,8 @@ function UserInfo(props) {
 }
 
 function Project(props) {
-  const classes = useStyles();
-
   return (
     <div>
-      <NavBar />
-
       <Container align="center">
         <Header project={projectStatic} />
         <Grid container spacing={5}>

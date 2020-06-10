@@ -12,3 +12,9 @@ class Industry(db.Model):
 
     def __repr__(self):
         return "The {0} industry".format(self.name)
+
+    @property
+    def serialize(self):
+        return {
+            'name': self.name,
+        }

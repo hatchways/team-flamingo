@@ -22,7 +22,7 @@ def get_project(project_id):
 
     return jsonify(project.serialize)
 
-@project_handler.route('/api/v1/user/<user_id>/projects', methods=['GET'])
+@project_handler.route('/api/v1/users/<user_id>/projects', methods=['GET'])
 @jwt_required
 def get_users_projects(user_id):
     user = User.query.filter_by(id=user_id).first()
@@ -30,7 +30,7 @@ def get_users_projects(user_id):
     if user is None:
         return jsonify({"error": "User doesn't exist"}), 400
 
-    projects = [row2dict(p) for p in user.projects]
+    projects = [p.serialize for p in user.projects]
 
     return jsonify(projects), 200
 
@@ -52,6 +52,7 @@ def post_project(user_id):
         photos=request.json.get('photos', []),
         funding_goal=request.json.get('funding_goal', None),
         deadline=request.json.get('deadline', None),
+        equity=request.json.get('equity', None),
         current_funding=0
     )
 
@@ -79,8 +80,10 @@ def update_project(user_id, project_id):
     project.photos = data["photos"]
     # Probably shouldn't be able to change funding goal
     project.funding_goal = data["funding_goal"]
+    project.current_funding = data['current_funding'],
     project.industry[:] = industryList(data["industry"])
     project.deadline = data["deadline"]
+    project.equity = data["equity"]
 
     db.session.commit()
 

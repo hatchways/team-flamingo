@@ -242,8 +242,6 @@ function EditProject(props) {
 
   return (
     <div className={classes.root}>
-      <Navbar className={classes.navbar} />
-
       {/* Sidebar */}
       <Drawer
         variant="temporary"
