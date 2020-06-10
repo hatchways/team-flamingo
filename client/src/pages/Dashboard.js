@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Redirect } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import moment from "moment";
 
 import {
@@ -19,7 +19,7 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import EditProfileDialog from "../components/EditProfileDialog";
 
-moment.updateLocale("en", { relativeTime: { future: "%s to go" } });
+import ProjectCard from "../components/ProjectCard";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -178,7 +178,7 @@ function UserInfo(props) {
   );
 }
 
-function ProjectCard(props) {
+function P(props) {
   const classes = useStyles();
   const projectInfo = props.project;
   const fromNow = moment(projectInfo.deadline).fromNow();
@@ -219,6 +219,7 @@ function UserDashboard(props) {
   const [user, setUser] = useState();
   const [projects, setProjects] = useState({});
   const [error, setError] = useState();
+  const history = useHistory();
 
   const handleUserEdited = (user) => {
     setUser(user);
@@ -240,16 +241,16 @@ function UserDashboard(props) {
         await Promise.all([fetchUser(), fetchProject()]);
       } catch (err) {
         console.dir(err);
-        if (err.response.status === 400) {
-          setError(err.response);
-        }
+        // if (err.response.status === 400) {
+        //   setError(err.response);
+        // }
       }
     }
     fetchData();
   }, [id]);
 
   if (error) {
-    return <Redirect to="/404" />;
+    return history.push("/404");
   }
 
   return (
@@ -271,7 +272,11 @@ function UserDashboard(props) {
           <Grid container spacing={6}>
             {projects.length
               ? projects.map((value, step) => {
-                  return <ProjectCard key={step} project={value} />;
+                  return (
+                    <Grid item xs={6}>
+                      <ProjectCard key={step} project={value} />
+                    </Grid>
+                  );
                 })
               : ""}
           </Grid>

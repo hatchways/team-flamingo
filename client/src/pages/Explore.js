@@ -5,16 +5,9 @@ import {
   Typography,
   Container,
   Box,
-  Avatar,
   Button,
-  Card,
-  CardMedia,
-  CardContent,
-  Divider,
-  Select,
   MenuItem,
-  InputLabel,
-  FormControl,
+  TextField,
 } from "@material-ui/core";
 
 import {
@@ -29,42 +22,68 @@ import moment from "moment";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 
-import projectpic1 from "../staticImages/projPicture1.png";
-import projectpic2 from "../staticImages/projPicture2.png";
-import projectpic3 from "../staticImages/projPicture3.png";
-
-import NavBar from "../components/Navbar";
+import ProjectCard from "../components/ProjectCard";
 
 const projectStatic = [
   {
-    photo: projectpic1,
-    name: "Urban Jungle: eco-friendly coffee shop",
-    currentInvested: 23874,
-    wantedInvestement: 40000,
+    photos: ["project/ptest3.png"],
+    title: "Urban Jungle: eco-friendly coffee shop",
+    current_funding: 23874,
+    funding_goal: 40000,
     equity: 0.1,
     timeLeft: 44,
     author: "Alex",
     location: "NYC",
   },
   {
-    photo: projectpic2,
-    name: "Cafe Black: The Future of coffee",
-    currentInvested: 2647,
-    wantedInvestement: 60000,
+    photos: ["project/ptest1.png"],
+    title: "Cafe Black: The Future of coffee",
+    current_funding: 2647,
+    funding_goal: 60000,
     equity: 0.1,
     timeLeft: 60,
     author: "George",
     location: "Toronto",
   },
   {
-    photo: projectpic3,
-    name: "Easy to use, Powerful AI Camera",
-    currentInvested: 34912,
-    wantedInvestement: 55000,
+    photos: ["project/ptest2.png"],
+    title: "Easy to use, Powerful AI Camera",
+    current_funding: 34912,
+    funding_goal: 55000,
     equity: 0.18,
     timeLeft: 12,
     author: "Mary",
     location: "London",
+  },
+  {
+    photos: ["project/ptest2.png"],
+    title: "Easy to use, Powerful AI Camera",
+    current_funding: 34912,
+    funding_goal: 55000,
+    equity: 0.18,
+    timeLeft: 12,
+    author: "Mary",
+    location: "London",
+  },
+  {
+    photos: ["project/ptest3.png"],
+    title: "Urban Jungle: eco-friendly coffee shop",
+    current_funding: 23874,
+    funding_goal: 40000,
+    equity: 0.1,
+    timeLeft: 44,
+    author: "Alex",
+    location: "NYC",
+  },
+  {
+    photos: ["project/ptest1.png"],
+    title: "64Characters 64Characters 64Characters 64Characters 64Characters",
+    current_funding: 2647,
+    funding_goal: 60000,
+    equity: 0.1,
+    timeLeft: 60,
+    author: "George",
+    location: "Toronto",
   },
 ];
 
@@ -94,51 +113,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ProjectCard(props) {
-  const classes = useStyles();
-  const projectInfo = props.project;
-  return (
-    <Card elevation={8}>
-      <CardMedia
-        className={classes.media}
-        component="img"
-        src={projectInfo.photo}
-      ></CardMedia>
-      <CardContent>
-        <Typography className={classes.cardTitle} variant="h5" component="h4">
-          {projectInfo.name}
-        </Typography>
-        <Typography className={classes.cardInvested} display="inline">
-          ${projectInfo.currentInvested}
-        </Typography>
-        <Typography color="textSecondary" display="inline">
-          {" / " + projectInfo.wantedInvestement}
-        </Typography>
-        <Typography variant="body2" color="textSecondary">
-          Equity exchange: {projectInfo.equity * 100}% |
-          {" " + projectInfo.timeLeft} days to go
-        </Typography>
-      </CardContent>
-      <Divider />
-      <CardContent>
-        <Typography className={classes.cardInvested}>
-          By {projectInfo.author}
-        </Typography>
-        <Typography color="textSecondary" display="inline">
-          {projectInfo.location}
-        </Typography>
-      </CardContent>
-    </Card>
-  );
-}
-
 function Filters(props) {
   const classes = useStyles();
-  const [industry, setIndustry] = useState("");
-  const [location, setLocation] = useState("");
+  const [industry, setIndustry] = useState("All");
+  const [location, setLocation] = useState("All");
   const [selectedDate, setSelectedDate] = useState(moment());
 
-  const size = 2;
+  const [industryList, setIndustryList] = useState([]);
+  const [locationList, setLocationList] = useState([]);
+
+  useEffect(() => {
+    setIndustryList(["Coffee", "Tech", "Crafts"]);
+    setLocationList(["NYC", "Toronto", "San Francisco"]);
+  }, []);
 
   const handleUpdateIndustry = (event) => {
     setIndustry(event.target.value);
@@ -152,56 +139,67 @@ function Filters(props) {
   };
 
   const handleSearch = (event) => {
-    console.log(event);
-    debugger;
+    event.preventDefault();
+    const filters = {
+      industry: industry,
+      location: location,
+      date: selectedDate.format(),
+    };
+    console.log(filters);
+    // TODO: post to backend
   };
 
   return (
     <Container>
       <form autoComplete="off" onSubmit={handleSearch}>
         <Box display="flex" justifyContent="center" my={5}>
-          <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel id="industry-select-label">Industry</InputLabel>
-            <Select
-              labelId="industry-select-label"
-              id="industry-select"
-              value={industry}
-              onChange={handleUpdateIndustry}
-              label="Industry"
-            >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel id="location-select-label">Location</InputLabel>
-            <Select
-              labelId="location-select-label"
-              id="location-select"
-              value={location}
-              onChange={handleUpdateLocation}
-              label="Location"
-            >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
-            </Select>
-          </FormControl>
+          <TextField
+            className={classes.formControl}
+            id="industry"
+            select
+            variant="outlined"
+            label="Industry"
+            value={industry}
+            onChange={handleUpdateIndustry}
+            helperText="Select an industry"
+          >
+            <MenuItem value={"All"}>All Industries</MenuItem>
+            {industryList.map((indus, step) => {
+              return (
+                <MenuItem key={step} value={indus}>
+                  {indus}
+                </MenuItem>
+              );
+            })}
+          </TextField>
+          <TextField
+            className={classes.formControl}
+            id="location"
+            select
+            variant="outlined"
+            label="location"
+            value={location}
+            onChange={handleUpdateLocation}
+            helperText="Select a location"
+          >
+            <MenuItem value={"All"}>Anywhere</MenuItem>
+            {locationList.map((loc, step) => {
+              return (
+                <MenuItem key={step} value={loc}>
+                  {loc}
+                </MenuItem>
+              );
+            })}
+          </TextField>
           <MuiPickersUtilsProvider utils={MomentUtils}>
             <KeyboardDatePicker
+              inputVariant="outlined"
               disableToolbar
               variant="inline"
               format="MM/dd/yyyy"
               margin="normal"
               id="date-picker-inline"
-              label="Date picker inline"
+              label="Fundraise Deadline"
               value={selectedDate}
               onChange={handleDateChange}
               KeyboardButtonProps={{
@@ -209,7 +207,7 @@ function Filters(props) {
               }}
             />
           </MuiPickersUtilsProvider>
-          <Button type="submit" onSubmit={handleSearch}>
+          <Button type="submit" style={{ marginBottom: "1rem" }}>
             Search
           </Button>
         </Box>
@@ -224,8 +222,6 @@ function Explore(props) {
   return (
     <div className={classes.root}>
       {/* Top Navbar */}
-      <NavBar />
-
       <Typography align="center" variant="h2" component="h1">
         Explore Projects
       </Typography>
@@ -236,8 +232,8 @@ function Explore(props) {
         <Grid container spacing={6}>
           {projectStatic.map((value, step) => {
             return (
-              <Grid item xs={4}>
-                <ProjectCard key={step} project={value} />
+              <Grid key={step} item xs={4}>
+                <ProjectCard key={step} project={value} showUser={true} />
               </Grid>
             );
           })}
