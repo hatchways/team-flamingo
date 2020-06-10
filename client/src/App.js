@@ -81,9 +81,7 @@ function App() {
             )}
           />
           <Route path="/payment" component={Payment} />
-          <Route path="/:404">
-            <h1>404 Page Not Found</h1>
-          </Route>
+          <Route path="/:404" component={NotFound} />
           <Route path="/" component={Explore} />
         </Switch>
       </BrowserRouter>
