@@ -7,11 +7,11 @@ import {
   Typography,
   Snackbar,
 } from "@material-ui/core";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import { makeStyles } from "@material-ui/core/styles";
 import axios from "axios";
+import BackForwardArrows from "../arrows/BackForwardArrows";
 
 const useStyles = makeStyles((theme) => ({
   mainTitle: {
@@ -57,9 +57,10 @@ function Payment(props) {
 
   return (
     <Grid container spacing={4}>
-      <IconButton onClick={handleBack}>
-        <ArrowBackIcon />
-      </IconButton>
+      <BackForwardArrows
+        handleBack={handleBack}
+        handleForward={handleContinue}
+      />
 
       <Grid item xs={12}>
         <Typography className={classes.mainTitle} gutterBottom>
@@ -85,7 +86,7 @@ function Payment(props) {
           className={classes.primaryButton}
           onClick={handleContinue}
         >
-          CONTINUE
+          {project.live ? "SAVE" : "CONTINUE"}
         </Button>
       </Grid>
     </Grid>

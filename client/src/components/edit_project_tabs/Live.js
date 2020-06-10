@@ -1,17 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {
-  IconButton,
-  Grid,
-  Typography,
-  Button,
-  Snackbar,
-  Box,
-} from "@material-ui/core";
+import { Grid, Typography, Button, Snackbar, Box } from "@material-ui/core";
 import MuiAlert from "@material-ui/lab/Alert";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import DoneOutlineIcon from "@material-ui/icons/DoneOutline";
 import { makeStyles } from "@material-ui/core/styles";
+import BackArrow from "../arrows/BackArrow";
 
 const useStyles = makeStyles((theme) => ({
   mainTitle: {
@@ -68,23 +61,24 @@ function Live(props) {
 
   if (isLive)
     return (
-      <Box
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        alignItems="center"
-        height="100%"
-      >
-        <Typography>Your project is Live!</Typography>
-        <DoneOutlineIcon fontSize="large" />
-      </Box>
+      <>
+        <BackArrow handleBack={handleBack} />
+        <Box
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          height="100%"
+        >
+          <Typography>Your project is Live!</Typography>
+          <DoneOutlineIcon fontSize="large" />
+        </Box>
+      </>
     );
   else
     return (
       <Grid container spacing={4}>
-        <IconButton onClick={handleBack}>
-          <ArrowBackIcon />
-        </IconButton>
+        <BackArrow handleBack={handleBack} />
 
         <Grid item xs={12}>
           <Typography className={classes.mainTitle} gutterBottom>

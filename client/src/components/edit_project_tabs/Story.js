@@ -1,14 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
-import {
-  Grid,
-  Typography,
-  TextField,
-  Button,
-  IconButton,
-} from "@material-ui/core";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import { Grid, Typography, TextField, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import BackForwardArrows from "../arrows/BackForwardArrows";
 
 const useStyles = makeStyles((theme) => ({
   mainTitle: {
@@ -48,11 +42,16 @@ function Story(props) {
     props.handleTabChange("Basic");
   };
 
+  const handleForward = (event) => {
+    props.handleTabChange("Funding");
+  };
+
   return (
     <Grid container spacing={4}>
-      <IconButton onClick={handleBack}>
-        <ArrowBackIcon />
-      </IconButton>
+      <BackForwardArrows
+        handleBack={handleBack}
+        handleForward={handleForward}
+      />
 
       <Grid item xs={12}>
         <Typography className={classes.mainTitle} gutterBottom>
@@ -77,7 +76,7 @@ function Story(props) {
           onClick={handleContinue}
           className={classes.primaryButton}
         >
-          CONTINUE
+          {project.live ? "SAVE" : "CONTINUE"}
         </Button>
       </Grid>
     </Grid>

@@ -4,6 +4,7 @@ import { Grid, Typography, TextField, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import IndustriesDropdown from "../IndustriesDropdown";
 import DropZoneUpload from "../DropZoneUpload";
+import ForwardArrow from "../arrows/ForwardArrow";
 
 const useStyles = makeStyles((theme) => ({
   mainTitle: {
@@ -51,6 +52,10 @@ function Basics(props) {
     setUpload(true);
   };
 
+  const handleForward = (event) => {
+    props.handleTabChange("Story");
+  };
+
   const handleSave = useCallback(
     (projectPhotos) => {
       axios
@@ -69,6 +74,7 @@ function Basics(props) {
 
   return (
     <Grid container direction="row" spacing={4}>
+      <ForwardArrow handleForward={handleForward} />
       <Grid item xs={12}>
         <Typography className={classes.mainTitle} gutterBottom>
           Start with basics
@@ -129,7 +135,7 @@ function Basics(props) {
           onClick={handleTriggerFileUpload}
           className={classes.primaryButton}
         >
-          CONTINUE
+          {project.live ? "SAVE" : "CONTINUE"}
         </Button>
       </Grid>
     </Grid>

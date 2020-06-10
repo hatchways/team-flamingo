@@ -2,19 +2,14 @@ import React, { useState, useCallback } from "react";
 import axios from "axios";
 import DateFnsUtils from "@date-io/date-fns";
 import moment from "moment";
-import {
-  Grid,
-  Typography,
-  TextField,
-  Button,
-  IconButton,
-} from "@material-ui/core";
+import { Grid, Typography, TextField, Button } from "@material-ui/core";
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { makeStyles } from "@material-ui/core/styles";
+
+import BackForwardArrows from "../arrows/BackForwardArrows";
 
 const useStyles = makeStyles((theme) => ({
   mainTitle: {
@@ -80,11 +75,16 @@ function Funding(props) {
     props.handleTabChange("Story");
   };
 
+  const handleForward = (event) => {
+    props.handleTabChange("Payment");
+  };
+
   return (
     <Grid container spacing={4}>
-      <IconButton onClick={handleBack}>
-        <ArrowBackIcon />
-      </IconButton>
+      <BackForwardArrows
+        handleBack={handleBack}
+        handleForward={handleForward}
+      />
       <Grid item xs={12}>
         <Typography className={classes.mainTitle} gutterBottom>
           How much funding are you looking to raise?
@@ -100,6 +100,7 @@ function Funding(props) {
           value={fundingGoal}
           onChange={handleUpdateFundingGoal}
           InputProps={{ startAdornment: "$ " }}
+          disabled={project.live}
         />
       </Grid>
 
@@ -114,6 +115,7 @@ function Funding(props) {
           value={equity}
           onChange={handleUpdateEquity}
           InputProps={{ endAdornment: "%" }}
+          disabled={project.live}
         />
       </Grid>
 
@@ -125,6 +127,7 @@ function Funding(props) {
             onChange={(date) => handleUpdateDeadline(date)}
             minDate={moment(new Date()).toISOString()}
             format="dd/MM/yyyy"
+            disabled={project.live}
           />
         </MuiPickersUtilsProvider>
       </Grid>
@@ -135,7 +138,7 @@ function Funding(props) {
           onClick={handleContinue}
           className={classes.primaryButton}
         >
-          CONTINUE
+          {project.live ? "SAVE" : "CONTINUE"}
         </Button>
       </Grid>
     </Grid>
