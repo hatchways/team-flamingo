@@ -100,6 +100,16 @@ def update_project(user_id, project_id):
         project.deadline = data.get('deadline', project.deadline)
         project.live = data.get('live', False)
 
+    if project.live:
+        if (
+            not project.title or not project.subtitle or not project.description
+            or not project.location or not len(project.photos) > 0
+            or not project.equity or not len(project.industry) > 0
+            or not project.funding_goal or not project.deadline
+            or not project.connected_account
+        ):
+            return jsonify({'error': 'All project fields must be set before project can go live'}), 400
+
     db.session.commit()
 
     return jsonify({'success': 'project updated'}), 200

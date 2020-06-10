@@ -17,15 +17,17 @@ def validate_project(f):
         if (int(user_id) != get_jwt_identity()["user_id"]):
             return jsonify({"error": "not authenticated"}), 401
 
-        title = request.json.get('title', None)
-        subtitle = request.json.get('subtitle', None)
-        location = request.json.get('location', None)
-        photos = request.json.get('photos', [])
-        industry = request.json.get('industry', [])
-        goal = request.json.get('funding_goal', None)
-        current_funding = request.json.get('current_funding', None)
-        equity = request.json.get('equity', None)
-        deadline = request.json.get('deadline', None)
+        data = request.get_json()
+
+        title = data.get('title', None)
+        subtitle = data.get('subtitle', None)
+        location = data.get('location', None)
+        photos = data.get('photos', [])
+        industry = data.get('industry', [])
+        goal = data.get('funding_goal', None)
+        current_funding = data.get('current_funding', None)
+        equity = data.get('equity', None)
+        deadline = data.get('deadline', None)
 
         # Verify Length of Title
         if title and len(title) > 64:
