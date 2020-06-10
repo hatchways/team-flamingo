@@ -4,7 +4,7 @@ from sqlalchemy.orm import validates
 
 
 class Industry(db.Model):
-    __tablename__ = "industry"
+    __tablename__ = 'industry'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32))
 

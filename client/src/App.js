@@ -8,12 +8,11 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Project from "./pages/Project";
 import CreateProject from "./pages/CreateProject";
+import EditProject from "./pages/EditProject";
 import FundProject from "./pages/FundProject";
 import NotFound from "./pages/404NotFound";
 import Main from "./pages/Main";
 import Logout from "./pages/Logout";
-import Payment from "./pages/Payment";
-import EditProject from "./pages/EditProject";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 import "./App.css";
@@ -78,13 +77,11 @@ function App() {
               <Logout {...props} handleUserLog={handleUserLog} />
             )}
           />
-          <Route path="/payment" component={Payment} />
-          <Route path="/:404">
-            <h1>404 Page Not Found</h1>
-          </Route>
-          <Route path="/">
+          <Route path="/404" component={NotFound} />
+          <Route path="/" exact={true}>
             <h1>Home Page</h1>
           </Route>
+          <Redirect from="*" to="/404" />
         </Switch>
       </BrowserRouter>
     </ThemeProvider>

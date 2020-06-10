@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import axios from "axios";
 import {
   Container,
@@ -113,14 +114,26 @@ function VerifyCheckboxes(props) {
 
 function CreateProject(props) {
   const classes = useStyles();
+  const history = useHistory();
+  const userId = props.match.params.id;
 
   // State variables
   const [industries, setIndustries] = useState([]);
+  const [description, setDescription] = useState("");
+  const [location, setLocation] = useState("");
   const [verified, setVerified] = useState(false);
 
   // Handlers
   const handleUpdateIndustries = (industries) => {
     setIndustries(industries);
+  };
+
+  const handleUpdateDescription = (event) => {
+    setDescription(event.target.value);
+  };
+
+  const handleUpdateLocation = (event) => {
+    setLocation(event.target.value);
   };
 
   const handleVerified = (event) => {
@@ -129,13 +142,21 @@ function CreateProject(props) {
 
   const handleContinue = (event) => {
     event.preventDefault();
-    // TODO: Create project with current data, then
-    // redirect to /profile/:id/projects/edit
+
+    axios
+      .post(`/api/v1/users/${userId}/projects`, {
+        description: description,
+        industries: industries.map((industry) => industry.name),
+        location: location,
+      })
+      .then((res) => {
+        history.push(`/profile/${userId}/projects/${res.data.project_id}/edit`);
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
     <div>
-      <Navbar />
       <Container maxWidth="sm">
         <Typography variant="h2" align="center" className={classes.header}>
           <Box fontWeight="fontWeightMedium" fontSize={40}>
@@ -187,6 +208,8 @@ function CreateProject(props) {
                 rows={8}
                 variant="outlined"
                 fullWidth
+                value={description}
+                onChange={handleUpdateDescription}
               />
             </Grid>
 
@@ -206,7 +229,13 @@ function CreateProject(props) {
             </Typography>
 
             <Grid item>
-              <TextField variant="outlined" placeholder="Location" fullWidth />
+              <TextField
+                variant="outlined"
+                placeholder="Location"
+                fullWidth
+                value={location}
+                onChange={handleUpdateLocation}
+              />
             </Grid>
 
             <Grid item className={classes.marginTop}>

@@ -14,6 +14,7 @@ services:
     stdin_open: true
     environment:
       - REACT_APP_STRIPE_PUBLISHABLE_KEY=pk_test_G450FX1Gk9KIm5LyKaq8UdVx007DXDHkFi
+      - REACT_APP_STRIPE_CLIENT_ID=ca_HR0RzmEekpQtLt3UmI8QgjsqWZUwnTVg
 
   server:
     restart: always
@@ -32,7 +33,6 @@ services:
     env_file:
       - aws-config.env
       - stripe-config.env
-
 
   db:
     image: postgres:12.3
