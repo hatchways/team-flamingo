@@ -14,7 +14,6 @@ import FundProject from "./pages/FundProject";
 import NotFound from "./pages/404NotFound";
 import Main from "./pages/Main";
 import Logout from "./pages/Logout";
-import Payment from "./pages/Payment";
 import EditProject from "./pages/EditProject";
 import Explore from "./pages/Explore";
 
@@ -80,7 +79,6 @@ function App() {
               <Logout {...props} handleUserLog={handleUserLog} />
             )}
           />
-          <Route path="/payment" component={Payment} />
           <Route path="/:404" component={NotFound} />
           <Route path="/" component={Explore} />
         </Switch>

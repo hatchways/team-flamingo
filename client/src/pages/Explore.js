@@ -196,7 +196,7 @@ function Filters(props) {
               inputVariant="outlined"
               disableToolbar
               variant="inline"
-              format="MM/dd/yyyy"
+              format="MM/DD/yyyy"
               margin="normal"
               id="date-picker-inline"
               label="Fundraise Deadline"

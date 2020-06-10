@@ -14,6 +14,9 @@ import {
 moment.updateLocale("en", { relativeTime: { future: "%s to go" } });
 
 const useStyles = makeStyles((theme) => ({
+  card: {
+    height: "100%",
+  },
   media: {
     height: theme.spacing(35),
   },
@@ -33,7 +36,7 @@ function ProjectCard(props) {
   const fromNow = moment(project.deadline).fromNow();
 
   return (
-    <Card elevation={8}>
+    <Card elevation={8} className={classes.card}>
       <CardMedia
         className={classes.media}
         component="img"
