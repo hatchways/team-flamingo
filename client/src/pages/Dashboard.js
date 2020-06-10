@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
-import moment from "moment";
 
 import {
   Typography,
@@ -9,9 +8,6 @@ import {
   Box,
   Avatar,
   Button,
-  Card,
-  CardMedia,
-  CardContent,
   Divider,
   Grid,
 } from "@material-ui/core";
@@ -178,42 +174,6 @@ function UserInfo(props) {
   );
 }
 
-function P(props) {
-  const classes = useStyles();
-  const projectInfo = props.project;
-  const fromNow = moment(projectInfo.deadline).fromNow();
-
-  return (
-    <Grid item xs={6}>
-      <Card elevation={8}>
-        <CardMedia
-          className={classes.media}
-          component="img"
-          src={
-            projectInfo.photos[0]
-              ? process.env.REACT_APP_AWS_ROOT + projectInfo.photos[0]
-              : ""
-          }
-        ></CardMedia>
-        <CardContent>
-          <Typography className={classes.cardTitle} variant="h5" component="h4">
-            {projectInfo.title}
-          </Typography>
-          <Typography className={classes.cardInvested} display="inline">
-            {projectInfo.current_funding}
-          </Typography>
-          <Typography color="textSecondary" display="inline">
-            {" / " + projectInfo.funding_goal}
-          </Typography>
-          <Typography variant="body2" color="textSecondary">
-            Equity exchange: {projectInfo.equity * 100}% |{" " + fromNow}
-          </Typography>
-        </CardContent>
-      </Card>
-    </Grid>
-  );
-}
-
 function UserDashboard(props) {
   const classes = useStyles();
   const [user, setUser] = useState();
@@ -241,9 +201,7 @@ function UserDashboard(props) {
         await Promise.all([fetchUser(), fetchProject()]);
       } catch (err) {
         console.dir(err);
-        // if (err.response.status === 400) {
-        //   setError(err.response);
-        // }
+        setError(err);
       }
     }
     fetchData();
