@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useHistory } from "react-router-dom";
 import axios from "axios";
 import query from "query-string";
 import {
@@ -12,17 +13,13 @@ import {
   ListItemText,
   Drawer,
   Toolbar,
-  TextField,
 } from "@material-ui/core";
 import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 import VisibilityIcon from "@material-ui/icons/Visibility";
-import DeleteIcon from "@material-ui/icons/Delete";
 import { makeStyles } from "@material-ui/core/styles";
 
-import Navbar from "../components/Navbar";
-import IndustriesDropdown from "../components/IndustriesDropdown";
-import DropZoneUpload from "../components/DropZoneUpload";
 import LoadingScreen from "../components/LoadingScreen";
+import DeleteProject from "../components/DeleteProject";
 
 import Basics from "../components/edit_project_tabs/Basics";
 import Story from "../components/edit_project_tabs/Story";
@@ -92,6 +89,7 @@ const useStyles = makeStyles((theme) => ({
 
 function EditProject(props) {
   const classes = useStyles();
+  const history = useHistory();
   const userId = props.match.params.profileId;
   const projectId = props.match.params.projectId;
   const tabs = ["Basics", "Story", "Funding", "Payment", "Live"];
@@ -138,7 +136,7 @@ function EditProject(props) {
         setProject(res.data);
         setLoading(false);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => history.push("/404"));
   }, [projectId, currentTab]);
 
   // Handlers
@@ -151,8 +149,6 @@ function EditProject(props) {
   else
     return (
       <div className={classes.root}>
-        <Navbar className={classes.navbar} />
-
         {/* Sidebar */}
         <Drawer
           variant="temporary"
@@ -208,14 +204,13 @@ function EditProject(props) {
             </Grid>
 
             <Grid item xs={12} className={classes.deleteContainer}>
-              <Button startIcon={<DeleteIcon />}>DELETE PROJECT</Button>
+              <DeleteProject projectId={projectId} userId={userId} />
             </Grid>
           </Grid>
         </Drawer>
 
         {/* Main content */}
         <main className={classes.mainContent}>
-          <Toolbar />
           {renderTab(currentTab, project)}
         </main>
       </div>

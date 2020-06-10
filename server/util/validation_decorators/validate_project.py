@@ -57,22 +57,18 @@ def validate_project(f):
             if len(db.session.query(Industry).filter(or_(*filters)).all()) != len(industry):
                 return jsonify({"error": "That industry does not exist, please contact us to add an additional industry or choose one from the list"}), 400
 
-        # Verify goal is a float
+        # Verify goal is positive
         if goal:
-            if type(goal) is not float:
-                return jsonify({"error": "Funding goal is not a float"}), 400
+            if goal < 0:
+                return jsonify({"error": "Funding goal is less than 0"}), 400
 
-        # Verify current amount invested is a float
+        # Verify current amount invested is positive
         if current_funding:
-            if type(current_funding) is not float:
-                return jsonify({"error": "Current Invested is not a float"}), 400
             if current_funding < 0:
                 return jsonify({"error": "Current Invested is less than 0"}), 400
 
         # Verify equity is a float and between 0 and 1
         if equity:
-            if type(equity) is not float:
-                return jsonify({"error": "Equity  is not a float"}), 400
             if equity < 0 or equity > 1:
                 return jsonify({"error": "Equity must be between 0 and 1"}), 400
 

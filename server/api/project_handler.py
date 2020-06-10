@@ -5,7 +5,7 @@ from db_models.project import Project, project_industries_map
 from db_models.industries import Industry
 from app import db, jwt
 from sqlalchemy import or_
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from util.db.row2dict import row2dict
 from util.validation_decorators.validate_project import validate_project
@@ -39,6 +39,10 @@ def get_users_projects(user_id):
 @jwt_required
 @validate_project
 def post_project(user_id):
+    current_user_id = get_jwt_identity()['user_id']
+    if int(user_id) != current_user_id:
+        return jsonify({'error': 'You are not authorized to perform this action'}), 403
+
     data = request.get_json()
 
     # since user_id claim in token is taken from currentuser's id, id must exist
@@ -70,6 +74,10 @@ def post_project(user_id):
 @jwt_required
 @validate_project
 def update_project(user_id, project_id):
+    current_user_id = get_jwt_identity()['user_id']
+    if int(user_id) != current_user_id:
+        return jsonify({'error': 'You are not authorized to perform this action'}), 403
+
     data = request.get_json()
 
     project = Project.query.filter_by(id=project_id).first()
@@ -95,6 +103,26 @@ def update_project(user_id, project_id):
     db.session.commit()
 
     return jsonify({'success': 'project updated'}), 200
+
+
+@project_handler.route('/api/v1/users/<user_id>/projects/<project_id>', methods=['DELETE'])
+@jwt_required
+def delete_project(user_id, project_id):
+    current_user_id = get_jwt_identity()['user_id']
+    if int(user_id) != current_user_id:
+        return jsonify({'error': 'You are not authorized to perform this action'}), 403
+
+    project = Project.query.filter_by(id=project_id).first()
+
+    if project.connected_account:
+        db.session.delete(project.connected_account)
+    if len(project.funds) != 0:
+        for fund in project.funds:
+            db.session.delete(fund)
+    db.session.delete(project)
+    db.session.commit()
+
+    return jsonify({'success': 'Project deleted'}), 200
 
 
 def industryList(industries):

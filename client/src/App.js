@@ -75,13 +75,11 @@ function App() {
               <Logout {...props} handleUserLog={handleUserLog} />
             )}
           />
-          <Route path="/payment" component={Payment} />
-          <Route path="/:404">
-            <h1>404 Page Not Found</h1>
-          </Route>
-          <Route path="/">
+          <Route path="/404" component={NotFound} />
+          <Route path="/" exact={true}>
             <h1>Home Page</h1>
           </Route>
+          <Redirect from="*" to="/404" />
         </Switch>
       </BrowserRouter>
     </ThemeProvider>

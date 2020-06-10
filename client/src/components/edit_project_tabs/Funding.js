@@ -37,9 +37,13 @@ function Funding(props) {
   const [fundingGoal, setFundingGoal] = useState(
     // This converts the money string provided by backend
     // to number that can be understood by TextField
-    Number(project.funding_goal.replace(/[^0-9.-]+/g, ""))
+    project.funding_goal
+      ? Number(project.funding_goal.replace(/[^0-9.-]+/g, ""))
+      : 0
   );
-  const [equity, setEquity] = useState(project.equity);
+  const [equity, setEquity] = useState(
+    project.equity ? project.equity * 100 : ""
+  );
   const [deadline, setDeadline] = useState(
     project.deadline
       ? moment(project.deadline).toISOString()
@@ -47,11 +51,13 @@ function Funding(props) {
   );
 
   const handleUpdateFundingGoal = (event) => {
-    setFundingGoal(event.target.value);
+    setFundingGoal(Number(event.target.value));
   };
 
   const handleUpdateEquity = (event) => {
-    setEquity(event.target.value);
+    if (event.target.value > 100) setEquity(100);
+    else if (event.target.value < 0) setEquity(0);
+    else setEquity(Number(event.target.value));
   };
 
   const handleUpdateDeadline = (date) => {
@@ -63,7 +69,7 @@ function Funding(props) {
     axios
       .put(`/api/v1/users/${userId}/projects/${project.id}`, {
         funding_goal: fundingGoal,
-        equity: equity,
+        equity: equity / 100,
         deadline: deadline,
       })
       .then((res) => props.handleTabChange("Payment"))
@@ -101,6 +107,8 @@ function Funding(props) {
         <Typography>Equity represented by funding goal</Typography>
         <TextField
           type="number"
+          min={0}
+          max={100}
           variant="outlined"
           fullWidth
           value={equity}

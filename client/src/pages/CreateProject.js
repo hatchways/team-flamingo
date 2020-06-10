@@ -157,7 +157,6 @@ function CreateProject(props) {
 
   return (
     <div>
-      <Navbar />
       <Container maxWidth="sm">
         <Typography variant="h2" align="center" className={classes.header}>
           <Box fontWeight="fontWeightMedium" fontSize={40}>

@@ -25,7 +25,7 @@ function DropZoneUpload({
   };
   const handleUpload = () => {
     if (!files.length) {
-      return handleUploadSuccess(false);
+      return handleUploadSuccess("");
     }
     let formData = new FormData();
     formData.set("folder", uploadLocation);

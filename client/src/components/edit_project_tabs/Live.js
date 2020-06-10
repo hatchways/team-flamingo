@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { IconButton, Grid, Typography, Button } from "@material-ui/core";
+import {
+  IconButton,
+  Grid,
+  Typography,
+  Button,
+  Snackbar,
+} from "@material-ui/core";
+import MuiAlert from "@material-ui/lab/Alert";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -27,10 +34,18 @@ function Live(props) {
   }, [project]);
 
   const checkIfFieldsFilled = (project) => {
-    const projectFields = Object.keys(project);
-    const unfilledFields = projectFields.filter((field) => project.field);
-    if (unfilledFields.length === 0) setCanGoLive(true);
-    else setCanGoLive(false);
+    if (
+      !project.title ||
+      !project.subtitle ||
+      !project.description ||
+      !project.location ||
+      project.photos.length == 0 ||
+      !project.equity ||
+      project.industry.length == 0 ||
+      !project.funding_goal
+    ) {
+      setCanGoLive(false);
+    } else setCanGoLive(true);
   };
 
   const handleBack = (event) => {
@@ -72,6 +87,12 @@ function Live(props) {
         >
           GO LIVE
         </Button>
+
+        <Snackbar open={!canGoLive}>
+          <MuiAlert severity="warning">
+            You must fill out all project fields before going live!
+          </MuiAlert>
+        </Snackbar>
       </Grid>
     </Grid>
   );
