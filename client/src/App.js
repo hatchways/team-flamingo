@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ThemeProvider } from "@material-ui/styles";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
 
 import { theme } from "./themes/theme";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -10,6 +10,8 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Project from "./pages/Project";
 import CreateProject from "./pages/CreateProject";
+import FundProject from "./pages/FundProject";
+import NotFound from "./pages/404NotFound";
 import Main from "./pages/Main";
 import Logout from "./pages/Logout";
 import Payment from "./pages/Payment";
@@ -56,6 +58,8 @@ function App() {
             component={UserDashboard}
             isAuthenticated={isAuthenticated}
           />
+
+          <Route path="/project/:projectId/fund" component={FundProject} />
           <Route path="/project" component={Project} />
 
           <Route

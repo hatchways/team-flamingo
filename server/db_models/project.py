@@ -39,6 +39,7 @@ class Project(db.Model):
     def serialize(self):
         return {
             'id': self.id,
+            'user_id': self.user_id,
             'title': self.title,
             'subtitle': self.subtitle,
             'industry': [i.serialize for i in self.industry],

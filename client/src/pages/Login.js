@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import axios from "axios";
 import {
   Container,
@@ -14,15 +14,12 @@ import {
 } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
-import { Link } from "react-router-dom";
 
 import { validateEmail } from "../util/validateEmail";
 
 const useStyles = makeStyles((theme) => ({
   header: {
     padding: "2rem",
-    borderBottom: "2px",
-    borderBottomColor: theme.primary,
   },
   signupLink: {
     marginLeft: "2px",

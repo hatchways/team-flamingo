@@ -12,10 +12,19 @@ from util.validation_decorators.validate_project import validate_project
 
 project_handler = Blueprint('project_handler', __name__)
 
+@project_handler.route('/api/v1/projects/<project_id>', methods=['GET'])
+@jwt_required
+def get_project(project_id):
+    project = Project.query.filter_by(id=project_id).first()
+
+    if not project:
+        return jsonify({'error': 'There is no project with the given id'}), 404
+
+    return jsonify(project.serialize)
 
 @project_handler.route('/api/v1/users/<user_id>/projects', methods=['GET'])
 @jwt_required
-def get_projects(user_id):
+def get_users_projects(user_id):
     user = User.query.filter_by(id=user_id).first()
 
     if user is None:
