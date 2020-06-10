@@ -55,6 +55,8 @@ function App() {
             component={UserDashboard}
             isAuthenticated={isAuthenticated}
           />
+
+          <Route path="/project/:projectId/fund" component={FundProject} />
           <Route path="/project" component={Project} />
 
           <Route
