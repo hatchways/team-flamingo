@@ -33,7 +33,7 @@ function Funding(props) {
     // to number that can be understood by TextField
     project.funding_goal
       ? Number(project.funding_goal.replace(/[^0-9.-]+/g, ""))
-      : 0
+      : ""
   );
   const [equity, setEquity] = useState(
     project.equity ? project.equity * 100 : ""

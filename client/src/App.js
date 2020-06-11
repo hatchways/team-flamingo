@@ -10,6 +10,7 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Project from "./pages/Project";
 import CreateProject from "./pages/CreateProject";
+import Payout from "./pages/Payout";
 import EditProject from "./pages/EditProject";
 import FundProject from "./pages/FundProject";
 import NotFound from "./pages/404NotFound";
@@ -59,6 +60,7 @@ function App() {
           />
 
           <Route path="/project/:projectId/fund" component={FundProject} />
+          <Route path="/project/:projectId/payout" component={Payout} />
           <Route path="/project" component={Project} />
 
           <Route
