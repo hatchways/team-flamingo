@@ -33,7 +33,7 @@ class Project(db.Model):
     equity = db.Column(db.Float, nullable=True)
 
     def __repr__(self):
-        return "{0} created by user with id {1}".format(self.title, self.User_id)
+        return "{0} created by user with id {1}".format(self.title, self.user_id)
 
     @property
     def serialize(self):

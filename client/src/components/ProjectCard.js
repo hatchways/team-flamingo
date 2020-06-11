@@ -54,7 +54,7 @@ function ProjectCard(props) {
         </Typography>
         <Box mt={1} />
         <Typography className={classes.cardInvested} display="inline">
-          ${project.current_funding}
+          {project.current_funding}
         </Typography>
         <Typography color="textSecondary" display="inline">
           {" / " + project.funding_goal}
@@ -67,7 +67,7 @@ function ProjectCard(props) {
       {showUser && (
         <CardContent>
           <Typography className={classes.cardInvested}>
-            By {project.author}
+            By {project.username}
           </Typography>
           <Typography color="textSecondary" display="inline">
             {project.location}
