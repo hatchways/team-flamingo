@@ -38,6 +38,14 @@ function ProjectCard(props) {
   const showUser = props.showUser || false;
   const fromNow = moment(project.deadline).fromNow();
 
+  let projectTitle = project.title;
+  if (projectTitle) {
+    projectTitle =
+      projectTitle.length < 50
+        ? project.title
+        : project.title.substring(0, 50) + "...";
+  }
+
   return (
     <Card elevation={8} className={classes.card}>
       <Link component={LinkTo} to={`/project/${project.id}`}>
@@ -53,9 +61,7 @@ function ProjectCard(props) {
       </Link>
       <CardContent>
         <Typography className={classes.cardTitle} variant="h5" component="h4">
-          {project.title.length < 50
-            ? project.title
-            : project.title.substring(0, 50) + "..."}
+          {projectTitle}
         </Typography>
         <Box mt={1} />
         <Typography className={classes.cardInvested} display="inline">

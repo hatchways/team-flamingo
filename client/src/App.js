@@ -23,11 +23,11 @@ import "./App.css";
 function App() {
   // True: User signed in, False: User Logged Out
   const [isAuthenticated, setIsAuthenticated] = useState(
-    localStorage.getItem("isAuth") ? true : false
+    localStorage.getItem("isAuth") == "true"
   );
   function handleUserLog(isAuth) {
-    setIsAuthenticated(isAuth);
     localStorage.setItem("isAuth", isAuth);
+    setIsAuthenticated(isAuth);
   }
 
   return (
@@ -56,8 +56,8 @@ function App() {
             isAuthenticated={isAuthenticated}
           />
           <ProtectedRoute
-            path="/profile/:id"
-            component={UserDashboard}
+            path="/project/:projectId/fund"
+            component={FundProject}
             isAuthenticated={isAuthenticated}
           />
           <ProtectedRoute
@@ -66,15 +66,14 @@ function App() {
             isAuthenticated={isAuthenticated}
           />
           <ProtectedRoute
-            path="/project/:projectId"
-            component={Project}
+            path="/project/:projectId/payout"
+            component={Payout}
             isAuthenticated={isAuthenticated}
           />
 
           {/* Unprotected Routes */}
-          <Route path="/project/:projectId/fund" component={FundProject} />
-          <Route path="/project/:projectId/payout" component={Payout} />
-          <Route path="/project" component={Project} />
+          <Route path="/project/:projectId" component={Project} />
+          <Route path="/profile/:id" component={UserDashboard} />
 
           <Route
             path="/signup"

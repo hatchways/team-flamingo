@@ -149,15 +149,9 @@ function Signup(props) {
         </Typography>
 
         <form autoComplete="off" onSubmit={handleSignup}>
-          <Grid
-            container
-            spacing={2}
-            xs={12}
-            direction="column"
-            alignItems="stretch"
-          >
+          <Grid container spacing={2} direction="column" alignItems="stretch">
             {signupError.length !== 0 ? signupErrorMessage : ""}
-            <Grid item>
+            <Grid item xs={12}>
               <TextField
                 label="Name"
                 variant="outlined"
@@ -173,7 +167,7 @@ function Signup(props) {
               />
             </Grid>
 
-            <Grid item>
+            <Grid item xs={12}>
               <TextField
                 label="Email address"
                 variant="outlined"
@@ -187,7 +181,7 @@ function Signup(props) {
               />
             </Grid>
 
-            <Grid item>
+            <Grid item xs={12}>
               <TextField
                 type="Password"
                 label="Password"
@@ -206,7 +200,7 @@ function Signup(props) {
               ></TextField>
             </Grid>
 
-            <Grid item>
+            <Grid item xs={12}>
               <TextField
                 type="Password"
                 label="Confirm password"

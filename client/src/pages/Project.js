@@ -289,6 +289,7 @@ function Project(props) {
   const [project, setProject] = useState();
   const [user, setUser] = useState();
   const [error, setError] = useState();
+  const history = useHistory();
 
   const project_id = props.match.params.projectId;
 
@@ -317,25 +318,30 @@ function Project(props) {
     fetchData();
   }, [project_id]);
 
-  return (
-    <Container align="center">
-      <div>
-        {project && user && (
-          <div>
-            <Header project={project} />
-            <Grid container spacing={5}>
-              <Grid item xs={9}>
-                <ProjectPanel project={project} />
+  if (error) {
+    history.push("/404");
+    return null;
+  } else {
+    return (
+      <Container align="center">
+        <div>
+          {project && user && (
+            <div>
+              <Header project={project} />
+              <Grid container spacing={5}>
+                <Grid item xs={9}>
+                  <ProjectPanel project={project} />
+                </Grid>
+                <Grid item xs={3}>
+                  <UserInfo user={user} project={project} />
+                </Grid>
               </Grid>
-              <Grid item xs={3}>
-                <UserInfo user={user} project={project} />
-              </Grid>
-            </Grid>
-          </div>
-        )}
-      </div>
-    </Container>
-  );
+            </div>
+          )}
+        </div>
+      </Container>
+    );
+  }
 }
 
 export default Project;

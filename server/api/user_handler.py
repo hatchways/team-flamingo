@@ -8,7 +8,6 @@ user_handler = Blueprint('user_handler', __name__)
 
 
 @user_handler.route('/api/v1/users/<user_id>/profile', methods=['GET'])
-@jwt_required
 def get_user(user_id):
     user = User.query.filter_by(id=user_id).first()
 
@@ -33,14 +32,16 @@ def edit_user(user_id):
 
     user_data = request.get_json()
 
-    user.profile_pics = user_data.get('profile_pics', [])
-    user.current_avatar = user_data.get('current_avatar', None)
-    user.location = user_data.get('location', None)
-    user.description = user_data.get('description', None)
-    user.expertise = user_data.get('expertise', [])
-    user.invest_in = user_data.get('invest_in', [])
-    user.linkedin_profile = user_data.get('linkedin_profile', None)
-    user.angelco_profile = user_data.get('angelco_profile', None)
+    user.profile_pics = user_data.get('profile_pics', user.profile_pics)
+    user.current_avatar = user_data.get('current_avatar', user.current_avatar)
+    user.location = user_data.get('location', user.location)
+    user.description = user_data.get('description', user.description)
+    user.expertise = user_data.get('expertise', user.expertise)
+    user.invest_in = user_data.get('invest_in', user.invest_in)
+    user.linkedin_profile = user_data.get(
+        'linkedin_profile', user.linkedin_profile)
+    user.angelco_profile = user_data.get(
+        'angelco_profile', user.angelco_profile)
 
     db.session.commit()
 
