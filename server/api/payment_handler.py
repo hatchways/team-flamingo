@@ -164,7 +164,86 @@ def create_connected_account():
     redirect_url = 'http://localhost:3000/profile/' + str(project.user.id) + '/projects/' + str(project.id) + '/edit?tab=Payment'
 
     return redirect(redirect_url)
-    
-    
 
+@payment_handler.route('/api/v1/payment/payout/<project_id>', methods=['POST'])
+def payout_project(project_id):
+    project = Project.query.filter_by(id=project_id).first()
+ 
+    total_funding = 0
+    successful_payment = 0
+    charges = []
+
+    for fund in project.funds:
+        total_funding += money_to_decimal(fund.fund_amount)
+        user = User.query.filter_by(id=fund.user_id).first()
+
+        try:
+            intent = stripe.PaymentIntent.create(
+                amount=int(money_to_decimal(fund.fund_amount)) * 100,
+                currency="cad",
+                customer=user.stripe_customer_id,
+                payment_method=fund.payment_method_id,
+                receipt_email=user.login_email,
+                off_session=True,
+                confirm=True
+            )
+        
+            retrieve = stripe.PaymentIntent.retrieve(intent.id)
+
+            if retrieve.status == "succeeded":
+                charges.append(retrieve.id)
+                successful_payment += retrieve.amount_received / 100
+
+        except Exception as e:
+            app.logger.info(e)
+            return jsonify({'error': 'An unknown error has occurred'}), 500
+
+    if total_funding == successful_payment:
+        if successful_payment == 0:
+            return jsonify({
+            'success': 'All funds were successfully received',
+            'total_funding': int(total_funding),
+            'successful_payout': int(successful_payment)
+            }), 200
+
+        account = project.connected_account
+        account_id = account.stripe_connected_account_id
+
+        try:
+            transfer = stripe.Transfer.create(
+                amount=int(successful_payment * 100),
+                currency="cad",
+                destination=account_id
+            )
+
+        except Exception as e:
+            app.logger.info(e)
+            return jsonify({'error': 'An unknown error has occurred'}), 500
+
+        for fund in project.funds:
+            db.session.delete(fund)
+
+        project.live = False
+
+        db.session.commit()
+
+        return jsonify({
+            'success': 'All funds were successfully received',
+            'total_funding': int(total_funding),
+            'successful_payout': int(successful_payment)
+            }), 200
+
+    else:
+        try:
+            for charge in charges:
+                stripe.Refund.create(
+                    charge=charge
+                )
+                return jsonify({'error': 'Payout could not be successfully completed'}), 500
+
+        except Exception as e:
+            app.logger.info(e)
+            return jsonify({'error': 'An unknown error has occurred'}), 500
+
+        
     
