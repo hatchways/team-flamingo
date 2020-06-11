@@ -30,6 +30,7 @@
     "extends": "react-app"
   },
   "proxy": "http://9cd02f16e006.ngrok.io",
+
   "browserslist": {
     "production": [
       ">0.2%",

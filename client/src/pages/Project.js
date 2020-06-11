@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import moment from "moment";
 
 import {
   Typography,
@@ -12,20 +13,30 @@ import {
   Divider,
   Tabs,
   Tab,
-  List,
-  ListItem,
 } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 
-import projectMain from "../staticImages/projMain.png";
-import projectInfo from "../staticImages/projInfo.png";
-import profpic1 from "../staticImages/profpic1.png";
+import axios from "axios";
+
+moment.updateLocale("en", { relativeTime: { future: "%s to go" } });
 
 const useStyles = makeStyles((theme) => ({
   root: {
     color: "black",
+  },
+  avatar: {
+    width: theme.spacing(15),
+    height: theme.spacing(15),
+  },
+  projectMainImage: {
+    height: theme.spacing(60),
+    objectFit: "contain",
+  },
+  userPanel: {
+    padding: "1rem 0",
+    borderTop: "6px solid black",
   },
   userDividerTop: {
     marginTop: theme.spacing(3),
@@ -33,32 +44,27 @@ const useStyles = makeStyles((theme) => ({
   userDividerBottom: {
     marginBottom: theme.spacing(3),
   },
-}));
-
-const userStatic = {
-  name: "Alexander Faa",
-  location: "New York, NY",
-};
-const projectStatic = {
-  id: 3,
-  title: "Urban Jungle",
-  subtitle: "Coffee. Community",
-  currentInvested: 29000,
-  wantedInvestement: 40000,
-  equity: 0.1,
-  timeLeft: 44,
-  backers: 50,
-  photos: [projectMain, projectInfo],
-  about: {
-    main_about:
-      "Kopi-luwak cultivar, cup organic cup americano trifecta aged. Iced, frappuccino white ristretto affogato a cappuccino. Iced whipped et  decaffeinated, americano, aromatic so cultivar sugar robusta. Aged decaffeinated, siphon redeye, organic frappuccino froth crema java",
-    additional_info: [
-      "Kopi-luwak cultivar, cup organic cup americano trifecta aged.",
-      "Iced, frappuccino white ristretto affogato a cappuccino",
-      "Iced whipped et black carajillo decaffeinated, americano, aromatic so cultivar sugar robusta",
-    ],
+  fundButton: {
+    color: "white",
+    backgroundColor: theme.primary,
+    border: "0px",
   },
-};
+  tab: {
+    minWidth: theme.spacing(15),
+  },
+  highlightButton: {
+    borderRadius: "30px",
+    padding: "0.2rem 1rem",
+    fontSize: "0.7rem",
+    fontWeight: "600",
+    backgroundColor: theme.primary,
+    color: "white",
+    border: "0px",
+    "&:hover": {
+      backgroundColor: theme.highlight,
+    },
+  },
+}));
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -67,8 +73,8 @@ function TabPanel(props) {
     <div
       role="tabpanel"
       hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
+      id={`project-tabpanel-${index}`}
+      aria-labelledby={`project-tab-${index}`}
       {...other}
     >
       {value === index && (
@@ -81,6 +87,19 @@ function TabPanel(props) {
   );
 }
 
+function AboutTab(props) {
+  return (
+    <div>
+      <Typography variant="h4" component="h3">
+        About
+      </Typography>
+      <Box my={3}>
+        <Typography>{props.description}</Typography>
+      </Box>
+    </div>
+  );
+}
+
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
@@ -89,60 +108,71 @@ function a11yProps(index) {
 }
 
 function Header(props) {
-  const proj = props.project;
+  const classes = useStyles();
+  const project = props.project;
   return (
     <div>
-      <Button variant="outlined" size="large">
-        Crafts
+      <Button
+        variant="outlined"
+        size="large"
+        className={classes.highlightButton}
+      >
+        {project.industry[0].name}
       </Button>
       <Typography variant="h2">
-        <Box fontWeight="fontWeightMedium">{proj.title}</Box>
+        <Box fontWeight="fontWeightMedium">{project.title}</Box>
       </Typography>
-      <Typography color="textSecondary">{proj.subtitle}</Typography>
+      <Typography color="textSecondary">{project.subtitle}</Typography>
     </div>
   );
 }
 
 function ProjectPanel(props) {
-  const [value, setValue] = React.useState(0);
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
+  const classes = useStyles();
+  const [listTabs, setListTabs] = useState([
+    "ABOUT",
+    "TEAM",
+    "MARKET SIZE",
+    "TRACTION",
+    "GOALS",
+    "INVESTMENT",
+  ]);
+  const [currentTab, setCurrentTab] = useState(0);
+  const handleUpdateTab = (event, newValue) => {
+    setCurrentTab(newValue);
   };
 
-  const proj = props.project;
+  const project = props.project;
 
   return (
     <Card>
-      <CardMedia component="img" src={proj.photos[0]}></CardMedia>
-      <Tabs
-        value={value}
-        onChange={handleChange}
-        aria-label="simple tabs example"
-      >
-        <Tab label="ABOUT" {...a11yProps(0)} />
-        <Tab label="TEAM" {...a11yProps(1)} />
-      </Tabs>
-      <TabPanel value={value} index={0}>
-        <Typography variant="h4" component="h3">
-          About
-        </Typography>
-        <Box my={3}>
-          <Typography>{proj.about.main_about}</Typography>
-        </Box>
-        <CardMedia component="img" src={proj.photos[1]}></CardMedia>
-        <Box my={3}>
-          <Typography variant="h4">Additional Info</Typography>
-        </Box>
-        <Box my={3}>
-          <List>
-            <ListItem key={0}>{proj.about.additional_info[0]}</ListItem>
-            <ListItem key={1}>{proj.about.additional_info[1]}</ListItem>
-            <ListItem key={2}>{proj.about.additional_info[2]}</ListItem>
-          </List>
-        </Box>
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        TODO
+      <CardMedia
+        component="img"
+        src={
+          project.photos[0]
+            ? process.env.REACT_APP_AWS_ROOT + project.photos[0]
+            : ""
+        }
+        className={classes.projectMainImage}
+      ></CardMedia>
+      <Container>
+        <Tabs
+          value={currentTab}
+          onChange={handleUpdateTab}
+          aria-label="Project Tabs"
+          variant="fullWidth"
+          style={{ justifyContent: "space-between" }}
+        >
+          {listTabs.map((tab, step) => {
+            return (
+              <Tab className={classes.tab} label={tab} {...a11yProps(step)} />
+            );
+          })}
+        </Tabs>
+      </Container>
+
+      <TabPanel value={currentTab} index={0}>
+        <AboutTab description={project.description} />
       </TabPanel>
     </Card>
   );
@@ -152,26 +182,44 @@ function UserInfo(props) {
   const classes = useStyles();
   const history = useHistory();
 
-  const proj = props.project;
+  const project = props.project;
   const user = props.user;
+  const fromNow = moment(project.deadline).fromNow();
+
+  const [isOwnProfile, setIsOwnProfile] = useState(false);
+
+  useEffect(() => {
+    axios.get("/api/v1/me").then((res) => {
+      if (res.data.user_id === user.id) setIsOwnProfile(true);
+    });
+  }, [isOwnProfile]);
 
   const handleFund = () => {
     history.push({
-      pathname: `/project/${proj.id}/fund`,
+      pathname: `/project/${project.id}/fund`,
       state: {
-        title: proj.title,
+        title: project.title,
+      },
+    });
+  };
+
+  const handleEditProject = () => {
+    history.push({
+      pathname: `/profile/${user.id}/projects/${project.id}/edit`,
+      state: {
+        title: project.title,
       },
     });
   };
 
   return (
-    <Card>
-      <Typography display="inline">${proj.currentInvested}</Typography>
+    <Card className={classes.userPanel}>
+      <Typography display="inline">{project.current_funding}</Typography>
       <Typography color="textSecondary" display="inline">
-        {" / " + proj.wantedInvestement}
+        {" / " + project.funding_goal}
       </Typography>
       <Typography variant="body2" color="textSecondary">
-        Equity exchange: {proj.equity * 100}%
+        Equity exchange: {project.equity * 100}%
       </Typography>
 
       <Divider className={classes.userDividerTop} />
@@ -182,58 +230,111 @@ function UserInfo(props) {
         style={{ height: "50px" }}
       >
         <Typography variant="body2" color="textSecondary">
-          {proj.backers} backers
+          {project.backers} backers
         </Typography>
         <Divider orientation="vertical" flexItem />
         <Typography variant="body2" color="textSecondary">
-          {proj.timeLeft} days to go
+          {fromNow}
         </Typography>
       </Grid>
 
       <Divider className={classes.userDividerBottom} />
 
-      <Avatar src={profpic1}></Avatar>
+      <Avatar
+        src={
+          process.env.REACT_APP_AWS_ROOT +
+          user.profile_pics[user.current_avatar]
+        }
+        className={classes.avatar}
+      ></Avatar>
       {/* User Info */}
       <Box>
         <Typography variant="h6" component="p">
-          {user.name}
+          {user.username}
         </Typography>
         <Typography color="textSecondary">{user.location}</Typography>
       </Box>
 
-      {/* Send a message */}
-      <Box>
-        <Button size="large" variant="outlined" disableElevation>
-          Send a Message
-        </Button>
+      {isOwnProfile && (
         <Button
           size="large"
           variant="outlined"
           disableElevation
-          onClick={handleFund}
+          onClick={handleEditProject}
         >
-          Fund This Project
+          Edit Project
         </Button>
-      </Box>
+      )}
+      {!isOwnProfile && (
+        <Box>
+          <Button size="large" variant="outlined" disableElevation>
+            Send a Message
+          </Button>
+          <Button
+            size="large"
+            variant="outlined"
+            disableElevation
+            onClick={handleFund}
+            className={classes.fundButton}
+          >
+            Fund This Project
+          </Button>
+        </Box>
+      )}
     </Card>
   );
 }
 
 function Project(props) {
+  const [project, setProject] = useState();
+  const [user, setUser] = useState();
+  const [error, setError] = useState();
+
+  const project_id = props.match.params.projectId;
+
+  const handleUpdateProject = (project) => {
+    setProject(project);
+  };
+
+  const handleUpdateUser = (user) => {
+    setUser(user);
+  };
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const projectRes = await axios(`/api/v1/projects/${project_id}`);
+        setProject(projectRes.data);
+        const userRes = await axios(
+          `/api/v1/users/${projectRes.data.user_id}/profile`
+        );
+        setUser(userRes.data);
+      } catch (err) {
+        console.dir(err);
+        setError(err);
+      }
+    }
+    fetchData();
+  }, [project_id]);
+
   return (
-    <div>
-      <Container align="center">
-        <Header project={projectStatic} />
-        <Grid container spacing={5}>
-          <Grid item xs={9}>
-            <ProjectPanel project={projectStatic} />
-          </Grid>
-          <Grid item xs={3}>
-            <UserInfo user={userStatic} project={projectStatic} />
-          </Grid>
-        </Grid>
-      </Container>
-    </div>
+    <Container align="center">
+      <div>
+        {project && user && (
+          <div>
+            <Header project={project} />
+            <Grid container spacing={5}>
+              <Grid item xs={9}>
+                <ProjectPanel project={project} />
+              </Grid>
+              <Grid item xs={3}>
+                <UserInfo user={user} project={project} />
+              </Grid>
+            </Grid>
+          </div>
+        )}
+      </div>
+    </Container>
   );
 }
 

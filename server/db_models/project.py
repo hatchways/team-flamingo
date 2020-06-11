@@ -51,6 +51,7 @@ class Project(db.Model):
             'location': self.location,
             'photos': self.photos,
             'funding_goal': self.funding_goal,
+            'backers': len([f for f in self.funds]),
             'equity': self.equity,
             'current_funding': self.current_funding,
             'deadline': self.deadline,

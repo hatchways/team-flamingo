@@ -10,9 +10,9 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import logo from "../staticImages/ic-logo.png";
 
-import { Link as RouterLink } from "react-router-dom";
+import LinkTo from "../components/navigation/LinkTo";
 
-const LinkTo = React.forwardRef((props, ref) => <RouterLink {...props} />);
+// const LinkTo = React.forwardRef((props, ref) => <RouterLink {...props} />);
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -66,10 +66,20 @@ function NavBar({ currentUser, userProfile }) {
             </Button>
           )}
 
-          <Button color="inherit" component={LinkTo} to={"/project"}>
+          <Button color="inherit" component={LinkTo} to={"/"}>
             Explore
           </Button>
-          <Button color="inherit">Launch</Button>
+          <Button
+            color="inherit"
+            component={LinkTo}
+            to={
+              userProfile
+                ? `${userProfile}/projects/create`
+                : "/profile/-1/projects/create"
+            }
+          >
+            Create
+          </Button>
           {!currentUser && (
             <div>
               <Button color="inherit" component={LinkTo} to="/login">
