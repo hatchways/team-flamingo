@@ -45,9 +45,14 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(3),
   },
   fundButton: {
-    color: "white",
     backgroundColor: theme.primary,
-    border: "0px",
+    color: theme.bgcolor,
+    margin: "1rem 0",
+    width: "80%",
+  },
+  messageButton: {
+    width: "80%",
+    marginTop: "1rem",
   },
   tab: {
     minWidth: theme.spacing(15),
@@ -111,19 +116,27 @@ function Header(props) {
   const classes = useStyles();
   const project = props.project;
   return (
-    <div>
-      <Button
-        variant="outlined"
-        size="large"
-        className={classes.highlightButton}
-      >
-        {project.industry[0].name}
-      </Button>
+    <Box margin="2rem">
+      {project.industry.length !== 0 ? (
+        <Button
+          variant="outlined"
+          size="large"
+          className={classes.highlightButton}
+        >
+          {project.industry.map((ind) => {
+            return ind.name;
+          })}
+        </Button>
+      ) : (
+        ""
+      )}
       <Typography variant="h2">
         <Box fontWeight="fontWeightMedium">{project.title}</Box>
       </Typography>
-      <Typography color="textSecondary">{project.subtitle}</Typography>
-    </div>
+      <Typography variant="h3" color="textSecondary">
+        {project.subtitle}
+      </Typography>
+    </Box>
   );
 }
 
@@ -267,7 +280,12 @@ function UserInfo(props) {
       )}
       {!isOwnProfile && (
         <Box>
-          <Button size="large" variant="outlined" disableElevation>
+          <Button
+            size="large"
+            variant="outlined"
+            disableElevation
+            className={classes.messageButton}
+          >
             Send a Message
           </Button>
           <Button
@@ -308,6 +326,7 @@ function Project(props) {
         const userRes = await axios(
           `/api/v1/users/${projectRes.data.user_id}/profile`
         );
+        console.log(userRes);
         setUser(userRes.data);
       } catch (err) {
         console.dir(err);

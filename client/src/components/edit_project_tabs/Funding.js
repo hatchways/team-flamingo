@@ -40,8 +40,8 @@ function Funding(props) {
   );
   const [deadline, setDeadline] = useState(
     project.deadline
-      ? moment(project.deadline).toISOString()
-      : moment(new Date()).toISOString()
+      ? moment(project.deadline).format()
+      : moment(new Date()).format()
   );
 
   const handleUpdateFundingGoal = (event) => {
@@ -55,8 +55,8 @@ function Funding(props) {
   };
 
   const handleUpdateDeadline = (date) => {
-    const formatted = moment(date).toISOString();
-    setDeadline(formatted);
+    //const formatted = moment(date).toISOString();
+    setDeadline(date.format());
   };
 
   const handleContinue = (event) => {

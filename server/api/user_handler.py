@@ -8,7 +8,6 @@ user_handler = Blueprint('user_handler', __name__)
 
 
 @user_handler.route('/api/v1/users/<user_id>/profile', methods=['GET'])
-@jwt_required
 def get_user(user_id):
     user = User.query.filter_by(id=user_id).first()
 

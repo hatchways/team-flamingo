@@ -10,7 +10,9 @@ import {
   Button,
   Divider,
   Grid,
+  IconButton,
 } from "@material-ui/core";
+import LinkedInIcon from "@material-ui/icons/LinkedIn";
 
 import { makeStyles } from "@material-ui/core/styles";
 import EditProfileDialog from "../components/EditProfileDialog";
@@ -81,6 +83,10 @@ function UserInfo(props) {
       if (res.data.user_id === user.id) setIsOwnProfile(true);
     });
   }, [isOwnProfile]);
+
+  const handleLinkedin = (event) => {
+    window.location.assign(user.linkedin_profile);
+  };
 
   return (
     <Box height="100%" className={classes.userInfoShadow}>
@@ -169,6 +175,15 @@ function UserInfo(props) {
             );
           })}
         </Container>
+      </Box>
+
+      <Box>
+        <IconButton onClick={handleLinkedin}>
+          <LinkedInIcon />
+        </IconButton>
+        <Button>
+          <img src="../staticImages/AngelList_Black_Victory_Hand.png" />
+        </Button>
       </Box>
     </Box>
   );

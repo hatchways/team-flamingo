@@ -44,7 +44,6 @@ def explore_projects():
 
 
 @project_handler.route('/api/v1/projects/<project_id>', methods=['GET'])
-@jwt_required
 def get_project(project_id):
     project = Project.query.filter_by(id=project_id).first()
 
