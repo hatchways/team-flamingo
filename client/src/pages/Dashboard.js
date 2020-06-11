@@ -78,7 +78,7 @@ function UserInfo(props) {
 
   useEffect(() => {
     axios.get("/api/v1/me").then((res) => {
-      if (res.data.user_id == user.id) setIsOwnProfile(true);
+      if (res.data.user_id === user.id) setIsOwnProfile(true);
     });
   }, [isOwnProfile]);
 

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { ThemeProvider } from "@material-ui/styles";
-import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import { theme } from "./themes/theme";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -15,9 +15,7 @@ import FundProject from "./pages/FundProject";
 import NotFound from "./pages/404NotFound";
 import Main from "./pages/Main";
 import Logout from "./pages/Logout";
-import EditProject from "./pages/EditProject";
 import Explore from "./pages/Explore";
-import ProtectedRoute from "./components/ProtectedRoute";
 
 import "./App.css";
 

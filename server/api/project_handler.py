@@ -4,13 +4,47 @@ from db_models.user import User
 from db_models.project import Project, project_industries_map
 from db_models.industries import Industry
 from app import db, jwt
-from sqlalchemy import or_
+from sqlalchemy import or_, and_, text
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from util.db.row2dict import row2dict
 from util.validation_decorators.validate_project import validate_project
 
 project_handler = Blueprint('project_handler', __name__)
+
+# d = Project.industry.any(Industry.name==c)
+# Project.query.filter(d).all()
+
+
+@project_handler.route('/api/v1/projects', methods=['POST'])
+def explore_projects():
+    data = request.get_json()
+
+    date = data.get("date", None)
+    industry = data.get("industry", None)
+    location = data.get("location", None)
+
+    if not date or not industry or not location:
+        return jsonify({"error": "missing filters"}), 200
+
+    # Filters are sqlalchemy.sql.selectable.Exists object
+    industryFilter = text("") if industry == "All" else Project.industry.any(
+        Industry.id == industry)
+    locationFilter = text(
+        "") if location == "All" else Project.location == location
+    # Should this be GT or LT
+    dateFilter = Project.deadline > date
+
+    projects = db.session.query(Project, User.username) \
+        .filter(industryFilter) \
+        .filter(locationFilter) \
+        .filter(dateFilter) \
+        .filter(Project.user_id == User.id).all()
+
+    data = [{"project": p[0].serialize, "username": p[1]} for p in projects]
+
+    return jsonify(data), 200
+
 
 @project_handler.route('/api/v1/projects/<project_id>', methods=['GET'])
 @jwt_required
@@ -21,6 +55,7 @@ def get_project(project_id):
         return jsonify({'error': 'There is no project with the given id'}), 404
 
     return jsonify(project.serialize)
+
 
 @project_handler.route('/api/v1/users/<user_id>/projects', methods=['GET'])
 @jwt_required
@@ -82,7 +117,7 @@ def update_project(user_id, project_id):
 
     project = Project.query.filter_by(id=project_id).first()
     if project is None:
-        return jsonify({'error': 'project does not exist'}), 400    
+        return jsonify({'error': 'project does not exist'}), 400
 
     project.title = data.get('title', project.title)
     project.subtitle = data.get('subtitle', project.subtitle)

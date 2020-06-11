@@ -32,12 +32,13 @@ class Project(db.Model):
     funds = db.relationship('Fund', backref='project')
     deadline = db.Column(TIMESTAMP, nullable=True)
     stripe_state = db.Column(db.String(128), nullable=True)
-    connected_account = db.relationship('ConnectedAccount', backref='project', lazy=True, uselist=False)
+    connected_account = db.relationship(
+        'ConnectedAccount', backref='project', lazy=True, uselist=False)
     live = db.Column(db.Boolean, default=False, nullable=False)
 
     def __repr__(self):
-        return '{0} created by {1}'.format(self.title, self.User_id)
-    
+        return "{0} created by user with id {1}".format(self.title, self.user_id)
+
     @property
     def serialize(self):
         return {
