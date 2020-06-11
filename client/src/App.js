@@ -25,6 +25,7 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
     localStorage.getItem("isAuth") == "true"
   );
+
   function handleUserLog(isAuth) {
     localStorage.setItem("isAuth", isAuth);
     setIsAuthenticated(isAuth);
@@ -60,11 +61,7 @@ function App() {
             component={FundProject}
             isAuthenticated={isAuthenticated}
           />
-          <ProtectedRoute
-            path="/project/:projectId/fund"
-            component={FundProject}
-            isAuthenticated={isAuthenticated}
-          />
+
           <ProtectedRoute
             path="/project/:projectId/payout"
             component={Payout}
@@ -93,8 +90,9 @@ function App() {
               <Logout {...props} handleUserLog={handleUserLog} />
             )}
           />
+
+          <Route path="/" exact component={Explore} />
           <Route path="/404" component={NotFound} />
-          <Route exact path="/" component={Explore} />
           <Redirect from="*" to="/404" />
         </Switch>
       </BrowserRouter>

@@ -39,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2),
     minWidth: 150,
   },
+  searchButton: {},
 }));
 
 function Filters(props) {
