@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Redirect } from "react-router-dom";
-import moment from "moment";
+import { useHistory } from "react-router-dom";
 
 import {
   Typography,
@@ -9,9 +8,6 @@ import {
   Box,
   Avatar,
   Button,
-  Card,
-  CardMedia,
-  CardContent,
   Divider,
   Grid,
 } from "@material-ui/core";
@@ -19,7 +15,7 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import EditProfileDialog from "../components/EditProfileDialog";
 
-moment.updateLocale("en", { relativeTime: { future: "%s to go" } });
+import ProjectCard from "../components/ProjectCard";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -178,47 +174,12 @@ function UserInfo(props) {
   );
 }
 
-function ProjectCard(props) {
-  const classes = useStyles();
-  const projectInfo = props.project;
-  const fromNow = moment(projectInfo.deadline).fromNow();
-
-  return (
-    <Grid item xs={6}>
-      <Card elevation={8}>
-        <CardMedia
-          className={classes.media}
-          component="img"
-          src={
-            projectInfo.photos[0]
-              ? process.env.REACT_APP_AWS_ROOT + projectInfo.photos[0]
-              : ""
-          }
-        ></CardMedia>
-        <CardContent>
-          <Typography className={classes.cardTitle} variant="h5" component="h4">
-            {projectInfo.title}
-          </Typography>
-          <Typography className={classes.cardInvested} display="inline">
-            {projectInfo.current_funding}
-          </Typography>
-          <Typography color="textSecondary" display="inline">
-            {" / " + projectInfo.funding_goal}
-          </Typography>
-          <Typography variant="body2" color="textSecondary">
-            Equity exchange: {projectInfo.equity * 100}% |{" " + fromNow}
-          </Typography>
-        </CardContent>
-      </Card>
-    </Grid>
-  );
-}
-
 function UserDashboard(props) {
   const classes = useStyles();
   const [user, setUser] = useState();
   const [projects, setProjects] = useState({});
   const [error, setError] = useState();
+  const history = useHistory();
 
   const handleUserEdited = (user) => {
     setUser(user);
@@ -240,16 +201,14 @@ function UserDashboard(props) {
         await Promise.all([fetchUser(), fetchProject()]);
       } catch (err) {
         console.dir(err);
-        if (err.response.status === 400) {
-          setError(err.response);
-        }
+        setError(err);
       }
     }
     fetchData();
   }, [id]);
 
   if (error) {
-    return <Redirect to="/404" />;
+    return history.push("/404");
   }
 
   return (
@@ -271,7 +230,11 @@ function UserDashboard(props) {
           <Grid container spacing={6}>
             {projects.length
               ? projects.map((value, step) => {
-                  return <ProjectCard key={step} project={value} />;
+                  return (
+                    <Grid item xs={6}>
+                      <ProjectCard key={step} project={value} />
+                    </Grid>
+                  );
                 })
               : ""}
           </Grid>
