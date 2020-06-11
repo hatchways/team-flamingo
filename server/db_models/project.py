@@ -18,7 +18,7 @@ class Project(db.Model):
         'users.id'), nullable=False)
     title = db.Column(db.String(64), index=True, unique=True, nullable=True)
     subtitle = db.Column(db.Text, nullable=True)
-    description = db.Column(db.Text, index=True, unique=True, nullable=True)
+    description = db.Column(db.Text, index=True, nullable=True)
     # 'Toxi' Configuration
     industry = db.relationship(
         'Industry', secondary=project_industries_map,

@@ -20,12 +20,14 @@ function ExpertiseChips(props) {
   }, [chips]);
 
   const handleAddChip = (event) => {
-    setChips((chips) => {
-      // If the industry is already chosen, we don't want a duplicate
-      if (chips.includes(expertise)) return [...expertise];
-      else return [...chips, expertise];
-    });
-    setExpertise("");
+    if (expertise) {
+      setChips((chips) => {
+        // If the industry is already chosen, we don't want a duplicate
+        if (chips.includes(expertise)) return [...expertise];
+        else return [...chips, expertise];
+      });
+      setExpertise("");
+    }
   };
 
   const handleRemoveChip = (chip) => {
@@ -40,7 +42,6 @@ function ExpertiseChips(props) {
 
   return (
     <>
-      <Typography>Expertise</Typography>
       <TextField
         value={expertise || ""}
         fullWidth

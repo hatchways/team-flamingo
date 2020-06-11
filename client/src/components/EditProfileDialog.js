@@ -141,6 +141,7 @@ function EditProfileDialog(props) {
             </Grid>
 
             <Grid item xs={12}>
+              <Typography>Expertise</Typography>
               <ExpertiseChips
                 onStateChange={handleUpdateExpertise}
                 expertiseList={expertise}
@@ -148,6 +149,7 @@ function EditProfileDialog(props) {
             </Grid>
 
             <Grid item xs={12}>
+              <Typography>Interested in</Typography>
               <ExpertiseChips
                 onStateChange={handleUpdateInterest}
                 expertiseList={interest}

@@ -15,9 +15,7 @@ import FundProject from "./pages/FundProject";
 import NotFound from "./pages/404NotFound";
 import Main from "./pages/Main";
 import Logout from "./pages/Logout";
-import EditProject from "./pages/EditProject";
 import Explore from "./pages/Explore";
-import ProtectedRoute from "./components/ProtectedRoute";
 
 import "./App.css";
 
@@ -26,9 +24,9 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
     localStorage.getItem("isAuth") ? true : false
   );
-  function handleUserLog(isAuth) {
-    setIsAuthenticated(isAuth);
-    localStorage.setItem("isAuth", isAuth);
+  async function handleUserLog(isAuth) {
+    await localStorage.setItem("isAuth", isAuth);
+    await setIsAuthenticated(isAuth);
   }
 
   return (
@@ -81,7 +79,8 @@ function App() {
               <Logout {...props} handleUserLog={handleUserLog} />
             )}
           />
-          <Route path="/" component={Explore} />
+
+          <Route path="/" exact component={Explore} />
           <Route path="/404" component={NotFound} />
           <Redirect from="*" to="/404" />
         </Switch>

@@ -69,7 +69,13 @@ function NavBar({ currentUser, userProfile }) {
           <Button color="inherit" component={LinkTo} to={"/project"}>
             Explore
           </Button>
-          <Button color="inherit">Launch</Button>
+          <Button
+            color="inherit"
+            component={LinkTo}
+            to={userProfile ? `${userProfile}/projects/create` : "/signup"}
+          >
+            Create
+          </Button>
           {!currentUser && (
             <div>
               <Button color="inherit" component={LinkTo} to="/login">
