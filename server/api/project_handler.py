@@ -37,6 +37,7 @@ def explore_projects():
         .filter(locationFilter) \
         .filter(dateFilter) \
         .filter(Project.user_id == User.id).all()
+    # .filter(Project.live == True) \
 
     data = [{"project": p[0].serialize, "username": p[1]} for p in projects]
 
@@ -44,12 +45,14 @@ def explore_projects():
 
 
 @project_handler.route('/api/v1/projects/<project_id>', methods=['GET'])
-@jwt_required
 def get_project(project_id):
     project = Project.query.filter_by(id=project_id).first()
 
     if not project:
         return jsonify({'error': 'There is no project with the given id'}), 404
+
+    # if not project.live:
+    #     return jsonify({'error': 'Project is not currently live'}), 404
 
     return jsonify(project.serialize)
 
@@ -62,7 +65,23 @@ def get_users_projects(user_id):
     if user is None:
         return jsonify({'error': 'User doesnt exist'}), 400
 
-    projects = [p.serialize for p in user.projects]
+    if user.id == get_jwt_identity()['user_id']:
+        projects = [p.serialize for p in user.projects]
+    else:
+        projects = [p.serialize for p in user.projects if p.live]
+
+    return jsonify(projects), 200
+
+
+@project_handler.route('/api/v1/users/<user_id>/projects/funded', methods=['GET'])
+@jwt_required
+def get_users_funded_projects(user_id):
+    user = User.query.filter_by(id=user_id).first()
+
+    if user is None:
+        return jsonify({'error': 'User doesnt exist'}), 400
+
+    projects = [p.serialize for p in user.funded_projects]
 
     return jsonify(projects), 200
 

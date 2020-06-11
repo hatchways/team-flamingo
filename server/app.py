@@ -22,7 +22,7 @@ stripe.api_key = Config.STRIPE_SECRET_KEY
 
 if (Config.STRIPE_CREATE_WEBHOOK_ON_STARTUP):
     stripe.WebhookEndpoint.create(
-        url='https://c75a2d2e6336.ngrok.io/api/v1/payment/payment-method',
+        url='https://a393d9abc85e.ngrok.io/api/v1/payment/payment-method',
         enabled_events=[
             'checkout.session.completed'
         ]

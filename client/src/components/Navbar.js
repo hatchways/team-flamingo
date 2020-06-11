@@ -12,8 +12,6 @@ import logo from "../staticImages/ic-logo.png";
 
 import LinkTo from "../components/navigation/LinkTo";
 
-// const LinkTo = React.forwardRef((props, ref) => <RouterLink {...props} />);
-
 const useStyles = makeStyles((theme) => ({
   appBar: {
     background: "white",
@@ -72,11 +70,7 @@ function NavBar({ currentUser, userProfile }) {
           <Button
             color="inherit"
             component={LinkTo}
-            to={
-              userProfile
-                ? `${userProfile}/projects/create`
-                : "/profile/-1/projects/create"
-            }
+            to={currentUser ? `${userProfile}/projects/create` : "/signup"}
           >
             Create
           </Button>
