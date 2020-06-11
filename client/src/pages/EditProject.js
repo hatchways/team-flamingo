@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { useHistory } from "react-router-dom";
 import axios from "axios";
+import query from "query-string";
 import {
   Typography,
   Grid,
@@ -11,15 +13,19 @@ import {
   ListItemText,
   Drawer,
   Toolbar,
-  TextField,
 } from "@material-ui/core";
 import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 import VisibilityIcon from "@material-ui/icons/Visibility";
-import DeleteIcon from "@material-ui/icons/Delete";
 import { makeStyles } from "@material-ui/core/styles";
 
-import Navbar from "../components/Navbar";
-import IndustriesDropdown from "../components/IndustriesDropdown";
+import LoadingScreen from "../components/LoadingScreen";
+import DeleteProject from "../components/DeleteProject";
+
+import Basics from "../components/edit_project_tabs/Basics";
+import Story from "../components/edit_project_tabs/Story";
+import Funding from "../components/edit_project_tabs/Funding";
+import Payment from "../components/edit_project_tabs/Payment";
+import Live from "../components/edit_project_tabs/Live";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -79,236 +85,136 @@ const useStyles = makeStyles((theme) => ({
     padding: "5%",
     maxWidth: theme.breakpoints.values.sm,
   },
-  mainTitle: {
-    fontWeight: 500,
-    fontSize: 24,
-  },
 }));
-
-function Basics(props) {
-  const classes = useStyles();
-
-  // State variables
-  const [title, setTitle] = useState("");
-  const [subtitle, setSubtitle] = useState("");
-  const [industries, setIndustries] = useState([]);
-  const [location, setLocation] = useState("");
-  const [images, setImages] = useState([]);
-  const [fundingGoal, setFundingGoal] = useState(0);
-
-  const handleUpdateTitle = (event) => {
-    setTitle(event.target.value);
-  };
-
-  const handleUpdateSubtitle = (event) => {
-    setSubtitle(event.target.value);
-  };
-
-  const handleUpdateIndustries = (industries) => {
-    setIndustries(industries);
-  };
-
-  const handleUpdateLocation = (event) => {
-    setLocation(event.target.value);
-  };
-
-  const handleUpdateFundingGoal = (event) => {
-    setFundingGoal(event.target.value);
-  };
-
-  const handleSave = (event) => {
-    // TODO: save project edits
-  };
-
-  return (
-    <Grid container direction="row" spacing={4}>
-      <Grid item xs={12}>
-        <Typography className={classes.mainTitle} gutterBottom>
-          Start with basics
-        </Typography>
-      </Grid>
-
-      <Grid item xs={12}>
-        <Typography>Project title</Typography>
-        <TextField
-          variant="outlined"
-          fullWidth
-          value={title}
-          onChange={handleUpdateTitle}
-        />
-      </Grid>
-
-      <Grid item xs={12}>
-        <Typography>Subtitle</Typography>
-        <TextField
-          variant="outlined"
-          fullWidth
-          multiline
-          rows={3}
-          value={subtitle}
-          onChange={handleUpdateSubtitle}
-        />
-      </Grid>
-
-      <Grid item xs={12}>
-        <Typography>Industries</Typography>
-        <IndustriesDropdown onStateChange={handleUpdateIndustries} />
-      </Grid>
-
-      <Grid item xs={12}>
-        <Typography>Project location</Typography>
-        <TextField
-          variant="outlined"
-          fullWidth
-          value={location}
-          onChange={handleUpdateLocation}
-        />
-      </Grid>
-
-      <Grid item xs={12}>
-        <Typography>Download images</Typography>
-        {/* TODO: add in file upload component */}
-      </Grid>
-
-      <Grid item xs={12}>
-        <Typography>Funding goal amount</Typography>
-        <TextField
-          type="number"
-          variant="outlined"
-          fullWidth
-          value={fundingGoal}
-          onChange={handleUpdateFundingGoal}
-          InputProps={{ startAdornment: "$ " }}
-        />
-      </Grid>
-
-      <Grid item xs={12}>
-        <Button
-          variant="contained"
-          onClick={handleSave}
-          className={classes.primaryButton}
-        >
-          SAVE
-        </Button>
-      </Grid>
-    </Grid>
-  );
-}
-
-function Rewards(props) {
-  return <div>Rewards</div>;
-}
-
-function Story(props) {
-  return <div>Story</div>;
-}
-
-function People(props) {
-  return <div>People</div>;
-}
-
-function Payment(props) {
-  return <div>Payment</div>;
-}
 
 function EditProject(props) {
   const classes = useStyles();
-  const tabs = ["Basics", "Rewards", "Story", "People", "Payment"];
+  const history = useHistory();
+  const userId = props.match.params.profileId;
+  const projectId = props.match.params.projectId;
+  const tabs = ["Basics", "Story", "Funding", "Payment", "Live"];
+  const searchTab = query.parse(props.location.search).tab;
 
-  const renderTab = (currentTab) => {
+  const renderTab = (currentTab, project) => {
+    const props = {
+      project: project,
+      handleTabChange: handleTabChange,
+      userId: userId,
+    };
+
+    // Resets scroll to top of page for each tab render
+    window.scrollTo(0, 0);
+
     switch (currentTab) {
       case "Basics":
-        return <Basics />;
-      case "Rewards":
-        return <Rewards />;
+        return <Basics {...props} />;
       case "Story":
-        return <Story />;
-      case "People":
-        return <People />;
+        return <Story {...props} />;
+      case "Funding":
+        return <Funding {...props} />;
       case "Payment":
-        return <Payment />;
+        return <Payment {...props} />;
+      case "Live":
+        return <Live {...props} />;
       default:
-        return <Basics />;
+        return <Basics {...props} />;
     }
   };
 
   // State variables
-  const [currentTab, setCurrentTab] = useState("Basics");
+  const [project, setProject] = useState();
+  const [loading, setLoading] = useState(true);
+  const [currentTab, setCurrentTab] = useState(
+    searchTab ? searchTab : "Basics"
+  );
+
+  // Get current project info to prepopulate fields
+  useEffect(() => {
+    axios
+      .get(`/api/v1/projects/${projectId}`)
+      .then((res) => {
+        setProject(res.data);
+        setLoading(false);
+      })
+      .catch((err) => history.push("/404"));
+  }, [projectId, currentTab]);
 
   // Handlers
   const handleTabChange = (tab) => {
+    props.history.push(window.location.pathname + "?tab=" + tab);
     setCurrentTab(tab);
   };
 
-  return (
-    <div className={classes.root}>
-      {/* Sidebar */}
-      <Drawer
-        variant="temporary"
-        anchor="left"
-        variant="permanent"
-        className={classes.drawer}
-        classes={{ paper: classes.drawerPaper }}
-      >
-        <Toolbar />
-        <Grid container direction="row" alignItems="stretch">
-          <Grid item xs={12} className={classes.sidebarTop}>
-            <Typography className={classes.projectTitle}>
-              Urban Jungle: eco-friendly coffee shop
-            </Typography>
-            <Button
-              className={classes.primaryButton}
-              size="medium"
-              variant="contained"
-              startIcon={<VisibilityIcon />}
-            >
-              PREVIEW
-            </Button>
-          </Grid>
+  if (loading) return <LoadingScreen />;
+  else
+    return (
+      <div className={classes.root}>
+        {/* Sidebar */}
+        <Drawer
+          variant="temporary"
+          anchor="left"
+          variant="permanent"
+          className={classes.drawer}
+          classes={{ paper: classes.drawerPaper }}
+        >
+          <Toolbar />
+          <Grid container direction="row" alignItems="stretch">
+            <Grid item xs={12} className={classes.sidebarTop}>
+              <Typography className={classes.projectTitle}>
+                Urban Jungle: eco-friendly coffee shop
+              </Typography>
+              <Button
+                className={classes.primaryButton}
+                size="medium"
+                variant="contained"
+                startIcon={<VisibilityIcon />}
+              >
+                PREVIEW
+              </Button>
+            </Grid>
 
-          <Grid item xs={12}>
-            <Divider light={true} classes={{ root: classes.dividerRoot }} />
-          </Grid>
+            <Grid item xs={12}>
+              <Divider light={true} classes={{ root: classes.dividerRoot }} />
+            </Grid>
 
-          <Grid item xs={12}>
-            <List classes={{ padding: classes.listPadding }}>
-              {tabs.map((tab, index) => (
-                <ListItem
-                  button
-                  onClick={() => handleTabChange(tab)}
-                  disabled={tab !== currentTab}
-                  divider
-                  className={classes.tab}
-                  key={index}
-                >
-                  <ListItemIcon
-                    children={
-                      <FiberManualRecordIcon
-                        fontSize="small"
-                        classes={{ root: classes.tabIconRoot }}
-                      />
-                    }
-                    classes={{ root: classes.listItemIconRoot }}
-                  />
-                  <ListItemText primary={tab} />
-                </ListItem>
-              ))}
-            </List>
-          </Grid>
+            <Grid item xs={12}>
+              <List classes={{ padding: classes.listPadding }}>
+                {tabs.map((tab, index) => (
+                  <ListItem
+                    button
+                    onClick={() => handleTabChange(tab)}
+                    disabled={tab !== currentTab}
+                    divider
+                    className={classes.tab}
+                    key={index}
+                  >
+                    <ListItemIcon
+                      children={
+                        <FiberManualRecordIcon
+                          fontSize="small"
+                          classes={{ root: classes.tabIconRoot }}
+                        />
+                      }
+                      classes={{ root: classes.listItemIconRoot }}
+                    />
+                    <ListItemText primary={tab} />
+                  </ListItem>
+                ))}
+              </List>
+            </Grid>
 
-          <Grid item xs={12} className={classes.deleteContainer}>
-            <Button startIcon={<DeleteIcon />}>DELETE PROJECT</Button>
+            <Grid item xs={12} className={classes.deleteContainer}>
+              <DeleteProject projectId={projectId} userId={userId} />
+            </Grid>
           </Grid>
-        </Grid>
-      </Drawer>
+        </Drawer>
 
-      {/* Main content */}
-      <main className={classes.mainContent}>
-        <Toolbar />
-        {renderTab(currentTab)}
-      </main>
-    </div>
-  );
+        {/* Main content */}
+        <main className={classes.mainContent}>
+          {renderTab(currentTab, project)}
+        </main>
+      </div>
+    );
 }
 
 export default EditProject;

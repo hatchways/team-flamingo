@@ -12,10 +12,10 @@ from util.validation_decorators.validate_image_files import validate_files
 
 s3_handler = Blueprint('s3_handler', __name__)
 
-BUCKET = "plphotos"
+BUCKET = 'plphotos'
 
 
-@s3_handler.route("/api/v1/upload", methods=["POST"])
+@s3_handler.route('/api/v1/upload', methods=['POST'])
 @jwt_required
 @validate_files
 def upload():
@@ -23,10 +23,10 @@ def upload():
     If no project id is given, client-side must call edit profile itself
     '''
 
-    files = request.files.getlist("image")
-    folder = request.form["folder"]
-    if folder == "project":
-        project_id = int(request.form["project_id"])
+    files = request.files.getlist('image')
+    folder = request.form['folder']
+    if folder == 'project':
+        project_id = int(request.form['project_id'])
     else:
         project_id = None
     current_user_id = get_jwt_identity()['user_id']
@@ -34,18 +34,18 @@ def upload():
     for file in files:
         uniqueId = uuid.uuid4()
         # Construct filename, is random
-        filename = "{0}/{1}.png".format(folder, uniqueId)
+        filename = '{0}/{1}.png'.format(folder, uniqueId)
 
         resp = addImageToUser(filename, folder, current_user_id, project_id)
 
         if not resp:
-            return jsonify({"error": "File was not saved"}), 400
+            return jsonify({'error': 'File was not saved'}), 400
 
         resp = upload_file_object(file, BUCKET, filename)
         if not resp:
-            return jsonify({"error": "something went wrong and the file was not uploaded"}), 500
+            return jsonify({'error': 'something went wrong and the file was not uploaded'}), 500
 
-    return jsonify({"success": "file uploaded", "storedAt": filename}), 200
+    return jsonify({'success': 'file uploaded', 'storedAt': filename}), 200
 
 
 def addImageToUser(uuid, location, user_id, project_id=None):
@@ -58,7 +58,7 @@ def addImageToUser(uuid, location, user_id, project_id=None):
     :param project_id: project to upload to, uploads to profile if false
     :return: True if file was uploaded, else False
     '''
-    if location == "project":
+    if location == 'project':
         if project_id is None:
             return False
         project = Project.query.filter_by(id=project_id).first()

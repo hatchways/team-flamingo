@@ -4,7 +4,7 @@ class PaymentMethod(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     stripe_payment_method_id = db.Column(db.String(64), primary_key=True, unique=True)
     user_id = db.Column(db.Integer, db.ForeignKey(
-        "users.id"), nullable=False)
+        'users.id'), nullable=False)
     card_brand = db.Column(db.String(32), nullable=False)
     exp_month = db.Column(db.Integer, nullable=False)
     exp_year = db.Column(db.Integer, nullable=False)
