@@ -12,9 +12,6 @@ from util.validation_decorators.validate_project import validate_project
 
 project_handler = Blueprint('project_handler', __name__)
 
-# d = Project.industry.any(Industry.name==c)
-# Project.query.filter(d).all()
-
 
 @project_handler.route('/api/v1/projects', methods=['POST'])
 def explore_projects():
@@ -33,7 +30,7 @@ def explore_projects():
     locationFilter = text(
         "") if location == "All" else Project.location == location
     # Should this be GT or LT
-    dateFilter = Project.deadline > date
+    dateFilter = Project.deadline < date
 
     projects = db.session.query(Project, User.username) \
         .filter(industryFilter) \

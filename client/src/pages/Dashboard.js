@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
     color: "white",
     border: "0px",
     "&:hover": {
-      backgroundColor: "black",
+      backgroundColor: theme.highlight,
     },
   },
   media: {
@@ -208,40 +208,41 @@ function UserDashboard(props) {
   }, [id]);
 
   if (error) {
-    return history.push("/404");
+    history.push("/404");
+    return null;
+  } else {
+    return (
+      <Grid container className={classes.root}>
+        {/* User Information Sidebar */}
+        <Grid item xs={3}>
+          {user ? (
+            <UserInfo user={user} handleUserEdited={handleUserEdited} />
+          ) : (
+            ""
+          )}
+        </Grid>
+        {/* Invested in and Personal Projects */}
+        <Grid item xs={9}>
+          <Container className={classes.projectContainer}>
+            <Typography className={classes.ySpacing} variant="h2">
+              <Box fontWeight="fontWeightMedium">Invested In: </Box>
+            </Typography>
+            <Grid container spacing={6}>
+              {projects.length
+                ? projects.map((value, step) => {
+                    return (
+                      <Grid item xs={6}>
+                        <ProjectCard key={step} project={value} />
+                      </Grid>
+                    );
+                  })
+                : ""}
+            </Grid>
+          </Container>
+        </Grid>
+      </Grid>
+    );
   }
-
-  return (
-    <Grid container className={classes.root}>
-      {/* User Information Sidebar */}
-      <Grid item xs={3}>
-        {user ? (
-          <UserInfo user={user} handleUserEdited={handleUserEdited} />
-        ) : (
-          ""
-        )}
-      </Grid>
-      {/* Invested in and Personal Projects */}
-      <Grid item xs={9}>
-        <Container className={classes.projectContainer}>
-          <Typography className={classes.ySpacing} variant="h2">
-            <Box fontWeight="fontWeightMedium">Invested In: </Box>
-          </Typography>
-          <Grid container spacing={6}>
-            {projects.length
-              ? projects.map((value, step) => {
-                  return (
-                    <Grid item xs={6}>
-                      <ProjectCard key={step} project={value} />
-                    </Grid>
-                  );
-                })
-              : ""}
-          </Grid>
-        </Container>
-      </Grid>
-    </Grid>
-  );
 }
 
 export default UserDashboard;

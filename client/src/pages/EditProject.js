@@ -161,7 +161,7 @@ function EditProject(props) {
           <Grid container direction="row" alignItems="stretch">
             <Grid item xs={12} className={classes.sidebarTop}>
               <Typography className={classes.projectTitle}>
-                Urban Jungle: eco-friendly coffee shop
+                {project.title}
               </Typography>
               <Button
                 className={classes.primaryButton}

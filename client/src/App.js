@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ThemeProvider } from "@material-ui/styles";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 
 import { theme } from "./themes/theme";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -43,24 +43,34 @@ function App() {
           )}
         />
         <Switch>
-          <Route
+          {/* Protected Routes */}
+          <ProtectedRoute
             path="/profile/:profileId/projects/:projectId/edit"
             component={EditProject}
+            isAuthenticated={isAuthenticated}
           />
-          <Route
+          <ProtectedRoute
             path="/profile/:id/projects/create"
             component={CreateProject}
+            isAuthenticated={isAuthenticated}
           />
-
           <ProtectedRoute
             path="/profile/:id"
             component={UserDashboard}
             isAuthenticated={isAuthenticated}
           />
+          <ProtectedRoute
+            path="/project/:projectId/fund"
+            component={FundProject}
+            isAuthenticated={isAuthenticated}
+          />
+          <ProtectedRoute
+            path="/project/:projectId"
+            component={Project}
+            isAuthenticated={isAuthenticated}
+          />
 
-          <Route path="/project/:projectId/fund" component={FundProject} />
-          <Route path="/project" component={Project} />
-
+          {/* Unprotected Routes */}
           <Route
             path="/signup"
             render={(props) => (
@@ -79,8 +89,8 @@ function App() {
               <Logout {...props} handleUserLog={handleUserLog} />
             )}
           />
-          <Route path="/" component={Explore} />
           <Route path="/404" component={NotFound} />
+          <Route exact path="/" component={Explore} />
           <Redirect from="*" to="/404" />
         </Switch>
       </BrowserRouter>

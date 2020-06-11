@@ -26,6 +26,7 @@ import toTitleCase from "../util/toTitleCase";
 const useStyles = makeStyles((theme) => ({
   root: {
     color: "black",
+    marginTop: theme.spacing(15),
   },
   ySpacing: {
     margin: "2rem 0",
@@ -45,7 +46,7 @@ function Filters(props) {
 
   const [industry, setIndustry] = useState("All");
   const [location, setLocation] = useState("All");
-  const [selectedDate, setSelectedDate] = useState(moment());
+  const [selectedDate, setSelectedDate] = useState(moment().add(1, "month"));
 
   const [industryList, setIndustryList] = useState([]);
   const [locationList, setLocationList] = useState([]);
@@ -144,6 +145,7 @@ function Filters(props) {
               KeyboardButtonProps={{
                 "aria-label": "change date",
               }}
+              helperText="Choose a date"
             />
           </MuiPickersUtilsProvider>
         </Box>
