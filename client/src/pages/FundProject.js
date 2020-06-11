@@ -51,7 +51,7 @@ function FundProject(props) {
   // State variables
   const [loading, setLoading] = useState(true);
   const [paymentMethod, setPaymentMethod] = useState(null);
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState("");
   const [project, setProject] = useState(null);
 
   useEffect(() => {
@@ -83,7 +83,7 @@ function FundProject(props) {
   };
 
   const handleUpdateAmount = (event) => {
-    setAmount(event.target.value);
+    setAmount(Number(event.target.value));
   };
 
   if (loading) return <LoadingScreen />;
@@ -127,6 +127,7 @@ function FundProject(props) {
                   value={amount}
                   onChange={handleUpdateAmount}
                   type="number"
+                  required
                   fullWidth
                   variant="outlined"
                 />

@@ -9,7 +9,10 @@ import {
   CardContent,
   Divider,
   Box,
+  Link,
 } from "@material-ui/core";
+
+import LinkTo from "../components/navigation/LinkTo";
 
 moment.updateLocale("en", { relativeTime: { future: "%s to go" } });
 
@@ -37,15 +40,17 @@ function ProjectCard(props) {
 
   return (
     <Card elevation={8} className={classes.card}>
-      <CardMedia
-        className={classes.media}
-        component="img"
-        src={
-          project.photos[0]
-            ? process.env.REACT_APP_AWS_ROOT + project.photos[0]
-            : ""
-        }
-      ></CardMedia>
+      <Link component={LinkTo} to={`/project/${project.id}`}>
+        <CardMedia
+          className={classes.media}
+          component="img"
+          src={
+            project.photos[0]
+              ? process.env.REACT_APP_AWS_ROOT + project.photos[0]
+              : ""
+          }
+        ></CardMedia>
+      </Link>
       <CardContent>
         <Typography className={classes.cardTitle} variant="h5" component="h4">
           {project.title.length < 50
@@ -54,7 +59,7 @@ function ProjectCard(props) {
         </Typography>
         <Box mt={1} />
         <Typography className={classes.cardInvested} display="inline">
-          ${project.current_funding}
+          {project.current_funding}
         </Typography>
         <Typography color="textSecondary" display="inline">
           {" / " + project.funding_goal}
@@ -67,8 +72,15 @@ function ProjectCard(props) {
       {showUser && (
         <CardContent>
           <Typography className={classes.cardInvested}>
-            By {project.author}
+            <Link
+              component={LinkTo}
+              to={`/profile/${project.user_id}`}
+              color="inherit"
+            >
+              By {project.username}
+            </Link>
           </Typography>
+
           <Typography color="textSecondary" display="inline">
             {project.location}
           </Typography>

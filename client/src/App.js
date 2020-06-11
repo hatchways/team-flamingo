@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { ThemeProvider } from "@material-ui/styles";
-import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 
 import { theme } from "./themes/theme";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -10,6 +10,7 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Project from "./pages/Project";
 import CreateProject from "./pages/CreateProject";
+import Payout from "./pages/Payout";
 import EditProject from "./pages/EditProject";
 import FundProject from "./pages/FundProject";
 import NotFound from "./pages/404NotFound";
@@ -43,22 +44,36 @@ function App() {
           )}
         />
         <Switch>
-          <Route
+          {/* Protected Routes */}
+          <ProtectedRoute
             path="/profile/:profileId/projects/:projectId/edit"
             component={EditProject}
+            isAuthenticated={isAuthenticated}
           />
-          <Route
+          <ProtectedRoute
             path="/profile/:id/projects/create"
             component={CreateProject}
+            isAuthenticated={isAuthenticated}
           />
-
           <ProtectedRoute
             path="/profile/:id"
             component={UserDashboard}
             isAuthenticated={isAuthenticated}
           />
+          <ProtectedRoute
+            path="/project/:projectId/fund"
+            component={FundProject}
+            isAuthenticated={isAuthenticated}
+          />
+          <ProtectedRoute
+            path="/project/:projectId"
+            component={Project}
+            isAuthenticated={isAuthenticated}
+          />
 
+          {/* Unprotected Routes */}
           <Route path="/project/:projectId/fund" component={FundProject} />
+          <Route path="/project/:projectId/payout" component={Payout} />
           <Route path="/project" component={Project} />
 
           <Route
