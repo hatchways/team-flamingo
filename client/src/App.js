@@ -10,12 +10,14 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Project from "./pages/Project";
 import CreateProject from "./pages/CreateProject";
+import EditProject from "./pages/EditProject";
 import FundProject from "./pages/FundProject";
 import NotFound from "./pages/404NotFound";
 import Main from "./pages/Main";
 import Logout from "./pages/Logout";
 import EditProject from "./pages/EditProject";
 import Explore from "./pages/Explore";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 import "./App.css";
 
@@ -79,8 +81,9 @@ function App() {
               <Logout {...props} handleUserLog={handleUserLog} />
             )}
           />
-          <Route path="/:404" component={NotFound} />
           <Route path="/" component={Explore} />
+          <Route path="/404" component={NotFound} />
+          <Redirect from="*" to="/404" />
         </Switch>
       </BrowserRouter>
     </ThemeProvider>

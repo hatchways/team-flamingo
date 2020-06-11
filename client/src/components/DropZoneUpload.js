@@ -7,6 +7,7 @@ function DropZoneUpload({
   uploadLocation,
   projectId,
   upload,
+  initialPhotos,
   handleUploadSuccess,
 }) {
   const [files, setFiles] = useState([]);
@@ -24,28 +25,30 @@ function DropZoneUpload({
   };
   const handleUpload = () => {
     if (!files.length) {
-      return handleUploadSuccess(false);
+      return handleUploadSuccess("");
     }
     let formData = new FormData();
     formData.set("folder", uploadLocation);
     formData.set("project_id", projectId ? projectId : null);
 
-    files.forEach((image) => {
-      formData.append("image", image);
-    });
-
-    axios
-      .post("/api/v1/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((res) => {
-        handleUploadSuccess(res.data.storedAt);
-      })
-      .catch((err) => {
-        console.log(err.response);
+    if (files.length) {
+      files.forEach((image) => {
+        formData.append("image", image);
       });
+
+      axios
+        .post("/api/v1/upload", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((res) => {
+          handleUploadSuccess(res.data.storedAt);
+        })
+        .catch((err) => {
+          console.log(err.response);
+        });
+    } else handleUploadSuccess("");
   };
   useEffect(() => {
     if (upload) handleUpload();

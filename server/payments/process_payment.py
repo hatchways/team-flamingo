@@ -10,7 +10,7 @@ def process_payment(user_id, payment_id, amount):
 
     payment_intent = stripe.PaymentIntent.create(
         amount=amount,
-        currency="cad",
+        currency='cad',
         payment_method=payment_id,
         customer=customer_id,
         receipt_email=user_email,
