@@ -62,9 +62,13 @@ function App() {
             isAuthenticated={isAuthenticated}
           />
 
+          <ProtectedRoute
+            path="/project/:projectId/payout"
+            component={Payout}
+            isAuthenticated={isAuthenticated}
+          />
+
           {/* Unprotected Routes */}
-          <Route path="/project/:projectId/fund" component={FundProject} />
-          <Route path="/project/:projectId/payout" component={Payout} />
           <Route path="/project/:projectId" component={Project} />
           <Route path="/profile/:id" component={UserDashboard} />
 

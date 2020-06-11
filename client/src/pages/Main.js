@@ -16,6 +16,7 @@ function Main(props) {
       } catch (err) {
         console.dir(err.response.data.error);
         setCurrentUser(false);
+        setUserProfile("");
       }
     }
     fetchData();

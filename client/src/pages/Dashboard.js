@@ -19,6 +19,8 @@ import EditProfileDialog from "../components/EditProfileDialog";
 
 import ProjectCard from "../components/ProjectCard";
 
+import LinkTo from "../components/navigation/LinkTo";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     color: "black",
@@ -192,7 +194,8 @@ function UserInfo(props) {
 function UserDashboard(props) {
   const classes = useStyles();
   const [user, setUser] = useState();
-  const [projects, setProjects] = useState({});
+  const [projects, setProjects] = useState([]);
+  const [fundedProjects, setFundedProjects] = useState([]);
   const [error, setError] = useState();
   const history = useHistory();
 
@@ -211,9 +214,13 @@ function UserDashboard(props) {
       const projRes = await axios(`/api/v1/users/${id}/projects`);
       setProjects(projRes.data);
     }
+    async function fetchFundedProject() {
+      const projFundRes = await axios(`/api/v1/users/${id}/projects/funded`);
+      setFundedProjects(projFundRes.data);
+    }
     async function fetchData() {
       try {
-        await Promise.all([fetchUser(), fetchProject()]);
+        await Promise.all([fetchUser(), fetchProject(), fetchFundedProject()]);
       } catch (err) {
         console.dir(err);
         setError(err);
@@ -240,7 +247,7 @@ function UserDashboard(props) {
         <Grid item xs={9}>
           <Container className={classes.projectContainer}>
             <Typography className={classes.ySpacing} variant="h2">
-              <Box fontWeight="fontWeightMedium">Invested In: </Box>
+              <Box fontWeight="fontWeightMedium">Projects: </Box>
             </Typography>
             <Grid container spacing={6}>
               {projects.length
@@ -252,6 +259,31 @@ function UserDashboard(props) {
                     );
                   })
                 : ""}
+            </Grid>
+            {fundedProjects.length ? (
+              <Typography className={classes.ySpacing} variant="h2">
+                <Box fontWeight="fontWeightMedium">Invested In: </Box>
+              </Typography>
+            ) : (
+              ""
+            )}
+            <Typography className={classes.ySpacing} variant="h2">
+              <Box fontWeight="fontWeightMedium">Invested In: </Box>
+            </Typography>
+            <Grid container spacing={6}>
+              {fundedProjects.length ? (
+                fundedProjects.map((value, step) => {
+                  return (
+                    <Grid item xs={6}>
+                      <ProjectCard key={step} project={value} />
+                    </Grid>
+                  );
+                })
+              ) : (
+                <Button color="inherit" component={LinkTo} to={"/"}>
+                  Explore
+                </Button>
+              )}
             </Grid>
           </Container>
         </Grid>

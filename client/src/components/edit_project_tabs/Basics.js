@@ -63,7 +63,7 @@ function Basics(props) {
           subtitle: subtitle,
           location: location,
           industry: industries.map((industry) => industry.name),
-          photos: [projectPhotos],
+          photos: projectPhotos ? photos.concat(projectPhotos) : photos,
         })
         .then((res) => props.handleTabChange("Story"))
         .catch((err) => console.log(err));

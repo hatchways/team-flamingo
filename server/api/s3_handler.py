@@ -31,10 +31,13 @@ def upload():
         project_id = None
     current_user_id = get_jwt_identity()['user_id']
 
+    filenames = []
+
     for file in files:
         uniqueId = uuid.uuid4()
         # Construct filename, is random
         filename = '{0}/{1}.png'.format(folder, uniqueId)
+        filenames.append(filename)
 
         resp = addImageToUser(filename, folder, current_user_id, project_id)
 
@@ -45,7 +48,7 @@ def upload():
         if not resp:
             return jsonify({'error': 'something went wrong and the file was not uploaded'}), 500
 
-    return jsonify({'success': 'file uploaded', 'storedAt': filename}), 200
+    return jsonify({'success': 'file uploaded', 'storedAt': filenames}), 200
 
 
 def addImageToUser(uuid, location, user_id, project_id=None):
