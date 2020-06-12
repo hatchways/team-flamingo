@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import axios from "axios";
 import { Grid, Typography, TextField, Button, Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -74,6 +74,18 @@ function Basics(props) {
     },
     [title, subtitle, location, industries, userId, project]
   );
+
+  useEffect(() => {
+    const update = {
+      title: title,
+      subtitle: subtitle,
+      location: location,
+      industry: industries.map((industry) => industry.name),
+    };
+    if (props.openPreview) {
+      props.handleEditProject({ ...project, ...update });
+    }
+  }, [props.openPreview]);
 
   return (
     <Grid container direction="row" spacing={4}>

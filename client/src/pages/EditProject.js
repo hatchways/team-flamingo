@@ -13,10 +13,15 @@ import {
   ListItemText,
   Drawer,
   Toolbar,
+  Dialog,
+  DialogTitle,
+  DialogContent,
 } from "@material-ui/core";
 import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import { makeStyles } from "@material-ui/core/styles";
+
+import Project from "../pages/Project";
 
 import LoadingScreen from "../components/LoadingScreen";
 import DeleteProject from "../components/DeleteProject";
@@ -35,12 +40,12 @@ const useStyles = makeStyles((theme) => ({
   drawer: {
     borderRight: "1px solid #d3d3d3",
     height: "100%",
-    width: "33%",
+    width: "25%",
   },
   drawerPaper: {
     boxShadow: "10px 0 5px -2px #eee",
     height: "100%",
-    width: "33%",
+    width: "25%",
   },
   tab: {
     paddingTop: "1rem",
@@ -87,6 +92,50 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function PreviewProject(props) {
+  const classes = useStyles();
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const handleOpenDialog = (event) => {
+    setDialogOpen(true);
+    props.setOpenPreview(true);
+  };
+  const handleCloseDialog = (event) => {
+    setDialogOpen(false);
+    props.setOpenPreview(false);
+  };
+
+  return (
+    <div>
+      <Button
+        className={classes.primaryButton}
+        size="medium"
+        variant="contained"
+        startIcon={<VisibilityIcon />}
+        onClick={handleOpenDialog}
+      >
+        PREVIEW
+      </Button>
+      <Dialog
+        fullWidth
+        maxWidth="md"
+        open={dialogOpen}
+        onClose={handleCloseDialog}
+        aria-labelledby="form-dialog-title"
+      >
+        <DialogTitle id="form-dialog-title">Preview</DialogTitle>
+        <DialogContent>
+          <Project
+            preview={true}
+            project={props.project}
+            user={{ id: props.userId }}
+          />
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
 function EditProject(props) {
   const classes = useStyles();
   const history = useHistory();
@@ -95,10 +144,14 @@ function EditProject(props) {
   const tabs = ["Basics", "Story", "Funding", "Payment", "Live"];
   const searchTab = query.parse(props.location.search).tab;
 
+  // State for preview
+
   const renderTab = (currentTab, project) => {
     const props = {
       project: project,
       handleTabChange: handleTabChange,
+      handleEditProject: handleEditProject,
+      openPreview: openPreview,
       userId: userId,
     };
 
@@ -127,6 +180,7 @@ function EditProject(props) {
   const [currentTab, setCurrentTab] = useState(
     searchTab ? searchTab : "Basics"
   );
+  const [openPreview, setOpenPreview] = useState(false);
 
   // Get current project info to prepopulate fields
   useEffect(() => {
@@ -143,6 +197,9 @@ function EditProject(props) {
   const handleTabChange = (tab) => {
     props.history.push(window.location.pathname + "?tab=" + tab);
     setCurrentTab(tab);
+  };
+  const handleEditProject = (project) => {
+    setProject(project);
   };
 
   if (loading) return <LoadingScreen />;
@@ -163,14 +220,11 @@ function EditProject(props) {
               <Typography className={classes.projectTitle}>
                 {project.title}
               </Typography>
-              <Button
-                className={classes.primaryButton}
-                size="medium"
-                variant="contained"
-                startIcon={<VisibilityIcon />}
-              >
-                PREVIEW
-              </Button>
+              <PreviewProject
+                project={project}
+                setOpenPreview={setOpenPreview}
+                userId={userId}
+              />
             </Grid>
 
             <Grid item xs={12}>
@@ -183,7 +237,6 @@ function EditProject(props) {
                   <ListItem
                     button
                     onClick={() => handleTabChange(tab)}
-                    disabled={tab !== currentTab}
                     divider
                     className={classes.tab}
                     key={index}
