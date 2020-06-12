@@ -26,9 +26,9 @@ function App() {
     localStorage.getItem("isAuth") == "true"
   );
 
-  function handleUserLog(isAuth) {
-    localStorage.setItem("isAuth", isAuth);
-    setIsAuthenticated(isAuth);
+  async function handleUserLog(isAuth) {
+    await localStorage.setItem("isAuth", isAuth);
+    await setIsAuthenticated(isAuth);
   }
 
   return (
