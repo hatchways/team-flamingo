@@ -1,10 +1,11 @@
 import React, { useState, useCallback } from "react";
 import axios from "axios";
-import { Grid, Typography, TextField, Button } from "@material-ui/core";
+import { Grid, Typography, TextField, Button, Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import IndustriesDropdown from "../IndustriesDropdown";
 import DropZoneUpload from "../DropZoneUpload";
 import ForwardArrow from "../arrows/ForwardArrow";
+import LoadingScreen from "../LoadingScreen";
 
 const useStyles = makeStyles((theme) => ({
   mainTitle: {
@@ -15,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.primary,
     color: theme.bgcolor,
     margin: "2rem 0",
+    marginRight: "2rem",
     minWidth: "150px",
   },
 }));
@@ -24,6 +26,7 @@ function Basics(props) {
   const { userId, project } = props;
 
   // State variables
+  const [loading, setLoading] = useState(false);
   const [upload, setUpload] = useState(false);
   const [title, setTitle] = useState(project.title);
   const [subtitle, setSubtitle] = useState(project.subtitle);
@@ -49,6 +52,7 @@ function Basics(props) {
 
   const handleTriggerFileUpload = (event) => {
     setUpload(true);
+    setLoading(true);
   };
 
   const handleForward = (event) => {
@@ -129,13 +133,16 @@ function Basics(props) {
       </Grid>
 
       <Grid item xs={12}>
-        <Button
-          variant="contained"
-          onClick={handleTriggerFileUpload}
-          className={classes.primaryButton}
-        >
-          {project.live ? "SAVE" : "CONTINUE"}
-        </Button>
+        <Box display="flex" flexDirection="row" alignItems="center">
+          <Button
+            variant="contained"
+            onClick={handleTriggerFileUpload}
+            className={classes.primaryButton}
+          >
+            {project.live ? "SAVE" : "CONTINUE"}
+          </Button>
+          {loading && <LoadingScreen />}
+        </Box>
       </Grid>
     </Grid>
   );

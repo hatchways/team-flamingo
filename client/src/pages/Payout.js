@@ -21,7 +21,6 @@ function Payout(props) {
 
   const [loading, setLoading] = useState(true);
   const [project, setProject] = useState(null);
-  const [totalFunding, setTotalFunding] = useState("");
   const [successfulPayout, setSuccessfulPayout] = useState("");
 
   useEffect(() => {
@@ -35,10 +34,11 @@ function Payout(props) {
   }, [projectId]);
 
   const handlePayout = (event) => {
+    setLoading(true);
     axios
       .post(`/api/v1/payment/payout/${projectId}`, {})
       .then((res) => {
-        setTotalFunding(res.data.total_funding);
+        setLoading(false);
         setSuccessfulPayout(res.data.successful_payout);
       })
       .catch((err) => console.log(err));
@@ -76,7 +76,7 @@ function Payout(props) {
           </Grid>
 
           <Grid item xs={12}>
-            <Typography>Total Funding: ${totalFunding}</Typography>
+            <Typography>Total Funding: {project.current_funding}</Typography>
           </Grid>
 
           <Grid item xs={12}>

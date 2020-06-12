@@ -11,6 +11,7 @@ import {
   Divider,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import DoneOutlineIcon from "@material-ui/icons/DoneOutline";
 
 import Navbar from "../components/Navbar";
 import ChoosePaymentMethod from "../components/ChoosePaymentMethod";
@@ -50,6 +51,7 @@ function FundProject(props) {
 
   // State variables
   const [loading, setLoading] = useState(true);
+  const [success, setSuccess] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState(null);
   const [amount, setAmount] = useState("");
   const [project, setProject] = useState(null);
@@ -64,7 +66,7 @@ function FundProject(props) {
       .catch((err) => {
         history.push("/404");
       });
-  }, [projectId]);
+  }, [projectId, success]);
 
   const handleFund = (event) => {
     event.preventDefault();
@@ -74,7 +76,7 @@ function FundProject(props) {
         payment_method: paymentMethod.id,
         fund_amount: amount,
       })
-      .then((res) => console.log(res))
+      .then((res) => setSuccess(true))
       .catch((err) => console.log(err));
   };
 
@@ -111,42 +113,55 @@ function FundProject(props) {
             </Box>
           </Typography>
 
-          <form autoComplete="off" onSubmit={handleFund}>
-            <Grid container spacing={4} className={classes.form}>
-              <Grid item xs={12}>
-                <Typography>Select a method of payment</Typography>
-                <ChoosePaymentMethod onUpdatePayment={handleUpdatePayment} />
-              </Grid>
+          {success ? (
+            <Box
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center"
+              height="100%"
+            >
+              <Typography>Sucessfully Funded!</Typography>
+              <DoneOutlineIcon fontSize="large" />
+            </Box>
+          ) : (
+            <form autoComplete="off" onSubmit={handleFund}>
+              <Grid container spacing={4} className={classes.form}>
+                <Grid item xs={12}>
+                  <Typography>Select a method of payment</Typography>
+                  <ChoosePaymentMethod onUpdatePayment={handleUpdatePayment} />
+                </Grid>
 
-              <Grid item xs={12}>
-                <Typography>Choose an amount to fund</Typography>
-                <TextField
-                  InputProps={{
-                    startAdornment: "$",
-                  }}
-                  value={amount}
-                  onChange={handleUpdateAmount}
-                  type="number"
-                  required
-                  fullWidth
-                  variant="outlined"
-                />
-              </Grid>
+                <Grid item xs={12}>
+                  <Typography>Choose an amount to fund</Typography>
+                  <TextField
+                    InputProps={{
+                      startAdornment: "$",
+                    }}
+                    value={amount}
+                    onChange={handleUpdateAmount}
+                    type="number"
+                    required
+                    fullWidth
+                    variant="outlined"
+                  />
+                </Grid>
 
-              <Grid item xs={12} align="center">
-                <Button
-                  className={classes.button}
-                  size="large"
-                  variant="contained"
-                  type="submit"
-                  disabled={paymentMethod && amount ? false : true}
-                  onSubmit={handleFund}
-                >
-                  FUND PROJECT
-                </Button>
+                <Grid item xs={12} align="center">
+                  <Button
+                    className={classes.button}
+                    size="large"
+                    variant="contained"
+                    type="submit"
+                    disabled={paymentMethod && amount ? false : true}
+                    onSubmit={handleFund}
+                  >
+                    FUND PROJECT
+                  </Button>
+                </Grid>
               </Grid>
-            </Grid>
-          </form>
+            </form>
+          )}
         </Container>
       </>
     );
