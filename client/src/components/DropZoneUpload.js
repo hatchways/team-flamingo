@@ -43,6 +43,7 @@ function DropZoneUpload({
           },
         })
         .then((res) => {
+          console.log(res.data);
           handleUploadSuccess(res.data.storedAt);
         })
         .catch((err) => {

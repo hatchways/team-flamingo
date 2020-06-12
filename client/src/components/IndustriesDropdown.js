@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     margin: "2px",
   },
   marginTop: {
-    marginTop: "2rem",
+    marginTop: "0.5rem",
   },
 }));
 
