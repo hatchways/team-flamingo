@@ -11,15 +11,15 @@ import {
   Divider,
   Grid,
   IconButton,
+  Tab,
 } from "@material-ui/core";
+import { TabPanel, TabContext, TabList } from "@material-ui/lab";
 import LinkedInIcon from "@material-ui/icons/LinkedIn";
-
 import { makeStyles } from "@material-ui/core/styles";
 import EditProfileDialog from "../components/EditProfileDialog";
-
 import ProjectCard from "../components/ProjectCard";
-
 import LinkTo from "../components/navigation/LinkTo";
+import angelco from "../staticImages/AngelList_Black_Victory_Hand.png";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "30px",
     padding: "0.2rem 1rem",
     fontSize: "0.7rem",
-    marginRight: "0.5rem",
+    margin: "1px",
     fontWeight: "600",
   },
   highlightButton: {
@@ -87,7 +87,11 @@ function UserInfo(props) {
   }, [isOwnProfile]);
 
   const handleLinkedin = (event) => {
-    window.location.assign(user.linkedin_profile);
+    window.location.assign(user.linkedin);
+  };
+
+  const handleAngelco = (event) => {
+    window.location.assign(user.angelco);
   };
 
   return (
@@ -107,7 +111,7 @@ function UserInfo(props) {
           <Avatar className={classes.avatar} />
         )}
         {/* User Info */}
-        <Box>
+        <Box marginBottom="1rem" marginTop="1rem">
           <Typography variant="h6" component="p">
             {user.username}
           </Typography>
@@ -179,13 +183,23 @@ function UserInfo(props) {
         </Container>
       </Box>
 
-      <Box>
-        <IconButton onClick={handleLinkedin}>
-          <LinkedInIcon />
-        </IconButton>
-        <Button>
-          <img src="../staticImages/AngelList_Black_Victory_Hand.png" />
-        </Button>
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        margin="2rem"
+      >
+        {user.linkedin && (
+          <IconButton onClick={handleLinkedin}>
+            <LinkedInIcon fontSize="large" />
+          </IconButton>
+        )}
+
+        {user.angelco && (
+          <Button onClick={handleAngelco}>
+            <img src={angelco} width="24" height="24" />
+          </Button>
+        )}
       </Box>
     </Box>
   );
@@ -193,6 +207,8 @@ function UserInfo(props) {
 
 function UserDashboard(props) {
   const classes = useStyles();
+
+  const [tab, setTab] = useState("1");
   const [user, setUser] = useState();
   const [projects, setProjects] = useState([]);
   const [fundedProjects, setFundedProjects] = useState([]);
@@ -229,6 +245,10 @@ function UserDashboard(props) {
     fetchData();
   }, [id]);
 
+  const handleTabChange = (event, newTab) => {
+    setTab(newTab);
+  };
+
   if (error) {
     history.push("/404");
     return null;
@@ -244,8 +264,52 @@ function UserDashboard(props) {
           )}
         </Grid>
         {/* Invested in and Personal Projects */}
+
         <Grid item xs={9}>
-          <Container className={classes.projectContainer}>
+          <Container>
+            <Grid container>
+              <TabContext value={tab}>
+                <Grid item xs={12}>
+                  <TabList onChange={handleTabChange} variant="fullWidth">
+                    <Tab value="1" label="Projects" />
+                    <Tab value="2" label="Invested In" />
+                  </TabList>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <TabPanel value="1">
+                    <Grid container spacing={4} direction="row">
+                      {projects.length
+                        ? projects.map((value, step) => {
+                            return (
+                              <Grid item xs={6} key={step}>
+                                <ProjectCard key={step} project={value} />
+                              </Grid>
+                            );
+                          })
+                        : ""}
+                    </Grid>
+                  </TabPanel>
+
+                  <TabPanel value="2">
+                    <Grid container spacing={4} direction="row">
+                      {fundedProjects.length
+                        ? fundedProjects.map((value, step) => {
+                            return (
+                              <Grid item xs={6} key={step}>
+                                <ProjectCard key={step} project={value} />
+                              </Grid>
+                            );
+                          })
+                        : ""}
+                    </Grid>
+                  </TabPanel>
+                </Grid>
+              </TabContext>
+            </Grid>
+          </Container>
+
+          {/* <Container className={classes.projectContainer}>
             <Typography className={classes.ySpacing} variant="h2">
               <Box fontWeight="fontWeightMedium">Projects: </Box>
             </Typography>
@@ -253,7 +317,7 @@ function UserDashboard(props) {
               {projects.length
                 ? projects.map((value, step) => {
                     return (
-                      <Grid item xs={6}>
+                      <Grid item xs={6} key={step}>
                         <ProjectCard key={step} project={value} />
                       </Grid>
                     );
@@ -274,7 +338,7 @@ function UserDashboard(props) {
               {fundedProjects.length ? (
                 fundedProjects.map((value, step) => {
                   return (
-                    <Grid item xs={6}>
+                    <Grid item xs={6} key={step}>
                       <ProjectCard key={step} project={value} />
                     </Grid>
                   );
@@ -285,7 +349,7 @@ function UserDashboard(props) {
                 </Button>
               )}
             </Grid>
-          </Container>
+          </Container> */}
         </Grid>
       </Grid>
     );

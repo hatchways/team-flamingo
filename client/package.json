@@ -29,7 +29,7 @@
   "eslintConfig": {
     "extends": "react-app"
   },
-  "proxy": "http://a393d9abc85e.ngrok.io",
+  "proxy": "http://3c4c5362cc38.ngrok.io",
   "browserslist": {
     "production": [
       ">0.2%",

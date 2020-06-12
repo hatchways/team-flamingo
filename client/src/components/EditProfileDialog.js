@@ -17,7 +17,6 @@ import ExpertiseChips from "../components/ExpertiseChips";
 function EditProfileDialog(props) {
   // Used for initializing values
   const user = props.user;
-  let curPhotos = user.profile_pics;
 
   // State variables
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -72,13 +71,10 @@ function EditProfileDialog(props) {
 
   const handleSave = useCallback(
     (profilePics) => {
-      if (profilePics) {
-        curPhotos.push(profilePics);
-      }
       axios
         .put(`/api/v1/users/${user.id}/profile`, {
-          profile_pics: curPhotos,
-          current_avatar: curPhotos.length - 1,
+          profile_pics: [...profilePics],
+          current_avatar: profilePics.length - 1,
           location: location,
           description: description,
           expertise: expertise,
@@ -98,7 +94,9 @@ function EditProfileDialog(props) {
 
   return (
     <div>
-      <Button onClick={handleOpenDialog}>Edit profile</Button>
+      <Button onClick={handleOpenDialog} variant="outlined" color="primary">
+        Edit profile
+      </Button>
       <Dialog
         fullWidth
         maxWidth="md"
