@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import MomentUtils from "@date-io/moment";
 import moment from "moment";
@@ -77,6 +77,17 @@ function Funding(props) {
   const handleForward = (event) => {
     props.handleTabChange("Payment");
   };
+
+  useEffect(() => {
+    const update = {
+      funding_goal: fundingGoal.toString(),
+      equity: equity / 100,
+      deadline: deadline,
+    };
+    if (props.openPreview) {
+      props.handleEditProject({ ...project, ...update });
+    }
+  }, [props.openPreview]);
 
   return (
     <Grid container spacing={4}>

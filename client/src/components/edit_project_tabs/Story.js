@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Grid, Typography, TextField, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -44,6 +44,15 @@ function Story(props) {
   const handleForward = (event) => {
     props.handleTabChange("Funding");
   };
+
+  useEffect(() => {
+    const update = {
+      description: description,
+    };
+    if (props.openPreview) {
+      props.handleEditProject({ ...project, ...update });
+    }
+  }, [props.openPreview]);
 
   return (
     <Grid container spacing={4}>

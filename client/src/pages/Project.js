@@ -203,7 +203,7 @@ function UserInfo(props) {
 
   useEffect(() => {
     axios.get("/api/v1/me").then((res) => {
-      if (res.data.user_id === user.id) setIsOwnProfile(true);
+      if (res.data.user_id === user.id && !props.preview) setIsOwnProfile(true);
     });
   }, [isOwnProfile]);
 
@@ -224,6 +224,10 @@ function UserInfo(props) {
       },
     });
   };
+
+  const avatar = user.profile_pics
+    ? process.env.REACT_APP_AWS_ROOT + user.profile_pics[user.current_avatar]
+    : "";
 
   return (
     <Card className={classes.userPanel}>
@@ -253,13 +257,7 @@ function UserInfo(props) {
 
       <Divider className={classes.userDividerBottom} />
 
-      <Avatar
-        src={
-          process.env.REACT_APP_AWS_ROOT +
-          user.profile_pics[user.current_avatar]
-        }
-        className={classes.avatar}
-      ></Avatar>
+      <Avatar src={avatar} className={classes.avatar}></Avatar>
       {/* User Info */}
       <Box>
         <Typography variant="h6" component="p">
@@ -309,7 +307,7 @@ function Project(props) {
   const [error, setError] = useState();
   const history = useHistory();
 
-  const project_id = props.match.params.projectId;
+  const project_id = !props.preview ? props.match.params.projectId : "";
 
   const handleUpdateProject = (project) => {
     setProject(project);
@@ -327,14 +325,29 @@ function Project(props) {
         const userRes = await axios(
           `/api/v1/users/${projectRes.data.user_id}/profile`
         );
-        console.log(userRes);
         setUser(userRes.data);
       } catch (err) {
         console.dir(err);
         setError(err);
       }
     }
-    fetchData();
+    async function fetchPreviewData() {
+      try {
+        setProject(props.project);
+        const userRes = await axios(
+          `/api/v1/users/${props.project.user_id}/profile`
+        );
+        setUser(userRes.data);
+      } catch (err) {
+        console.dir(err);
+        setError(err);
+      }
+    }
+    if (!props.preview) {
+      fetchData();
+    } else {
+      fetchPreviewData();
+    }
   }, [project_id]);
 
   if (error) {
@@ -352,7 +365,11 @@ function Project(props) {
                   <ProjectPanel project={project} />
                 </Grid>
                 <Grid item xs={3}>
-                  <UserInfo user={user} project={project} />
+                  <UserInfo
+                    user={user}
+                    project={project}
+                    preview={props.preview}
+                  />
                 </Grid>
               </Grid>
             </div>
