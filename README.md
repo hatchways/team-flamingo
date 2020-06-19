@@ -11,8 +11,7 @@ Product Launch is a web app that provides a marketplace for entrepreneurs to sho
 - JavaScript/React
 - Material-UI
 - Python/Flask
-- PostgreSQL
-- SQLAlchemy
+- PostgreSQL with SQLAlchemy middleware
 - Amazon S3
 - Stripe
 - JWT
@@ -69,11 +68,11 @@ This project has features that use Amazon S3 and Stripe, both of which will requ
 
 #### Login and registration
 
-<!-- Content -->
+Registration creates a new user - password encryption provided by bcrypt - and logs them in. Certain routes on both the front-end and back-end are protected. On the backend, a logged in user stores an HTTP-only JWT cookie, which is sent to the backend on every request. The JWT stores a user id claim for quick verification. The frontend has an "isAuthenticated" state which is set by calling the backend and having it verify a user is logged in. 
 
 #### Explore and filter projects
 
-<!-- Content -->
+Allows a user to explore all the live projects, ready to be perused and funded. Explore allows filtering by industry, location, or deadline. These are sent to the backend and used to query the Postgres database, making use of SQLAlchemy's query filters. 
 
 #### Creating a project
 
@@ -85,7 +84,7 @@ This project has features that use Amazon S3 and Stripe, both of which will requ
 
 #### Uploading photos
 
-<!-- Content -->
+Product Launch allows you to upload your own photos, which are saved in an S3 bucket. The photo names are stored as a random uuid and are publically available. Currently, photo data is routed through the backend server, however AWS pre-signed URLs are a must-have for scalability.  
 
 #### Connecting a stripe account
 
