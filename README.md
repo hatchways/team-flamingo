@@ -80,7 +80,7 @@ Allows a user to explore all the live projects, ready to be perused and funded. 
 
 #### Editing a profile
 
-<!-- Content -->
+Editing profile made easy with react modal components.
 
 #### Uploading photos
 
