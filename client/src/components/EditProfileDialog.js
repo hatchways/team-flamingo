@@ -92,7 +92,7 @@ function EditProfileDialog(props) {
         })
         .catch((err) => console.log(err));
     },
-    [location, description, expertise, linkedin, angelco, user]
+    [location, description, expertise, interest, linkedin, angelco, user]
   );
 
   return (
