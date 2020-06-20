@@ -11,8 +11,7 @@ Product Launch is a web app that provides a marketplace for entrepreneurs to sho
 - JavaScript/React
 - Material-UI
 - Python/Flask
-- PostgreSQL
-- SQLAlchemy
+- PostgreSQL with SQLAlchemy middleware
 - Amazon S3
 - Stripe
 - JWT
@@ -70,13 +69,13 @@ This project has features that use Amazon S3 and Stripe, both of which will requ
 
 #### Login and registration
 
-While guests can explore projects and view profiles, users can register an account for the platform that allows them to both create and invest in projects. On successful registration, a stripe customer id is generated and linked to the user. This allows for easy tracking of payment methods and transactions made by the user. Both frontend and backend validation is used for the login/registration forms, and Bcrypt is used to encrypt the user's password. "Remember me" functionality exists for the login page, which saves the user's credentials to the browser's local storage.
+Registration creates a new user - password encryption provided by bcrypt - and logs them in. Certain routes on both the front-end and back-end are protected. On the backend, a logged in user stores an HTTP-only JWT cookie, which is sent to the backend on every request. The JWT stores a user id claim for quick verification. The frontend has an "isAuthenticated" state which is set by calling the backend and having it verify a user is logged in.
 
-![Login and registration](./gifs/registration.gif)
+![Register an account](./gifs/registration.gif)
 
 #### Explore and filter projects
 
-Both guests and users can browse the "explore" page, where they can view projects, and filter for industry, deadline, and location. Clicking on a project in the explore page brings the user to the project's landing page where further details are given.
+Allows a user to explore all the live projects, ready to be perused and funded. Explore allows filtering by industry, location, or deadline. These are sent to the backend and used to query the Postgres database, making use of SQLAlchemy's query filters.
 
 ![Explore page](./gifs/explore-page.gif)
 
