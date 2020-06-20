@@ -70,57 +70,57 @@ This project has features that use Amazon S3 and Stripe, both of which will requ
 
 #### Login and registration
 
-While guests can explore projects and view profiles, users can register an account for the platform that allows them to both create and invest in projects. On successful registration, a stripe customer id is generated and linked to the user. This allows for easy tracking of payment methods and transactions made by the user. Both frontend and backend validation is used for the login/registration forms, and Bcrypt is used to encrypt the user's password.
+While guests can explore projects and view profiles, users can register an account for the platform that allows them to both create and invest in projects. On successful registration, a stripe customer id is generated and linked to the user. This allows for easy tracking of payment methods and transactions made by the user. Both frontend and backend validation is used for the login/registration forms, and Bcrypt is used to encrypt the user's password. "Remember me" functionality exists for the login page, which saves the user's credentials to the browser's local storage.
 
-<!-- GIF -->
+![Login and registration](./gifs/registration.gif)
 
 #### Explore and filter projects
 
 Both guests and users can browse the "explore" page, where they can view projects, and filter for industry, deadline, and location. Clicking on a project in the explore page brings the user to the project's landing page where further details are given.
 
-<!-- GIF -->
+![Explore page](./gifs/explore-page.gif)
 
 #### Creating a project
 
 Creating a project brings the user first through a quick-start form, and then to the edit page where the project can be fully customized. Project owners can fill out information such as title, subtitle, industries, location, and can specify logistical details such as their funding deadline, funding goal, and equity offered. Projects can be pushed "live" once the information is completed, allowing it to be viewable to other users, and to begin receiving funding.
 
-<!-- GIF -->
+![Creating a project](./gifs/create-project.gif)
+
+![Editing a project](./gifs/edit-project.gif)
 
 #### Editing a profile
 
 Once a user has registered, they can fill out more details about their profile. They can upload profile photos, add a location, description, areas of expertise, and links to their Linkedin/Angelco profiles. If a user is viewing their own profile page, they will see an edit profile option that opens up a dialog where they can edit their information.
 
-<!-- GIF -->
+![Editing a profile](./gifs/edit-profile.gif)
 
 #### Uploading photos
 
-<!-- Content -->
+![Uploading a photo](./gifs/upload-photo.gif)
 
 #### Connecting a Stripe account
 
 Before pushing a project "live", the user must connect a Stripe account to the project. Investments are transferred to this account if the project reaches its funding goal. Users are redirected from the app to a Stripe page where they can fill in their information and create a connected account. The backend listens for webhooks from the Stripe API, and saves the created account to the database on success.
 
-<!-- GIF -->
+![Connecting a Stripe account](./gifs/connect-account.gif)
 
 #### Creating a Stripe payment method
 
 To fund a project, a user must first register a payment method (e.g. credit card). Users may register multiple payment methods to use, and each method is validated by Stripe and connected to their customer id. Similar to connecting a Stripe account, users are redirected to a Stripe page to register a payment method, and the backend listens for a webhook to process and save the payment method on success.
 
-<!-- GIF -->
+![Creating a Stripe payment method](./gifs/payment-method.gif)
 
 #### Funding a project
 
 When a user finds a project they would like to fund, they can choose one of their payment methods and decide on an amount. Upon successful funding, the fund details are added to the database, but the payment is not yet processed. Payments are only processed after the project's funding deadline if their funding goal was reached.
 
-<!-- GIF -->
+![Funding a project](/gifs/fund-project.gif)
 
 #### Paying out a project
 
 After the project funding deadline, if the funding goal was reached then all of the saved funds for the project are processed. They are fetched from the database and sent to Stripe for collection. Each payment is checked for success, and the amount successfully collected is compared against the total funding.
 
 This feature is currently handled by a backend route as a proof-of-concept, however this will eventually be implemented with a task scheduler (i.e. Celery) and executed on a separate container. Upon creation of a project, a task will be added to the queue based on its funding deadline. It will check if the funding goal was met, and if so, process all of the project's funds. The project owner will be notified of successful payment collection via email, and the investors will receive an electronic share certificate corresponding to the amount of equity they have purchased.
-
-<!-- GIF -->
 
 ## Planned Features
 
