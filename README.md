@@ -57,15 +57,15 @@ This project has features that use Amazon S3 and Stripe, both of which will requ
 
 ### Contents
 
-- [User login and registration](####Login-and-registration)
-- [Explore and filter projects](####Explore-and-filter-projects)
-- [Creating a project](####Creating-a-project)
-- [Editing a profile](####Editing-a-profile)
-- [Uploading photos](####Uploading-photos)
-- [Connecting a stripe account](####Connecting-a-Stripe-account)
-- [Creating a stripe payment method](####Creating-a-Stripe-payment-method)
-- [Funding a project](####Funding-a-project)
-- [Paying out a project](####Paying-out-a-project)
+- [User login and registration](#Login-and-registration)
+- [Explore and filter projects](#Explore-and-filter-projects)
+- [Creating a project](#Creating-a-project)
+- [Editing a profile](#Editing-a-profile)
+- [Uploading photos](#Uploading-photos)
+- [Connecting a stripe account](#Connecting-a-Stripe-account)
+- [Creating a stripe payment method](#Creating-a-Stripe-payment-method)
+- [Funding a project](#Funding-a-project)
+- [Paying out a project](#Paying-out-a-project)
 
 #### Login and registration
 
